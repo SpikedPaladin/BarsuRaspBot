@@ -28,7 +28,6 @@ namespace BarsuTimetable {
             bot.add_handler(new InlineQueryHandler(null, query => inline_timetable.send_group_timetable.begin(query)));
             
             var chat_commands = new ChatCommands();
-            bot.add_handler(new CommandHandler("start", msg => chat_commands.start_command.begin(msg), msg => msg.chat.type == Chat.Type.PRIVATE));
             bot.add_handler(new CommandHandler("day", msg => chat_commands.day_command.begin(msg)));
             bot.add_handler(new CommandHandler("tomorrow", msg => chat_commands.day_command.begin(msg)));
             bot.add_handler(new CommandHandler("rasp", msg => chat_commands.rasp_command.begin(msg)));
