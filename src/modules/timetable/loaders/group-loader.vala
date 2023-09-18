@@ -3,33 +3,19 @@ using Gee;
 namespace BarsuTimetable {
     
     public class GroupLoader {
-        public ArrayList<string> groups = new ArrayList<string>((a, b) => a.down() == b.down());
+        public ArrayList<Faculty> faculties = new ArrayList<Faculty>();
         public string last_fetch;
         
-        public async bool sync_groups() {
-            var new_groups = yield load_groups(true);
+        public async bool sync_faculties() {
+            //var new_groups = yield load_faculties(true);
             
-            if (groups.size == new_groups.size) {
-                bool equal = true;
-                for (int i = 0; i < groups.size; i++) {
-                    if (groups.get(i) != new_groups.get(i)) {
-                        equal = false;
-                        break;
-                    }
-                }
-                
-                if (equal)
-                    return false;
-            }
             
-            groups = new_groups;
-            
-            yield save_groups();
-            return true;
+            //yield save_faculties();
+            return false;
         }
         
-        public async ArrayList<string>? load_groups(bool to_array = false) {
-            var groups_file = File.new_for_path(".cache/TelegramBots/BarsuRaspBot/groups.json");
+        public async ArrayList<string>? load_faculties(bool to_array = false) {
+            var groups_file = File.new_for_path(".cache/TelegramBots/BarsuRaspBot/faculties.json");
             
             if (!to_array && groups_file.query_exists()) {
                 try {
@@ -38,14 +24,28 @@ namespace BarsuTimetable {
                     
                     yield parser.load_from_stream_async(stream.input_stream);
                     
-                    var obj = parser.get_root().get_object();
+                    var root = parser.get_root().get_object();
                     
-                    last_fetch = obj.get_string_member("last-fetch");
+                    last_fetch = root.get_string_member("last-fetch");
                     
-                    foreach (var element in obj.get_array_member("groups").get_elements())
-                        groups.add(element.get_string());
+                    foreach (var faculty_element in root.get_array_member("faculties").get_elements()) {
+                        var faculty_object = faculty_element.get_object();
+                        Speciality[] specialties = {};
+                        
+                        foreach (var speciality_element in faculty_object.get_array_member("specialties").get_elements()) {
+                            var speciality_object = speciality_element.get_object();
+                            string[] groups = {};
+                            
+                            foreach (var group_element in speciality_object.get_array_member("groups").get_elements())
+                                groups += group_element.get_string();
+                            
+                            specialties += new Speciality(speciality_object.get_string_member("name"), groups);
+                        }
+                        
+                        faculties.add(new Faculty(faculty_object.get_string_member("name"), specialties));
+                    }
                 } catch (Error error) {
-                    warning("Error while reading groups: %s\n", error.message);
+                    warning("Error while reading faculties: %s\n", error.message);
                 }
             } else {
                 try {
@@ -53,54 +53,86 @@ namespace BarsuTimetable {
                     var groups_page = yield session.send_and_read_async(message, Soup.MessagePriority.NORMAL, null);
                     
                     var doc = new GXml.XHtmlDocument.from_string((string) groups_page.get_data());
-                    var groups_element = doc.get_element_by_id("groups");
-                    ArrayList<string>? array = null;
-                    if (to_array)
-                        array = new ArrayList<string>((a, b) => a.down() == b.down());
+                    var faculty_form = doc.get_element_by_id("faculty");
+                    var speciality_form = doc.get_element_by_id("speciality");
+                    var groups_form = doc.get_element_by_id("groups");
                     
-                    foreach (var group in groups_element.get_elements_by_tag_name("option").to_array()) {
-                        var group_name = group.get_attribute("value");
+                    foreach (var faculty_element in faculty_form.get_elements_by_tag_name("option").to_array()) {
+                        var faculty_name = faculty_element.get_attribute("value");
                         
-                        // Skip first
-                        if (group_name == "selectcard")
+                        if (faculty_name == "selectcard")
                             continue;
                         
-                        if (to_array) {
-                            array.add(group_name);
+                        Speciality[] specialties = {};
+                        foreach (var speciality_element in speciality_form.get_elements_by_tag_name("option").to_array()) {
+                            var speciality_name = speciality_element.get_attribute("value");
                             
-                            continue;
+                            if (speciality_name == "selectcard" || speciality_element.get_attribute("class") != faculty_name)
+                                continue;
+                            
+                            string[] groups = {};
+                            foreach (var group_element in groups_form.get_elements_by_tag_name("option").to_array()) {
+                                var group = group_element.get_attribute("value");
+                                
+                                if (group == "selectcard" || group_element.get_attribute("class") != speciality_name)
+                                    continue;
+                                
+                                groups += group;
+                            }
+                            
+                            specialties += new Speciality(speciality_name, groups);
                         }
                         
-                        groups.add(group_name);
+                        faculties.add(new Faculty(faculty_name, specialties));
                     }
-                    
-                    if (to_array)
-                        return array;
                     
                     last_fetch = new DateTime.now().to_string();
                     
-                    yield save_groups();
+                    yield save_faculties();
                 } catch (Error error) {
-                    warning("Error while loading groups: %s\n", error.message);
+                    warning("Error while loading faculties: %s\n", error.message);
                 }
             }
             
             return null;
         }
         
-        public async void save_groups() {
+        public async void save_faculties() {
             try {
-                var groups_file = File.new_for_path(".cache/TelegramBots/BarsuRaspBot/groups.json");
+                var groups_file = File.new_for_path(".cache/TelegramBots/BarsuRaspBot/faculties.json");
                 var builder = new Json.Builder();
                 builder.begin_object();
                 
                 builder.set_member_name("last-fetch");
                 builder.add_string_value(last_fetch);
                 
-                builder.set_member_name("groups");
+                builder.set_member_name("faculties");
                 builder.begin_array();
-                foreach (var group in groups) {
-                    builder.add_string_value(group);
+                foreach (var faculty in faculties) {
+                    builder.begin_object();
+                    
+                    builder.set_member_name("name");
+                    builder.add_string_value(faculty.name);
+                    
+                    builder.set_member_name("specialties");
+                    builder.begin_array();
+                    foreach (var speciality in faculty.specialties) {
+                        builder.begin_object();
+                        
+                        builder.set_member_name("name");
+                        builder.add_string_value(speciality.name);
+                        
+                        builder.set_member_name("groups");
+                        builder.begin_array();
+                        foreach (var group in speciality.groups)
+                            builder.add_string_value(group);
+                        builder.end_array();
+                        
+                        builder.end_object();
+                    }
+                    builder.end_array();
+                    
+                    builder.end_object();
                 }
                 builder.end_array();
                 builder.end_object();
@@ -110,7 +142,7 @@ namespace BarsuTimetable {
                 generator.set_root(builder.get_root());
                 generator.to_file(groups_file.get_path());
             } catch (Error error) {
-                warning("Error while saving groups: %s\n", error.message);
+                warning("Error while saving faculties: %s\n", error.message);
             }
         }
     }
