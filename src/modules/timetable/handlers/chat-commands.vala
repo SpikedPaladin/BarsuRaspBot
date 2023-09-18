@@ -262,7 +262,7 @@ namespace BarsuTimetable {
                 @"✍️ Напиши название группы в формате:\n" +
                 @"$(group_manager.get_random_group())" +
                 @"$(origin == "owner" ? "\n\n*Если бот не админ, отправь название группы ответом на это сообщение*" : "")",
-                reply_markup = bot.cancel_keyboard
+                reply_markup = Keyboards.cancel_keyboard
             });
         }
     }

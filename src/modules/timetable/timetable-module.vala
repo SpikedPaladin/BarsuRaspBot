@@ -63,14 +63,14 @@ namespace BarsuTimetable {
                 message_id = message_id,
                 parse_mode = ParseMode.MARKDOWN,
                 text = settings_text(config),
-                reply_markup = config.subscribed ? bot.disable_sub_keyboard : bot.enable_sub_keyboard
+                reply_markup = config.subscribed ? Keyboards.disable_sub_keyboard : Keyboards.enable_sub_keyboard
             });
         else
             yield bot.send(new SendMessage() {
                 chat_id = chat_id,
                 parse_mode = ParseMode.MARKDOWN,
                 text = settings_text(config),
-                reply_markup = config.subscribed ? bot.disable_sub_keyboard : bot.enable_sub_keyboard
+                reply_markup = config.subscribed ? Keyboards.disable_sub_keyboard : Keyboards.enable_sub_keyboard
             });
     }
     

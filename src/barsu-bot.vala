@@ -4,14 +4,6 @@ using Gee;
 
 public class BarsuRaspBot : Bot {
     public HashMap<string, string> users_map = new HashMap<string, string>();
-    public InlineKeyboardMarkup cancel_keyboard = new InlineKeyboardMarkup()
-        .add_button(new InlineKeyboardButton() { text = "Отмена", callback_data = "cancel" });
-    public InlineKeyboardMarkup enable_sub_keyboard = new InlineKeyboardMarkup()
-        .add_button(new InlineKeyboardButton() { text = "Вкл. уведомления", callback_data = "enable_sub" }).new_row()
-        .add_button(new InlineKeyboardButton() { text = "Изменить группу", callback_data = "change_group" });
-    public InlineKeyboardMarkup disable_sub_keyboard = new InlineKeyboardMarkup()
-        .add_button(new InlineKeyboardButton() { text = "Выкл. уведомления", callback_data = "disable_sub" }).new_row()
-        .add_button(new InlineKeyboardButton() { text = "Изменить группу", callback_data = "change_group" });
     
     construct {
         token = Environment.get_variable("TOKEN") ?? "6197661615:AAHuoz7Z4FPwvAi3iaydDwuzfqUAryaWefo";

@@ -5,6 +5,8 @@ bot_deps = [
 ]
 
 bot_sources = files(
+    'data/keyboards.vala',
+    
     'barsu-bot.vala',
     'main.vala',
 )

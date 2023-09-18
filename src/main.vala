@@ -16,6 +16,7 @@ public BusModule bus_module;
 void main() {
     Intl.setlocale(LocaleCategory.ALL, "");
     Xml.set_generic_error_func(null, () => {});
+    Keyboards.load();
     
     // Session for loading from web
     session = new Soup.Session();

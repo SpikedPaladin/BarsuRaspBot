@@ -67,7 +67,7 @@ namespace BarsuTimetable {
                     text =
                     "✍️ Напиши название группы в формате:\n" +
                     @"$(group_manager.get_random_group())",
-                    reply_markup = bot.cancel_keyboard
+                    reply_markup = Keyboards.cancel_keyboard
                 });
                 return;
             }
@@ -85,7 +85,7 @@ namespace BarsuTimetable {
                     "✍️ Напиши название группы в формате:\n" +
                     @"$(group_manager.get_random_group())" +
                     "\n\n*Если бот не админ, отправь название группы ответом на это сообщение*",
-                    reply_markup = bot.cancel_keyboard
+                    reply_markup = Keyboards.cancel_keyboard
                 });
             } else {
                 yield send_alert(query.id, "Изменять выбранную группу в общем чате может только владелец!");
@@ -101,7 +101,7 @@ namespace BarsuTimetable {
                 text =
                 "✍️ Теперь напиши название своей группы в формате:\n" +
                 @"$(group_manager.get_random_group())",
-                reply_markup = bot.cancel_keyboard
+                reply_markup = Keyboards.cancel_keyboard
             });
         }
         
@@ -135,7 +135,7 @@ namespace BarsuTimetable {
                         config_manager.update_user_sub(id, enabled)
                 ),
                 parse_mode = ParseMode.MARKDOWN,
-                reply_markup = enabled ? bot.disable_sub_keyboard : bot.enable_sub_keyboard
+                reply_markup = enabled ? Keyboards.disable_sub_keyboard : Keyboards.enable_sub_keyboard
             });
         }
     }
