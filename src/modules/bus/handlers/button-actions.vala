@@ -54,11 +54,6 @@ namespace Bus {
             if (times != null && times.length == 0)
                 msg += @"Сегодня автобус больше не ездит.";
             
-            yield bot.send(new EditMessageReplyMarkup() {
-                chat_id = query.message.chat.id,
-                message_id = query.message.message_id
-            });
-            
             yield bot.send(new EditMessageText() {
                 chat_id = query.message.chat.id,
                 message_id = query.message.message_id,
