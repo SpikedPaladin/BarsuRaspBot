@@ -1,9 +1,9 @@
 using BarsuTimetable;
 using Telegram;
 
-namespace Start {
+namespace Setup {
     
-    public class StartCommands {
+    public class SetupCommands {
         
         public async void start(Message msg) {
             config_manager.set_user_state(msg.from.id, StartupState.FACULTY);

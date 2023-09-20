@@ -1,4 +1,4 @@
 subdir('admin')
 subdir('bus')
-subdir('start')
+subdir('setup')
 subdir('timetable')

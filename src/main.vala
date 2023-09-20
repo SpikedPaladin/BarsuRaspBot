@@ -1,5 +1,5 @@
 using BarsuTimetable;
-using Start;
+using Setup;
 using Admin;
 using Bus;
 
@@ -10,7 +10,7 @@ public BarsuRaspBot bot;
 
 public TimetableModule timetable_module;
 public AdminModule admin_module;
-public StartModule start_module;
+public SetupModule setup_module;
 public BusModule bus_module;
 
 void main() {
@@ -27,7 +27,7 @@ void main() {
     // Initialize modules
     timetable_module = new TimetableModule();
     admin_module = new AdminModule();
-    start_module = new StartModule();
+    setup_module = new SetupModule();
     bus_module = new BusModule();
     
     // Start bot

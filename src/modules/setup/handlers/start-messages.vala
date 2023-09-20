@@ -1,9 +1,9 @@
 using BarsuTimetable;
 using Telegram;
 
-namespace Start {
+namespace Setup {
     
-    public class StartMessages {
+    public class SetupMessages {
         
         public async void post(Message msg) {
             if (msg.text.down().contains("преподаватель")) {
