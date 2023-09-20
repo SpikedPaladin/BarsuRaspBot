@@ -7,7 +7,7 @@ namespace Admin {
     public class AdminCommands {
         
         public async void stat_command(Message msg) {
-            int sub_count = 0;
+            int sub_count = 0, registered = 0, in_setup = 0;
             
             HashMap<string, int> chats = new HashMap<string, int>();
             foreach (var config in config_manager.get_chats()) {
@@ -17,15 +17,16 @@ namespace Admin {
                     chats.set(config.group, 1);
             }
             
-            HashMap<string, int> users = new HashMap<string, int>();
             foreach (var config in config_manager.get_users()) {
                 if (config.subscribed)
                     sub_count++;
                 
-                if (users.has_key(config.group))
-                    users.set(config.group, users.get(config.group) + 1);
-                else
-                    users.set(config.group, 1);
+                if (config.state != null) {
+                    in_setup++;
+                } else {
+                    if (config.type != null)
+                        registered++;
+                }
             }
             
             int count = 0;
@@ -37,13 +38,7 @@ namespace Admin {
             text += @"Всего: $count\n";
             
             text += "\nПользователи:\n";
-            count = 0;
-            
-            foreach (var user in users) {
-                text += @"$(user.key) - $(user.value)\n";
-                count += user.value;
-            }
-            text += @"Всего: $count\n";
+            text += @"Всего: $(config_manager.get_users().size) ($registered/$in_setup)\n";
             text += @"Подписано: $sub_count";
             
             yield bot.send(new SendMessage() {
