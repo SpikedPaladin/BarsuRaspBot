@@ -23,6 +23,7 @@ namespace BarsuTimetable {
         public async void send_no_group(InlineQuery query) {
             yield bot.send(new AnswerInlineQuery() {
                 inline_query_id = query.id,
+                is_personal = true,
                 cache_time = 5,
                 
                 results = { new InlineQueryResultArticle() {
@@ -89,6 +90,7 @@ namespace BarsuTimetable {
             
             yield bot.send(new AnswerInlineQuery() {
                 inline_query_id = query_id,
+                is_personal = true,
                 results = results
             });
         }
