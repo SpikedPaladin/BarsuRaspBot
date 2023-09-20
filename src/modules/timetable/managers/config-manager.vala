@@ -29,6 +29,52 @@ namespace BarsuTimetable {
             loader.save_configs.begin();
         }
         
+        public StartupState? get_user_state(int64 user_id) {
+            var found_config = loader.users.first_match((config) => {
+                return config.id == user_id;
+            });
+            
+            if (found_config != null) {
+                return found_config.state;
+            }
+            
+            return null;
+        }
+        
+        public void set_user_state(int64 user_id, StartupState? state) {
+            var found_config = loader.users.first_match((config) => {
+                return config.id == user_id;
+            });
+            
+            if (found_config != null) {
+                found_config.state = state;
+            } else {
+                loader.users.add(new Config() {
+                    id = user_id,
+                    state = state
+                });
+            }
+            
+            loader.save_configs.begin();
+        }
+        
+        public void set_user_type(int64 user_id, ConfigType type) {
+            var found_config = loader.users.first_match((config) => {
+                return config.id == user_id;
+            });
+            
+            if (found_config != null) {
+                found_config.type = type;
+            } else {
+                loader.users.add(new Config() {
+                    id = user_id,
+                    type = type
+                });
+            }
+            
+            loader.save_configs.begin();
+        }
+        
         public Config? find_user_config(int64 user_id) {
             var found_config = loader.users.first_match((config) => {
                 return config.id == user_id;

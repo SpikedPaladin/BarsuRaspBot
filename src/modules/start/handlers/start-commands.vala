@@ -6,18 +6,33 @@ namespace Start {
     public class StartCommands {
         
         public async void start(Message msg) {
-            if (config_manager.find_user_group(msg.from.id) != null)
-                return;
-            
-            bot.users_map.set(@"$(msg.from.id)", "start");
+            config_manager.set_user_state(msg.from.id, StartupState.FACULTY);
             
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 parse_mode = ParseMode.MARKDOWN,
-                text = "*Добро пожаловать!*\n\n" + 
-                       "✍️ Чтобы начать работу с ботом напиши название своей группы в формате:\n" +
-                       @"*$(group_manager.get_random_group())*"
+                reply_markup = faculty_keyboard(),
+                text = "*Добро пожаловать!*\n\n🕶️ Выбери свой факультет"
             });
+            
+            // config_manager.set_user_state(msg.from.id, StartupState.POST);
+            
+            // yield bot.send(new SendMessage() {
+            //     chat_id = msg.chat.id,
+            //     parse_mode = ParseMode.MARKDOWN,
+            //     reply_markup = Keyboards.post_keyboard,
+            //     text = "*Добро пожаловать!*\n\n" +
+            //            "✍️ Ты студент или преподаватель?\n"
+            // });
+        }
+        public ReplyKeyboardMarkup faculty_keyboard() {
+            var keyboard = new ReplyKeyboardMarkup() { is_persistent = true, resize_keyboard = true };
+            
+            foreach (var faculty in group_manager.get_faculties()) {
+                keyboard.add_button(new KeyboardButton() { text = faculty.name }).new_row();
+            }
+            
+            return keyboard;
         }
         
         public async void restart(Message msg) {

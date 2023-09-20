@@ -40,7 +40,7 @@ namespace BarsuTimetable {
             bot.add_handler(new CommandHandler("help", msg => chat_commands.help_command.begin(msg)));
             
             var group_message = new GroupMessage();
-            bot.add_handler(new MessageHandler(null, msg => group_message.private_message.begin(msg), msg => msg.chat.type == Chat.Type.PRIVATE));
+            bot.add_handler(new MessageHandler(null, msg => group_message.private_message.begin(msg), msg => msg.chat.type == Chat.Type.PRIVATE && bot.users_map.has_key(@"$(msg.from.id)")));
             bot.add_handler(new MessageHandler(null, msg => group_message.chat_message.begin(msg), msg => bot.users_map.has_key(@"$(msg.from.id)") && bot.users_map.get(@"$(msg.from.id)") == "owner"));
             
             var button_action = new ButtonActions();
@@ -52,7 +52,6 @@ namespace BarsuTimetable {
             bot.add_handler(new CallbackQueryHandler(null, query => button_action.send_timetable.begin(query), query => query.data.has_prefix("timetable")));
         }
     }
-    
     
     public async void send_settings(ChatId chat_id, int64? user_id = null, int? message_id = null) {
         var config = user_id != null ? config_manager.find_user_config(user_id) : config_manager.find_chat_config(chat_id);

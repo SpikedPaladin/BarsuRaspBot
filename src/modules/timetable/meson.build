@@ -17,8 +17,10 @@ bot_sources += files(
     'managers/timetable-manager.vala',
     
     'models/day-schedule.vala',
+    'models/department.vala',
     'models/faculty.vala',
     'models/lesson.vala',
+    'models/teacher-schedule.vala',
     'models/timetable.vala',
     'models/timetable-image.vala',
     

@@ -4,6 +4,73 @@ namespace BarsuTimetable {
     
     public class TimetableLoader {
         
+        public async TeacherSchedule[]? load_teacher(string name, string week) {
+            try {
+                var payload = create_teacher_payload(name, week);
+                var message = new Soup.Message.from_multipart("https://rasp.barsu.by/teach.php", payload);
+                var rasp_page = yield session.send_and_read_async(message, Soup.MessagePriority.NORMAL, null);
+                
+                var doc = new GXml.XHtmlDocument.from_string((string) rasp_page.get_data());
+                
+                var table = doc.get_elements_by_class_name("table-bordered").get_element(0).get_elements_by_tag_name("tbody").get_element(0);
+                var table_rows = table.get_elements_by_tag_name("tr").to_array();
+                
+                if (table_rows.length == 0)
+                    return null;
+                
+                TeacherSchedule[] schedules = {};
+                var schedule = new TeacherSchedule();
+                TeacherLesson[] lessons = {};
+                foreach (var row in table_rows) {
+                    if (!row.has_child_nodes())
+                        continue;
+                    
+                    var lesson_info = row.get_elements_by_tag_name("td").to_array();
+                    int offset = 0;
+                    if (lesson_info.length > 4) {
+                        schedule = new TeacherSchedule();
+                        lessons = {};
+                        schedule.day = lesson_info[offset++].text_content.strip();
+                        schedule.date = lesson_info[offset++].text_content.strip();
+                    }
+                    
+                    var lesson = new TeacherLesson();
+                    if (lesson_info[offset + 1].text_content.strip() == "") {
+                        lesson.time = lesson_info[offset++].text_content.strip();
+                    } else {
+                        lesson.time = lesson_info[offset++].text_content.strip();
+                        lesson.name = lesson_info[offset++].text_content.strip();
+                        lesson.groups = lesson_info[offset++].text_content.strip();
+                        lesson.place = lesson_info[offset++].text_content.strip();
+                    }
+                    lessons += lesson;
+                    
+                    if (lesson_info[0].text_content.strip() == "19.35-21.00") {
+                        schedule.lessons = lessons;
+                        schedules += schedule;
+                    }
+                }
+                
+                
+                foreach (var sch in schedules) {
+                    print(@"День $(sch.day) $(sch.date)\n");
+                    
+                    foreach (var lesson in sch.lessons) {
+                        if (lesson.name != null) {
+                            print(@"$(lesson.name), $(lesson.groups), $(lesson.place)\n");
+                        }
+                    }
+                    print("\n");
+                }
+                
+                return schedules;
+            } catch (Error error) {
+                warning("Error while loading teacher timetable: %s\n", error.message);
+            }
+            
+            return null;
+        }
+        
         public async Timetable? load_timetable(string group, string week) {
             try {
                 var payload = create_payload(group, week);
@@ -103,6 +170,15 @@ namespace BarsuTimetable {
             multipart.append_form_string("faculty", "selectcard");
             multipart.append_form_string("speciality", "selectcard");
             multipart.append_form_string("groups", group);
+            multipart.append_form_string("weekbegindate", week);
+            
+            return multipart;
+        }
+        
+        private Soup.Multipart create_teacher_payload(string name, string week) {
+            var multipart = new Soup.Multipart("multipart/form-data");
+            multipart.append_form_string("kafedra", "selectcard");
+            multipart.append_form_string("teacher", name);
             multipart.append_form_string("weekbegindate", week);
             
             return multipart;

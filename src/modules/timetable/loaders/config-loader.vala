@@ -20,12 +20,24 @@ namespace BarsuTimetable {
                     
                     foreach (var element in obj.get_array_member("users")?.get_elements()) {
                         var user = element.get_object();
-                        
-                        users.add(new Config() {
+                        var config = new Config() {
                             id = user.get_int_member("id"),
-                            group = user.get_string_member("group"),
                             subscribed = user.get_boolean_member("subscribed")
-                        });
+                        };
+                        
+                        if (user.has_member("state"))
+                            config.state = StartupState.parse(user.get_string_member("state"));
+                        
+                        if (user.has_member("type"))
+                            config.type = ConfigType.parse(user.get_string_member("type"));
+                        
+                        if (user.has_member("group"))
+                            config.group = user.get_string_member("group");
+                        
+                        if (user.has_member("name"))
+                            config.name = user.get_string_member("name");
+                        
+                        users.add(config);
                     }
                     
                     foreach (var element in obj.get_array_member("chats")?.get_elements()) {
@@ -58,8 +70,25 @@ namespace BarsuTimetable {
                     builder.set_member_name("id");
                     builder.add_int_value(user.id);
                     
-                    builder.set_member_name("group");
-                    builder.add_string_value(user.group);
+                    if (user.state != null) {
+                        builder.set_member_name("state");
+                        builder.add_string_value(user.state.to_string());
+                    }
+                    
+                    if (user.type != null) {
+                        builder.set_member_name("type");
+                        builder.add_string_value(user.type.to_string());
+                    }
+                    
+                    if (user.group != null) {
+                        builder.set_member_name("group");
+                        builder.add_string_value(user.group);
+                    }
+                    
+                    if (user.name != null) {
+                        builder.set_member_name("name");
+                        builder.add_string_value(user.name);
+                    }
                     
                     builder.set_member_name("subscribed");
                     builder.add_boolean_value(user.subscribed);
@@ -99,8 +128,83 @@ namespace BarsuTimetable {
     }
 
     public class Config {
+        public StartupState? state;
+        public ConfigType? type;
         public int64 id;
-        public string group;
+        public string? name;
+        public string? group;
         public bool subscribed;
+    }
+    
+    public enum ConfigType {
+        TEACHER,
+        STUDENT;
+        
+        public static ConfigType? parse(string type) {
+            switch (type) {
+                case "teacher":
+                    return TEACHER;
+                default:
+                    return STUDENT;
+            }
+        }
+        
+        public string to_string() {
+            switch (this) {
+                case TEACHER:
+                    return "teacher";
+                default:
+                    return "student";
+            }
+        }
+    }
+    
+    public enum StartupState {
+        // used /start command
+        POST,
+        // Chosed teacher
+        DEPARTMENT,
+        // Chosed department
+        NAME,
+        // Chosed student
+        FACULTY,
+        // Chosed faculty
+        SPECIALITY,
+        // Chosed speciality
+        GROUP;
+        
+        public static StartupState? parse(string type) {
+            switch (type) {
+                case "department":
+                    return DEPARTMENT;
+                case "name":
+                    return NAME;
+                case "faculty":
+                    return FACULTY;
+                case "speciality":
+                    return SPECIALITY;
+                case "group":
+                    return GROUP;
+                default:
+                    return POST;
+            }
+        }
+        
+        public string to_string() {
+            switch (this) {
+                case DEPARTMENT:
+                    return "department";
+                case NAME:
+                    return "name";
+                case FACULTY:
+                    return "faculty";
+                case SPECIALITY:
+                    return "speciality";
+                case GROUP:
+                    return "group";
+                default:
+                    return "post";
+            }
+        }
     }
 }
