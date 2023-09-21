@@ -3,9 +3,9 @@ namespace BarsuTimetable {
     public class GroupManager {
         private GroupLoader loader = new GroupLoader();
         
-        public GroupManager() {
-            loader.load_faculties.begin();
-            loader.load_departments.begin();
+        public async void load() {
+            yield loader.load_faculties();
+            yield loader.load_departments();
         }
         
         public Gee.ArrayList<Department> get_departments() {

@@ -6,8 +6,8 @@ namespace BarsuTimetable {
     public class ConfigManager {
         private ConfigLoader loader = new ConfigLoader();
         
-        public ConfigManager() {
-            loader.load_configs.begin();
+        public async void load() {
+            yield loader.load_configs();
         }
         
         public ArrayList<Config> get_users() {

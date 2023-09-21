@@ -10,13 +10,17 @@ namespace BarsuTimetable {
     
     public class TimetableModule {
         
-        public TimetableModule() {
+        public async void load() {
             timetable_manager = new TimetableManager();
             broadcast_manager = new BroadcastManager();
             schedule_manager = new ScheduleManager();
             config_manager = new ConfigManager();
             group_manager = new GroupManager();
             image_manager = new ImageManager();
+            
+            yield config_manager.load();
+            yield group_manager.load();
+            yield image_manager.load();
             
             add_handlers();
         }

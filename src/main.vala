@@ -5,13 +5,9 @@ using Bus;
 
 public const int64 BOSS_ID = 841497640;
 
+public ModuleLoader module_loader;
 public Soup.Session session;
 public BarsuRaspBot bot;
-
-public TimetableModule timetable_module;
-public AdminModule admin_module;
-public SetupModule setup_module;
-public BusModule bus_module;
 
 void main() {
     Intl.setlocale(LocaleCategory.ALL, "");
@@ -23,15 +19,16 @@ void main() {
     
     // Initialize bot
     bot = new BarsuRaspBot();
+    bot.config.create_main_loop = false;
     
     // Initialize modules
-    timetable_module = new TimetableModule();
-    admin_module = new AdminModule();
-    setup_module = new SetupModule();
-    bus_module = new BusModule();
+    module_loader = new ModuleLoader();
+    module_loader.load_modules.begin(() => {
+        // Start bot
+        bot.start();
+    });
     
-    // Start bot
-    bot.start();
+    new MainLoop().run();
 }
 
 public DateTime get_current_week() {

@@ -4,7 +4,7 @@ namespace Admin {
     
     public class AdminModule {
         
-        public AdminModule() {
+        public async void load() {
             add_handlers();
         }
         

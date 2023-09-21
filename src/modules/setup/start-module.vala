@@ -5,7 +5,7 @@ namespace Setup {
     
     public class SetupModule {
         
-        public SetupModule() {
+        public async void load() {
             add_handlers();
         }
         

@@ -8,7 +8,7 @@ namespace Bus {
             }
         }
         
-        public BusManager() {
+        public async void load() {
             loader.load_config.begin();
         }
         

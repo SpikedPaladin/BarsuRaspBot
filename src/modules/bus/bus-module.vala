@@ -5,8 +5,10 @@ namespace Bus {
     
     public class BusModule {
         
-        public BusModule() {
+        public async void load() {
             bus_manager = new BusManager();
+            
+            yield bus_manager.load();
             
             add_handlers();
         }

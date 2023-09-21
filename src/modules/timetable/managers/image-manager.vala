@@ -9,6 +9,10 @@ namespace BarsuTimetable {
             loader.load_cache.begin();
         }
         
+        public async void load() {
+            yield loader.load_cache();
+        }
+        
         public void update_cache(TimetableImage image) {
             loader.images.add(image);
         }
