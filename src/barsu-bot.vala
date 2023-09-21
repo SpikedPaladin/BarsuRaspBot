@@ -5,11 +5,6 @@ using Gee;
 public class BarsuRaspBot : Bot {
     public HashMap<string, string> users_map = new HashMap<string, string>();
     
-    construct {
-        token = Environment.get_variable("TOKEN") ?? "6197661615:AAHuoz7Z4FPwvAi3iaydDwuzfqUAryaWefo";
-        session.timeout = 15;
-    }
-    
     public override bool on_my_chat_member(ChatMemberUpdated chat_member) {
         if (chat_member.new_chat_member is ChatMemberBanned || chat_member.new_chat_member is ChatMemberLeft) {
             if (chat_member.chat.type == Chat.Type.PRIVATE)
@@ -27,4 +22,3 @@ public class BarsuRaspBot : Bot {
         return true;
     }
 }
-

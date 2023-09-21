@@ -19,7 +19,10 @@ void main() {
     
     // Initialize bot
     bot = new BarsuRaspBot();
+    bot.token = Environment.get_variable("TOKEN") ?? "6197661615:AAHuoz7Z4FPwvAi3iaydDwuzfqUAryaWefo";
     bot.config.create_main_loop = false;
+    bot.session.timeout = 15;
+    bot.config.timeout = 10;
     
     // Initialize modules
     module_loader = new ModuleLoader();
