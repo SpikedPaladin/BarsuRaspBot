@@ -215,6 +215,9 @@ namespace BarsuTimetable {
                 
                 var generator = new Json.Generator();
                 
+                if (!groups_file.get_parent().query_exists())
+                    groups_file.get_parent().make_directory_with_parents();
+                
                 generator.set_root(builder.get_root());
                 generator.to_file(groups_file.get_path());
             } catch (Error error) {
@@ -252,6 +255,9 @@ namespace BarsuTimetable {
                 builder.end_object();
                 
                 var generator = new Json.Generator();
+                
+                if (!groups_file.get_parent().query_exists())
+                    groups_file.get_parent().make_directory_with_parents();
                 
                 generator.set_root(builder.get_root());
                 generator.to_file(groups_file.get_path());
