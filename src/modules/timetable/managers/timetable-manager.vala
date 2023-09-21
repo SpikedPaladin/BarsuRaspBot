@@ -16,7 +16,8 @@ namespace BarsuTimetable {
                     var new_timetable = yield loader.load_timetable(group, date);
                     
                     if (new_timetable.last_update.to_string() != timetable.last_update.to_string()) {
-                        cache.set(cache.index_of(timetable), new_timetable);
+                        cache.remove(timetable);
+                        cache.add(new_timetable);
                         
                         return new_timetable;
                     } else
