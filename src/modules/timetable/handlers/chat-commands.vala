@@ -239,12 +239,15 @@ namespace BarsuTimetable {
                 return;
             }
             
+            var msg = "⚠️ *Сначала заверши настройку бота*";
+            
+            if (config_manager.find_user_config(user_id)?.type == ConfigType.TEACHER)
+                msg = "⚠️ *Расписание для преподавателей ещё не готово*\nКогда будет готово вы получите сообщение\nЕсли выбрали что-то неправильно /restart";
+            
             yield bot.send(new SendMessage() {
                 chat_id = chat_id,
                 parse_mode = ParseMode.MARKDOWN,
-                text = config_manager.find_user_config(user_id).type == ConfigType.TEACHER ? 
-                    "⚠️ *Расписание для преподавателей ещё не готово*\nКогда будет готово вы получите сообщение\nЕсли выбрали что-то неправильно /restart" :
-                    "⚠️ *Сначала заверши настройку бота*"
+                text = msg
             });
         }
         
