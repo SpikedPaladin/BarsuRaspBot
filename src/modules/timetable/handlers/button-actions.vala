@@ -4,6 +4,12 @@ namespace BarsuTimetable {
     
     public class ButtonActions {
         
+        public async void empty(CallbackQuery query) {
+            yield bot.send(new AnswerCallbackQuery() {
+                callback_query_id = query.id
+            });
+        }
+        
         public async void cancel(CallbackQuery query) {
             if (bot.users_map.has_key(@"$(query.from.id)"))
                 bot.users_map.unset(@"$(query.from.id)");

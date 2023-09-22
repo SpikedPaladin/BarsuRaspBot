@@ -48,6 +48,7 @@ namespace BarsuTimetable {
             bot.add_handler(new MessageHandler(null, msg => group_message.chat_message.begin(msg), msg => bot.users_map.has_key(@"$(msg.from.id)") && bot.users_map.get(@"$(msg.from.id)") == "owner"));
             
             var button_action = new ButtonActions();
+            bot.add_handler(new CallbackQueryHandler("empty", query => button_action.empty.begin(query)));
             bot.add_handler(new CallbackQueryHandler("cancel", query => button_action.cancel.begin(query)));
             bot.add_handler(new CallbackQueryHandler("enable_sub", query => button_action.enable_subscription.begin(query)));
             bot.add_handler(new CallbackQueryHandler("disable_sub", query => button_action.disable_subscription.begin(query)));
@@ -113,11 +114,13 @@ namespace BarsuTimetable {
     
     public async void send_timetable_date(string day, string group, string date, CallbackQuery query) {
         var timetable = yield timetable_manager.get_timetable(group, date);
+        var keyboard = create_timetable_keyboard(timetable, group, date, day);
         
         yield bot.send(new EditMessageText() {
             chat_id = query.message.chat.id,
             message_id = query.message.message_id,
             parse_mode = ParseMode.MARKDOWN,
+            reply_markup = keyboard,
             text = @"👥️ Группа: *$(group)*\n" + timetable.to_string(day)
         });
     }
@@ -150,7 +153,7 @@ namespace BarsuTimetable {
         }
     }
     
-    public InlineKeyboardMarkup? create_timetable_keyboard(Timetable? timetable, string group, string date) {
+    public InlineKeyboardMarkup? create_timetable_keyboard(Timetable? timetable, string group, string date, string? skip_button = null) {
         if (timetable == null)
             return null;
         
@@ -159,7 +162,7 @@ namespace BarsuTimetable {
         foreach (var day in timetable.days) {
             keyboard.add_button(new InlineKeyboardButton() {
                 text = day.day_of_week,
-                callback_data = @"timetable:$(day.day_of_week):$(group):$(date)"
+                callback_data = skip_button == day.day_of_week ? "empty" : @"timetable:$(day.day_of_week):$(group):$(date)"
             });
         }
         
