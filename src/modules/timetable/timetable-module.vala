@@ -52,7 +52,6 @@ namespace BarsuTimetable {
             bot.add_handler(new CallbackQueryHandler("enable_sub", query => button_action.enable_subscription.begin(query)));
             bot.add_handler(new CallbackQueryHandler("disable_sub", query => button_action.disable_subscription.begin(query)));
             bot.add_handler(new CallbackQueryHandler("change_group", query => button_action.change_group.begin(query)));
-            bot.add_handler(new CallbackQueryHandler("select_group", query => button_action.select_group.begin(query)));
             bot.add_handler(new CallbackQueryHandler(null, query => button_action.send_timetable.begin(query), query => query.data.has_prefix("timetable")));
         }
     }

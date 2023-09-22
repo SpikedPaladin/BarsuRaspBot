@@ -92,19 +92,6 @@ namespace BarsuTimetable {
             }
         }
         
-        public async void select_group(CallbackQuery query) {
-            bot.users_map.set(@"$(query.from.id)", "start");
-            
-            yield bot.send(new EditMessageText() {
-                chat_id = query.message.chat.id,
-                message_id = query.message.message_id,
-                text =
-                "✍️ Теперь напиши название своей группы в формате:\n" +
-                @"$(group_manager.get_random_group())",
-                reply_markup = Keyboards.cancel_keyboard
-            });
-        }
-        
         public async void send_timetable(CallbackQuery query) {
             var data = query.data.split(":");
             
