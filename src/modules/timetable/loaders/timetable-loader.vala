@@ -110,7 +110,7 @@ namespace BarsuTimetable {
                     var time = table_array[i].text_content.replace(" ", "");
                     var raw_lesson = element_to_string(table_array[i + 1]).split("|");
                     if (raw_lesson.length > 1) {
-                        Lesson.Sublesson[] sublessons = {};
+                        var sublessons = new ArrayList<Lesson.Sublesson>();
                         
                         for (int j = 0; j < raw_lesson.length; j += 3) {
                             var chunk = raw_lesson[j:j + 3];
@@ -129,18 +129,18 @@ namespace BarsuTimetable {
                                 }
                             }
                             
-                            sublessons += new Lesson.Sublesson() {
+                            sublessons.add(new Lesson.Sublesson() {
                                 name = chunk[0].substring(0, chunk[0].last_index_of("-") - 1),
                                 type = chunk[0].substring(chunk[0].last_index_of("-") + 2).strip(),
                                 teacher = chunk[1],
                                 place = place,
                                 subgroup = subgroup
-                            };
+                            });
                         }
                         
                         lessons += new Lesson() {
                             time = time,
-                            sublessons = sublessons,
+                            sublessons = sublessons.to_array(),
                             replaced = table_array[i + 1].get_attribute("bgcolor") == "#ffb2b9"
                         };
                     } else {
