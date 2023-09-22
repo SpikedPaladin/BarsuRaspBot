@@ -241,6 +241,9 @@ namespace BarsuTimetable {
             
             var msg = "⚠️ *Сначала заверши настройку бота*";
             
+            if (config_manager.find_user_config(user_id) == null)
+                config_manager.set_user_state(user_id, StartupState.FACULTY);
+            
             if (config_manager.find_user_config(user_id)?.type == ConfigType.TEACHER)
                 msg = "⚠️ *Расписание для преподавателей ещё не готово*\nКогда будет готово вы получите сообщение\nЕсли выбрали что-то неправильно /restart";
             
