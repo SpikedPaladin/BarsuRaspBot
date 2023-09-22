@@ -138,6 +138,8 @@ namespace BarsuTimetable {
                             });
                         }
                         
+                        sublessons.sort((a, b) => strcmp(a.subgroup, b.subgroup));
+                        
                         lessons += new Lesson() {
                             time = time,
                             sublessons = sublessons.to_array(),
