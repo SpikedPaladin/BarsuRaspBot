@@ -40,9 +40,13 @@ namespace BarsuTimetable {
         public string to_string() {
             var str = @"🗓️ Дата: *$(day_of_week) $(date)*\n\n";
             
-            foreach (var lesson in lessons)
-                if (!lesson.empty)
-                    str += lesson.to_string();
+            foreach (var lesson in lessons) {
+                if (lesson.empty)
+                    continue;
+                
+                str += lesson.to_string();
+                str += "\n";
+            }
             
             return str;
         }
