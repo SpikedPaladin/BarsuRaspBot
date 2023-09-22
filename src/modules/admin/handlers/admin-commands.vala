@@ -30,18 +30,19 @@ namespace Admin {
             }
             
             int count = 0;
-            string text = "Группы:\n";
+            string text = "👥️ Группы:\n";
             foreach (var chat in chats) {
                 text += @"$(chat.key) - $(chat.value)\n";
                 count += chat.value;
             }
-            text += @"Всего: $count\n";
+            text += @"Всего: *$count*\n";
             
-            text += "\nПользователи:\n";
-            text += @"Всего: $(config_manager.get_users().size) ($registered/$in_setup)\n";
+            text += "\n👤️ Пользователи:\n";
+            text += @"Всего: $(config_manager.get_users().size) (*$registered*/$in_setup)\n";
             text += @"Подписано: $sub_count";
             
             yield bot.send(new SendMessage() {
+                parse_mode = ParseMode.MARKDOWN,
                 chat_id = msg.chat.id,
                 text = text
             });
