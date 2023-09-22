@@ -136,8 +136,10 @@ namespace BarsuTimetable {
                     cr.set_source_rgb(0.2, 0.2, 0.2);
                     cr.set_font_size(FONT_SIZE);
                     
-                    var time_offset = lesson.sublessons.length == 1 ? 0 : lesson.sublessons.length * 5;
-                    cr.move_to(time_x, offset + lesson_offset + 26 + time_offset);
+                    if (lesson.sublessons.length > 1)
+                        cr.move_to(time_x, offset + lesson_offset + 16 + (row_height / 2) + lesson.sublessons.length);
+                    else
+                        cr.move_to(time_x, offset + lesson_offset + 26);
                     cr.show_text(lesson.time);
                     
                     var sublesson_number = 1;
