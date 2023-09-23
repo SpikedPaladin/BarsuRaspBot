@@ -7,8 +7,8 @@ namespace BarsuTimetable {
         public async TeacherSchedule[]? load_teacher(string name, string week) {
             try {
                 var payload = create_teacher_payload(name, week);
-                var message = new Soup.Message.from_multipart("https://rasp.barsu.by/teach.php", payload);
-                var rasp_page = yield session.send_and_read_async(message, Soup.MessagePriority.NORMAL, null);
+                var msg = new Soup.Message.from_multipart("https://rasp.barsu.by/teach.php", payload);
+                var rasp_page = yield session.send_and_read_async(msg, Soup.MessagePriority.NORMAL, null);
                 
                 var doc = new GXml.XHtmlDocument.from_string((string) rasp_page.get_data());
                 
@@ -74,8 +74,8 @@ namespace BarsuTimetable {
         public async Timetable? load_timetable(string group, string week) {
             try {
                 var payload = create_payload(group, week);
-                var message = new Soup.Message.from_multipart("https://rasp.barsu.by/stud.php", payload);
-                var rasp_page = yield session.send_and_read_async(message, Soup.MessagePriority.NORMAL, null);
+                var msg = new Soup.Message.from_multipart("https://rasp.barsu.by/stud.php", payload);
+                var rasp_page = yield session.send_and_read_async(msg, Soup.MessagePriority.NORMAL, null);
                 
                 var doc = new GXml.XHtmlDocument.from_string((string) rasp_page.get_data());
                 

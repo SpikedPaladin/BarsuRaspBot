@@ -50,8 +50,8 @@ namespace BarsuTimetable {
                 }
             } else {
                 try {
-                    var message = new Soup.Message("GET", "https://rasp.barsu.by/stud.php");
-                    var groups_page = yield session.send_and_read_async(message, Soup.MessagePriority.NORMAL, null);
+                    var msg = new Soup.Message("GET", "https://rasp.barsu.by/stud.php");
+                    var groups_page = yield session.send_and_read_async(msg, Soup.MessagePriority.NORMAL, null);
                     
                     var doc = new GXml.XHtmlDocument.from_string((string) groups_page.get_data());
                     var faculty_form = doc.get_element_by_id("faculty");
@@ -133,8 +133,8 @@ namespace BarsuTimetable {
                 }
             } else {
                 try {
-                    var message = new Soup.Message("GET", "https://rasp.barsu.by/teach.php");
-                    var groups_page = yield session.send_and_read_async(message, Soup.MessagePriority.NORMAL, null);
+                    var msg = new Soup.Message("GET", "https://rasp.barsu.by/teach.php");
+                    var groups_page = yield session.send_and_read_async(msg, Soup.MessagePriority.NORMAL, null);
                     
                     var doc = new GXml.XHtmlDocument.from_string((string) groups_page.get_data());
                     var department_form = doc.get_element_by_id("kafedra");
