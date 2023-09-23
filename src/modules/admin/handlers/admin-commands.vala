@@ -49,7 +49,16 @@ namespace Admin {
         }
         
         public async void broadcast_command(Message msg) {
-            yield broadcast_manager.send_broadcast(msg.get_command_arguments(), false);
+            if (msg.reply_to_message == null) {
+                yield bot.send(new SendMessage() {
+                    chat_id = msg.chat.id,
+                    text = "⚠️ Нужно отправлять ответом на сообщение"
+                });
+                
+                return;
+            }
+            
+            yield broadcast_manager.send_broadcast(msg.chat.id, msg.reply_to_message.message_id, false);
         }
         
         public async void sync_command(Message msg) {

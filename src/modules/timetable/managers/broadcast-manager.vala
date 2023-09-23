@@ -19,25 +19,25 @@ namespace BarsuTimetable {
             }
         }
         
-        public async void send_broadcast(string msg, bool only_subscribed = false) {
+        public async void send_broadcast(ChatId chat_id, int message_id, bool only_subscribed = false) {
             foreach (var config in config_manager.get_users()) {
                 if (!config.subscribed && only_subscribed)
                     continue;
                 
-                yield bot.send(new SendMessage() {
+                yield bot.send(new CopyMessage() {
                     chat_id = new ChatId(config.id),
-                    parse_mode = ParseMode.MARKDOWN,
-                    text = msg
+                    from_chat_id = chat_id,
+                    message_id = message_id
                 });
             }
             foreach (var config in config_manager.get_chats()) {
                 if (!config.subscribed && only_subscribed)
                     continue;
                 
-                yield bot.send(new SendMessage() {
+                yield bot.send(new CopyMessage() {
                     chat_id = new ChatId(config.id),
-                    parse_mode = ParseMode.MARKDOWN,
-                    text = msg
+                    from_chat_id = chat_id,
+                    message_id = message_id
                 });
             }
         }
