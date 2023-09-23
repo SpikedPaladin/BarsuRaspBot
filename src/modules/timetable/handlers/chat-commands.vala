@@ -242,7 +242,7 @@ namespace BarsuTimetable {
             var msg = "⚠️ *Сначала заверши настройку бота*";
             
             if (config_manager.find_user_config(user_id) == null) {
-                config_manager.set_user_state(user_id, StartupState.FACULTY);
+                config_manager.set_user_state(user_id, SetupState.FACULTY);
                 
                 yield bot.send(new SendMessage() {
                     chat_id = chat_id,

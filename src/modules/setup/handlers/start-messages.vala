@@ -7,7 +7,7 @@ namespace Setup {
         
         public async void post(Message msg) {
             if (msg.text.down().contains("преподаватель")) {
-                config_manager.set_user_state(msg.from.id, StartupState.DEPARTMENT);
+                config_manager.set_user_state(msg.from.id, SetupState.DEPARTMENT);
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
                     reply_markup = department_keyboard(),
@@ -17,7 +17,7 @@ namespace Setup {
                 return;
             }
             
-            config_manager.set_user_state(msg.from.id, StartupState.FACULTY);
+            config_manager.set_user_state(msg.from.id, SetupState.FACULTY);
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 reply_markup = faculty_keyboard(),
@@ -37,7 +37,7 @@ namespace Setup {
                 return;
             }
             
-            config_manager.set_user_state(msg.from.id, StartupState.NAME);
+            config_manager.set_user_state(msg.from.id, SetupState.NAME);
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 reply_markup = name_keyboard(department),
@@ -84,7 +84,7 @@ namespace Setup {
                 return;
             }
             
-            config_manager.set_user_state(msg.from.id, StartupState.SPECIALITY);
+            config_manager.set_user_state(msg.from.id, SetupState.SPECIALITY);
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 reply_markup = speciality_keyboard(faculty),
@@ -104,7 +104,7 @@ namespace Setup {
                 return;
             }
             
-            config_manager.set_user_state(msg.from.id, StartupState.GROUP);
+            config_manager.set_user_state(msg.from.id, SetupState.GROUP);
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 reply_markup = group_keyboard(speciality),

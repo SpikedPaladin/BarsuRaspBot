@@ -16,7 +16,7 @@ namespace Setup {
     public class SetupCommands {
         
         public async void start(Message msg) {
-            config_manager.set_user_state(msg.from.id, StartupState.FACULTY);
+            config_manager.set_user_state(msg.from.id, SetupState.FACULTY);
             
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,

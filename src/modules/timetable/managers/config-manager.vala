@@ -29,7 +29,7 @@ namespace BarsuTimetable {
             loader.save_configs.begin();
         }
         
-        public StartupState? get_user_state(int64 user_id) {
+        public SetupState? get_user_state(int64 user_id) {
             var found_config = loader.users.first_match((config) => {
                 return config.id == user_id;
             });
@@ -41,7 +41,7 @@ namespace BarsuTimetable {
             return null;
         }
         
-        public void set_user_state(int64 user_id, StartupState? state) {
+        public void set_user_state(int64 user_id, SetupState? state) {
             var found_config = loader.users.first_match((config) => {
                 return config.id == user_id;
             });

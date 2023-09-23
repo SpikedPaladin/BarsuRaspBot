@@ -23,27 +23,27 @@ namespace Setup {
             var setup_messages = new SetupMessages();
             bot.add_handler(new MessageHandler(null,
                 msg => setup_messages.post.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.get_user_state(msg.from.id) == StartupState.POST
+                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.get_user_state(msg.from.id) == SetupState.POST
             ));
             bot.add_handler(new MessageHandler(null,
                 msg => setup_messages.department.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.get_user_state(msg.from.id) == StartupState.DEPARTMENT
+                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.get_user_state(msg.from.id) == SetupState.DEPARTMENT
             ));
             bot.add_handler(new MessageHandler(null,
                 msg => setup_messages.name.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.get_user_state(msg.from.id) == StartupState.NAME
+                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.get_user_state(msg.from.id) == SetupState.NAME
             ));
             bot.add_handler(new MessageHandler(null,
                 msg => setup_messages.faculty.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.get_user_state(msg.from.id) == StartupState.FACULTY
+                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.get_user_state(msg.from.id) == SetupState.FACULTY
             ));
             bot.add_handler(new MessageHandler(null,
                 msg => setup_messages.speciality.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.get_user_state(msg.from.id) == StartupState.SPECIALITY
+                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.get_user_state(msg.from.id) == SetupState.SPECIALITY
             ));
             bot.add_handler(new MessageHandler(null,
                 msg => setup_messages.group.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.get_user_state(msg.from.id) == StartupState.GROUP
+                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.get_user_state(msg.from.id) == SetupState.GROUP
             ));
         }
     }

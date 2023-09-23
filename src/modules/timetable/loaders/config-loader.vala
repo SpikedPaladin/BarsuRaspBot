@@ -26,7 +26,7 @@ namespace BarsuTimetable {
                         };
                         
                         if (user.has_member("state"))
-                            config.state = StartupState.parse(user.get_string_member("state"));
+                            config.state = SetupState.parse(user.get_string_member("state"));
                         
                         if (user.has_member("type"))
                             config.type = ConfigType.parse(user.get_string_member("type"));
@@ -128,7 +128,7 @@ namespace BarsuTimetable {
     }
 
     public class Config {
-        public StartupState? state;
+        public SetupState? state;
         public ConfigType? type;
         public int64 id;
         public string? name;
@@ -159,7 +159,7 @@ namespace BarsuTimetable {
         }
     }
     
-    public enum StartupState {
+    public enum SetupState {
         // used /start command
         POST,
         // Chosed teacher
@@ -173,7 +173,7 @@ namespace BarsuTimetable {
         // Chosed speciality
         GROUP;
         
-        public static StartupState? parse(string type) {
+        public static SetupState? parse(string type) {
             switch (type) {
                 case "department":
                     return DEPARTMENT;
