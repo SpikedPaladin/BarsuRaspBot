@@ -6,6 +6,10 @@ namespace BarsuTimetable {
         public ConcurrentList<Timetable> cache = new ConcurrentList<Timetable>();
         private TimetableLoader loader = new TimetableLoader();
         
+        public async TeacherTimetable? get_teacher(string name, string date) {
+            return yield loader.load_teacher(name, date);
+        }
+        
         public async Timetable? get_timetable(string group, string date) {
             var timetable = cache.first_match((timetable) => {
                 return timetable.group == group && timetable.date == date;

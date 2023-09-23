@@ -4,7 +4,7 @@ namespace BarsuTimetable {
     
     public class TimetableLoader {
         
-        public async TeacherSchedule[]? load_teacher(string name, string week) {
+        public async TeacherTimetable? load_teacher(string name, string week) {
             try {
                 var payload = create_teacher_payload(name, week);
                 var msg = new Soup.Message.from_multipart("https://rasp.barsu.by/teach.php", payload);
@@ -63,7 +63,11 @@ namespace BarsuTimetable {
                     print("\n");
                 }
                 
-                return schedules;
+                return new TeacherTimetable() {
+                    days = schedules,
+                    name = name,
+                    date = week
+                };
             } catch (Error error) {
                 warning("Error while loading teacher timetable: %s\n", error.message);
             }

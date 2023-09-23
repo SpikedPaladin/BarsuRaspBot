@@ -20,6 +20,7 @@ bot_sources += files(
     'models/faculty.vala',
     'models/lesson.vala',
     'models/teacher-schedule.vala',
+    'models/teacher-timetable.vala',
     'models/timetable.vala',
     'models/timetable-image.vala',
     
