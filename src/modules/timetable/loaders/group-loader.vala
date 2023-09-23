@@ -3,22 +3,19 @@ using Gee;
 namespace BarsuTimetable {
     
     public class GroupLoader {
-        public ArrayList<Department> departments = new ArrayList<Department>();
+        public ArrayList<Department> departments;
         public ArrayList<Faculty> faculties = new ArrayList<Faculty>();
         public string last_fetch;
         
-        public async bool sync_faculties() {
-            //var new_groups = yield load_faculties(true);
-            
-            
-            //yield save_faculties();
-            return false;
+        public async void sync_faculties() {
+            yield load_faculties(true);
+            yield load_departments(true);
         }
         
-        public async ArrayList<string>? load_faculties(bool to_array = false) {
+        public async void load_faculties(bool sync = false) {
             var groups_file = File.new_for_path(".cache/TelegramBots/BarsuRaspBot/faculties.json");
             
-            if (!to_array && groups_file.query_exists()) {
+            if (!sync && groups_file.query_exists()) {
                 try {
                     var stream = yield groups_file.open_readwrite_async();
                     var parser = new Json.Parser();
@@ -94,14 +91,13 @@ namespace BarsuTimetable {
                     warning("Error while loading faculties: %s\n", error.message);
                 }
             }
-            
-            return null;
         }
         
-        public async void load_departments() {
+        public async void load_departments(bool sync = false) {
             var groups_file = File.new_for_path(".cache/TelegramBots/BarsuRaspBot/departments.json");
+            var new_departments = new ArrayList<Department>();
             
-            if (groups_file.query_exists() && false) {
+            if (!sync && groups_file.query_exists()) {
                 try {
                     var stream = yield groups_file.open_readwrite_async();
                     var parser = new Json.Parser();
@@ -110,24 +106,17 @@ namespace BarsuTimetable {
                     
                     var root = parser.get_root().get_object();
                     
-                    last_fetch = root.get_string_member("last-fetch");
-                    
-                    foreach (var faculty_element in root.get_array_member("faculties").get_elements()) {
-                        var faculty_object = faculty_element.get_object();
-                        Speciality[] specialties = {};
+                    foreach (var department_element in root.get_array_member("departments").get_elements()) {
+                        var department_object = department_element.get_object();
+                        string[] teachers = {};
                         
-                        foreach (var speciality_element in faculty_object.get_array_member("specialties").get_elements()) {
-                            var speciality_object = speciality_element.get_object();
-                            string[] groups = {};
-                            
-                            foreach (var group_element in speciality_object.get_array_member("groups").get_elements())
-                                groups += group_element.get_string();
-                            
-                            specialties += new Speciality(speciality_object.get_string_member("name"), groups);
-                        }
+                        foreach (var teacher_element in department_object.get_array_member("teachers").get_elements())
+                            teachers += teacher_element.get_string();
                         
-                        faculties.add(new Faculty(faculty_object.get_string_member("name"), specialties));
+                        new_departments.add(new Department(department_object.get_string_member("name"), teachers));
                     }
+                    
+                    departments = new_departments;
                 } catch (Error error) {
                     warning("Error while reading faculties: %s\n", error.message);
                 }
@@ -163,9 +152,10 @@ namespace BarsuTimetable {
                             teachers += teacher_name;
                         }
                         
-                        departments.add(new Department(department_name, teachers));
+                        new_departments.add(new Department(department_name, teachers));
                     }
                     
+                    departments = new_departments;
                     yield save_departments();
                 } catch (Error error) {
                     warning("Error while loading departments: %s\n", error.message);

@@ -25,7 +25,7 @@ namespace Setup {
                 text = "*Добро пожаловать!*\n\n🕶️ Выбери свой факультет"
             });
             
-            // config_manager.set_user_state(msg.from.id, StartupState.POST);
+            // config_manager.set_user_state(msg.from.id, SetupState.POST);
             
             // yield bot.send(new SendMessage() {
             //     chat_id = msg.chat.id,
@@ -35,7 +35,6 @@ namespace Setup {
             //            "✍️ Ты студент или преподаватель?\n"
             // });
         }
-        
         
         public async void restart(Message msg) {
             config_manager.remove_config(msg.from.id, false);

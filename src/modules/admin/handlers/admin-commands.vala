@@ -65,28 +65,20 @@ namespace Admin {
             var last_fetch = group_manager.get_last_fetch();
             var response = yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
+                parse_mode = ParseMode.MARKDOWN,
                 text = "*Группы синхронизируются...*\n\n" +
                        @"Последнее обновление: $last_fetch"
             });
             var message_id = new Message(response.result.get_object()).message_id;
             
-            var updated = yield group_manager.sync();
-            
-            if (updated) {
-                yield bot.send(new EditMessageText() {
-                    chat_id = msg.chat.id,
-                    message_id = message_id,
-                    text = "Группы обновлены!" +
-                          @"Последнее обновление: $last_fetch"
-                });
-            } else {
-                yield bot.send(new EditMessageText() {
-                    chat_id = msg.chat.id,
-                    message_id = message_id,
-                    text = "Обновление не требуется!" +
-                          @"Последнее обновление: $last_fetch"
-                });
-            }
+            yield group_manager.sync();
+            yield bot.send(new EditMessageText() {
+                chat_id = msg.chat.id,
+                message_id = message_id,
+                parse_mode = ParseMode.MARKDOWN,
+                text = "*Группы обновлены!*\n\n" +
+                      @"Последнее обновление: $last_fetch"
+            });
         }
         
         public async void update_commands(Message msg) {

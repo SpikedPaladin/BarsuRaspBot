@@ -16,8 +16,8 @@ namespace BarsuTimetable {
             return loader.faculties;
         }
         
-        public async bool sync() {
-            return yield loader.sync_faculties();
+        public async void sync() {
+            yield loader.sync_faculties();
         }
         
         public string get_last_fetch() {
