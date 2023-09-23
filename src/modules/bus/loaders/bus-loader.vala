@@ -150,27 +150,5 @@ namespace Bus {
             number = int.parse(link.text_content.split(" ")[0].replace("№", ""));
             id = int.parse(link.get_attribute("href").split("/")[3]);
         }
-        
-        public async string? load_direction_info(int bus_number, bool forward = true)
-            requires (bus_number > 0 && bus_number < 33)
-        {
-            try {
-                var bus_dir_num = 172;
-                var message = new Soup.Message("GET", @"https://barautopark.by/bitrix/templates/barautopark/ajax.php?action=getBusPath&element_id=$bus_dir_num&path_type=forward");
-                
-                var rasp_page = yield session.send_and_read_async(message, Soup.MessagePriority.NORMAL, null);
-                
-                //var doc = new GXml.XHtmlDocument.from_string((string) rasp_page.get_data());
-                
-                var str = (string) rasp_page.get_data();
-                
-                GLib.message(str);
-                return str;
-            } catch (Error error) {
-                warning("Error while loading bus info: %s\n", error.message);
-                
-                return null;
-            }
-        }
     }
 }
