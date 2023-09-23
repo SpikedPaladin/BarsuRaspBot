@@ -134,9 +134,9 @@ namespace BarsuTimetable {
             } else {
                 try {
                     var msg = new Soup.Message("GET", "https://rasp.barsu.by/teach.php");
-                    var groups_page = yield session.send_and_read_async(msg, Soup.MessagePriority.NORMAL, null);
+                    var teachers_page = yield session.send_and_read_async(msg, Soup.MessagePriority.NORMAL, null);
                     
-                    var doc = new GXml.XHtmlDocument.from_string((string) groups_page.get_data());
+                    var doc = new GXml.XHtmlDocument.from_string((string) teachers_page.get_data());
                     var department_form = doc.get_element_by_id("kafedra");
                     var teacher_form = doc.get_element_by_id("teacher");
                     

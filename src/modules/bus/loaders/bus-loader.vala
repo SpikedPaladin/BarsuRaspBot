@@ -136,8 +136,8 @@ namespace Bus {
         
         public async BusStop load_bus_stop(int stop_id, string name) throws Error {
             var msg = new Soup.Message("GET", @"https://barautopark.by/bitrix/templates/barautopark/ajax.php?action=getBusPath&element_id=$stop_id");
-            var bus_dir_page = yield session.send_and_read_async(msg, Soup.MessagePriority.NORMAL, null);
-            var doc = new GXml.XHtmlDocument.from_string((string) bus_dir_page.get_data());
+            var stop_page = yield session.send_and_read_async(msg, Soup.MessagePriority.NORMAL, null);
+            var doc = new GXml.XHtmlDocument.from_string((string) stop_page.get_data());
             
             //doc.get_elements_by_tag_name("h3").get_element(0).text_content) wrong encoding for name but why?
             return new BusStop(doc.get_elements_by_tag_name("tbody")) {
