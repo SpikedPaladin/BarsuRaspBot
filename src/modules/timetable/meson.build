@@ -1,7 +1,6 @@
 bot_sources += files(
     'handlers/button-actions.vala',
     'handlers/chat-commands.vala',
-    'handlers/group-message.vala',
     'handlers/inline-timetable.vala',
     
     'loaders/config-loader.vala',

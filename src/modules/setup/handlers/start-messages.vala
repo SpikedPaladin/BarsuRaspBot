@@ -125,8 +125,23 @@ namespace Setup {
             }
             
             var config = config_manager.find_user_config(msg.from.id);
-            config.group = group;
             config.type = ConfigType.STUDENT;
+            
+            if (config.group != null) {
+                config.group = group;
+                config_manager.set_user_state(msg.from.id, null);
+                
+                yield bot.send(new SendMessage() {
+                    chat_id = msg.chat.id,
+                    parse_mode = ParseMode.MARKDOWN,
+                    text = @"👥️ Группа изменена на *$(group)*",
+                    reply_markup = new ReplyKeyboardRemove() // TODO new generation interaction
+                });
+                yield send_settings(msg.chat.id, msg.from.id);
+                return;
+            }
+            
+            config.group = group;
             config_manager.set_user_state(msg.from.id, null);
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,

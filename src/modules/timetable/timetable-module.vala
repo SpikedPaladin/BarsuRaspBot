@@ -43,13 +43,10 @@ namespace BarsuTimetable {
             bot.add_handler(new CommandHandler("settings", msg => chat_commands.settings_command.begin(msg)));
             bot.add_handler(new CommandHandler("help", msg => chat_commands.help_command.begin(msg)));
             
-            var group_message = new GroupMessage();
-            bot.add_handler(new MessageHandler(null, msg => group_message.private_message.begin(msg), msg => msg.chat.type == Chat.Type.PRIVATE && bot.users_map.has_key(@"$(msg.from.id)")));
-            bot.add_handler(new MessageHandler(null, msg => group_message.chat_message.begin(msg), msg => bot.users_map.has_key(@"$(msg.from.id)") && bot.users_map.get(@"$(msg.from.id)") == "owner"));
-            
             var button_action = new ButtonActions();
             bot.add_handler(new CallbackQueryHandler("empty", query => button_action.empty.begin(query)));
             bot.add_handler(new CallbackQueryHandler("cancel", query => button_action.cancel.begin(query)));
+            bot.add_handler(new CallbackQueryHandler("install", query => button_action.install.begin(query)));
             bot.add_handler(new CallbackQueryHandler("enable_sub", query => button_action.enable_subscription.begin(query)));
             bot.add_handler(new CallbackQueryHandler("disable_sub", query => button_action.disable_subscription.begin(query)));
             bot.add_handler(new CallbackQueryHandler("change_group", query => button_action.change_group.begin(query)));

@@ -3,7 +3,6 @@ using Telegram;
 using Gee;
 
 public class BarsuRaspBot : Bot {
-    public HashMap<string, string> users_map = new HashMap<string, string>();
     
     public override bool on_my_chat_member(ChatMemberUpdated chat_member) {
         if (chat_member.new_chat_member is ChatMemberBanned || chat_member.new_chat_member is ChatMemberLeft) {

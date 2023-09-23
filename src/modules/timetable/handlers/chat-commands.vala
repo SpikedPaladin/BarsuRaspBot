@@ -178,7 +178,7 @@ namespace BarsuTimetable {
                     if (group != null)
                         yield send_settings(msg.chat.id);
                     else
-                        yield request_group(msg.from.id, msg.chat.id, "owner");
+                        yield request_group(msg.from.id, msg.chat.id);
                 } else {
                     yield bot.send(new SendMessage() {
                         chat_id = msg.chat.id,
@@ -254,7 +254,7 @@ namespace BarsuTimetable {
                 return;
             }
             
-            if (config_manager.find_user_config(user_id)?.type == ConfigType.TEACHER)
+            if (config_manager.find_user_config(user_id).type == ConfigType.TEACHER)
                 msg = "⚠️ *Расписание для преподавателей ещё не готово*\nКогда будет готово вы получите сообщение\nЕсли выбрали что-то неправильно /restart";
             
             yield bot.send(new SendMessage() {
@@ -264,18 +264,23 @@ namespace BarsuTimetable {
             });
         }
         
-        private async void request_group(int64 user_id, ChatId chat_id, string origin) {
-            bot.users_map.set(@"$(user_id)", origin);
+        private async void request_group(int64 user_id, ChatId chat_id) {
+            var group = config_manager.find_user_group(user_id);
             
-            yield bot.send(new SendMessage() {
-                chat_id = chat_id,
-                parse_mode = ParseMode.MARKDOWN,
-                text =
-                @"✍️ Напиши название группы в формате:\n" +
-                @"$(group_manager.get_random_group())" +
-                @"$(origin == "owner" ? "\n\n*Если бот не админ, отправь название группы ответом на это сообщение*" : "")",
-                reply_markup = Keyboards.cancel_keyboard
-            });
+            if (group == null)
+                yield bot.send(new SendMessage() {
+                    chat_id = chat_id,
+                    text = "⚠️ Сначала выбери группу для себя, чтобы потом установить её для группы",
+                    reply_markup = Keyboards.open_bot_keyboard
+                });
+            else
+                yield bot.send(new SendMessage() {
+                    chat_id = chat_id,
+                    parse_mode = ParseMode.MARKDOWN,
+                    text =
+                    @"✍️ Твоя группа *$group*\nНажми чтобы установить ее для группы",
+                    reply_markup = Keyboards.owner_keyboard
+                });
         }
     }
 }

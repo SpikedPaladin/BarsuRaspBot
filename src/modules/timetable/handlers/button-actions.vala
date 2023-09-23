@@ -11,23 +11,50 @@ namespace BarsuTimetable {
         }
         
         public async void cancel(CallbackQuery query) {
-            if (bot.users_map.has_key(@"$(query.from.id)"))
-                bot.users_map.unset(@"$(query.from.id)");
-            
-            int64? user_id = null;
-            
-            if (query.message.chat.type == Chat.Type.PRIVATE)
-                user_id = query.from.id;
-            else if (config_manager.find_chat_config(query.message.chat.id) == null) {
-                yield bot.send(new EditMessageReplyMarkup() {
+            if (query.message.chat.type == Chat.Type.PRIVATE) {
+                yield bot.send(new DeleteMessage() {
                     chat_id = query.message.chat.id,
                     message_id = query.message.message_id
                 });
                 
+                yield bot.send(new SendMessage() {
+                    chat_id = query.message.chat.id,
+                    reply_markup = new ReplyKeyboardRemove(),
+                    text = "⚙️ Смена группы отменена"
+                });
+                
+                config_manager.set_user_state(query.from.id, null);
+                yield send_settings(query.message.chat.id, query.from.id);
+                
                 return;
             }
             
-            yield send_settings(query.message.chat.id, user_id, query.message.message_id);
+            var chat_member = yield bot.get_chat_member(query.message.chat.id, query.from.id);
+            if (chat_member is ChatMemberOwner)
+                if (config_manager.find_chat_config(query.message.chat.id) == null)
+                    yield bot.send(new DeleteMessage() {
+                        chat_id = query.message.chat.id,
+                        message_id = query.message.message_id
+                    });
+                else
+                    yield send_settings(query.message.chat.id, null, query.message.message_id);
+            else
+                yield send_alert(query.id, "Изменять настройки в общем чате может только владелец!");
+        }
+        
+        public async void install(CallbackQuery query) {
+            var chat_member = yield bot.get_chat_member(query.message.chat.id, query.from.id);
+            
+            if (chat_member is ChatMemberOwner) {
+                var group = config_manager.find_user_group(query.from.id);
+                
+                if (group != null) {
+                    config_manager.update_chat_group(query.message.chat.id, group);
+                    yield send_settings(query.message.chat.id, null, query.message.message_id);
+                } else
+                    yield send_alert(query.id, "Выбери сначала группу для себя");
+            } else
+                yield send_alert(query.id, "Изменять группу в общем чате может только владелец!");
         }
         
         public async void enable_subscription(CallbackQuery query) {
@@ -65,15 +92,21 @@ namespace BarsuTimetable {
         
         public async void change_group(CallbackQuery query) {
             if (query.message.chat.type == Chat.Type.PRIVATE) {
-                bot.users_map.set(@"$(query.from.id)", "settings");
+                config_manager.set_user_state(query.from.id, SetupState.FACULTY);
                 
                 yield bot.send(new EditMessageText() {
                     chat_id = query.message.chat.id,
                     message_id = query.message.message_id,
                     text =
-                    "✍️ Напиши название группы в формате:\n" +
-                    @"$(group_manager.get_random_group())",
+                    "⚠️ Ты выбрал сменить группу\n",
                     reply_markup = Keyboards.cancel_keyboard
+                });
+                
+                yield bot.send(new SendMessage() {
+                    chat_id = query.message.chat.id,
+                    parse_mode = ParseMode.MARKDOWN,
+                    reply_markup = Setup.faculty_keyboard(),
+                    text = "🕶️ Выбери факультет"
                 });
                 return;
             }
@@ -81,18 +114,35 @@ namespace BarsuTimetable {
             var chat_member = yield bot.get_chat_member(query.message.chat.id, query.from.id);
             
             if (chat_member is ChatMemberOwner) {
-                bot.users_map.set(@"$(query.from.id)", "owner");
+                var chat_group = config_manager.find_chat_group(query.message.chat.id);
+                var group = config_manager.find_user_group(query.from.id);
                 
-                yield bot.send(new EditMessageText() {
-                    chat_id = query.message.chat.id,
-                    message_id = query.message.message_id,
-                    parse_mode = ParseMode.MARKDOWN,
-                    text =
-                    "✍️ Напиши название группы в формате:\n" +
-                    @"$(group_manager.get_random_group())" +
-                    "\n\n*Если бот не админ, отправь название группы ответом на это сообщение*",
-                    reply_markup = Keyboards.cancel_keyboard
-                });
+                if (chat_group == group) {
+                    yield bot.send(new EditMessageText() {
+                        chat_id = query.message.chat.id,
+                        message_id = query.message.message_id,
+                        text =
+                        "⚠️ У тебя такая же группа как и установленная в чате!",
+                        reply_markup = Keyboards.open_bot_keyboard
+                    });
+                } else if (group == null) {
+                    yield bot.send(new EditMessageText() {
+                        chat_id = query.message.chat.id,
+                        message_id = query.message.message_id,
+                        text =
+                        "⚠️ Сначала выбери группу для себя, чтобы потом установить её для группы",
+                        reply_markup = Keyboards.open_bot_keyboard
+                    });
+                } else {
+                    yield bot.send(new EditMessageText() {
+                        chat_id = query.message.chat.id,
+                        message_id = query.message.message_id,
+                        parse_mode = ParseMode.MARKDOWN,
+                        text =
+                        @"✍️ Твоя группа *$group*\nНажми чтобы установить её для группы",
+                        reply_markup = Keyboards.owner_keyboard
+                    });
+                }
             } else {
                 yield send_alert(query.id, "Изменять выбранную группу в общем чате может только владелец!");
             }
