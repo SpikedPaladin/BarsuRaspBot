@@ -26,8 +26,6 @@ namespace Bus {
         }
         
         public async void save_config() {
-            var file = File.new_for_path(".cache/TelegramBots/BarsuRaspBot/buses.json");
-            
             try {
                 var builder = new Json.Builder();
                 builder.begin_object();
@@ -41,10 +39,7 @@ namespace Bus {
                 
                 builder.end_object();
                 
-                var generator = new Json.Generator();
-                
-                generator.set_root(builder.get_root());
-                generator.to_file(file.get_path());
+                FileUtil.save_json(builder.get_root(), ".cache/TelegramBots/BarsuRaspBot/buses.json");
             } catch (Error error) {
                 warning("Error while saving configs: %s\n", error.message);
             }

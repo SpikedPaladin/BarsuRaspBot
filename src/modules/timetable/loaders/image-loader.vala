@@ -7,8 +7,6 @@ namespace BarsuTimetable {
         private const int FONT_SIZE = 22;
         
         public async void save_cache() {
-            var file = File.new_for_path(".cache/TelegramBots/BarsuRaspBot/images.json");
-            
             try {
                 var builder = new Json.Builder();
                 builder.begin_object();
@@ -33,10 +31,7 @@ namespace BarsuTimetable {
                 
                 builder.end_object();
                 
-                var generator = new Json.Generator();
-                
-                generator.set_root(builder.get_root());
-                generator.to_file(file.get_path());
+                FileUtil.save_json(builder.get_root(), ".cache/TelegramBots/BarsuRaspBot/images.json");
             } catch (Error error) {
                 warning("Error while saving image cache: %s\n", error.message);
             }

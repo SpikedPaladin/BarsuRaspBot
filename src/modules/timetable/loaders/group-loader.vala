@@ -175,7 +175,6 @@ namespace BarsuTimetable {
         
         public async void save_faculties() {
             try {
-                var groups_file = File.new_for_path(".cache/TelegramBots/BarsuRaspBot/faculties.json");
                 var builder = new Json.Builder();
                 builder.begin_object();
                 
@@ -213,13 +212,7 @@ namespace BarsuTimetable {
                 builder.end_array();
                 builder.end_object();
                 
-                var generator = new Json.Generator();
-                
-                if (!groups_file.get_parent().query_exists())
-                    groups_file.get_parent().make_directory_with_parents();
-                
-                generator.set_root(builder.get_root());
-                generator.to_file(groups_file.get_path());
+                FileUtil.save_json(builder.get_root(), ".cache/TelegramBots/BarsuRaspBot/faculties.json");
             } catch (Error error) {
                 warning("Error while saving faculties: %s\n", error.message);
             }
@@ -227,7 +220,6 @@ namespace BarsuTimetable {
         
         public async void save_departments() {
             try {
-                var groups_file = File.new_for_path(".cache/TelegramBots/BarsuRaspBot/departments.json");
                 var builder = new Json.Builder();
                 builder.begin_object();
                 
@@ -254,13 +246,7 @@ namespace BarsuTimetable {
                 builder.end_array();
                 builder.end_object();
                 
-                var generator = new Json.Generator();
-                
-                if (!groups_file.get_parent().query_exists())
-                    groups_file.get_parent().make_directory_with_parents();
-                
-                generator.set_root(builder.get_root());
-                generator.to_file(groups_file.get_path());
+                FileUtil.save_json(builder.get_root(), ".cache/TelegramBots/BarsuRaspBot/departments.json");
             } catch (Error error) {
                 warning("Error while saving faculties: %s\n", error.message);
             }

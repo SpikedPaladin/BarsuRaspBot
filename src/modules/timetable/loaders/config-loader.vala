@@ -56,8 +56,6 @@ namespace BarsuTimetable {
         }
         
         public async void save_configs() {
-            var file = File.new_for_path(".cache/TelegramBots/BarsuRaspBot/configs.json");
-            
             try {
                 var builder = new Json.Builder();
                 builder.begin_object();
@@ -117,10 +115,7 @@ namespace BarsuTimetable {
                 
                 builder.end_object();
                 
-                var generator = new Json.Generator();
-                
-                generator.set_root(builder.get_root());
-                generator.to_file(file.get_path());
+                FileUtil.save_json(builder.get_root(), ".cache/TelegramBots/BarsuRaspBot/configs.json");
             } catch (Error error) {
                 warning("Error while saving configs: %s\n", error.message);
             }
