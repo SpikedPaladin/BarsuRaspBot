@@ -39,9 +39,13 @@ namespace BarsuTimetable {
                         lesson.time = lesson_info[offset++].text_content.strip();
                     } else {
                         lesson.time = lesson_info[offset++].text_content.strip();
-                        lesson.name = lesson_info[offset++].text_content.strip();
+                        
+                        var raw_name = lesson_info[offset++].text_content.strip();
+                        lesson.name = raw_name.substring(0, raw_name.last_index_of("-")).strip();
+                        lesson.type = raw_name.substring(raw_name.last_index_of("-") + 1).strip();
                         lesson.groups = lesson_info[offset++].text_content.strip();
                         lesson.place = lesson_info[offset++].text_content.strip();
+                        lesson.replaced = row.get_attribute("bgcolor") == "#ffb2b9";
                     }
                     lessons += lesson;
                     
@@ -49,18 +53,6 @@ namespace BarsuTimetable {
                         schedule.lessons = lessons;
                         schedules += schedule;
                     }
-                }
-                
-                
-                foreach (var sch in schedules) {
-                    print(@"День $(sch.day) $(sch.date)\n");
-                    
-                    foreach (var lesson in sch.lessons) {
-                        if (lesson.name != null) {
-                            print(@"$(lesson.name), $(lesson.groups), $(lesson.place)\n");
-                        }
-                    }
-                    print("\n");
                 }
                 
                 return new TeacherTimetable() {
