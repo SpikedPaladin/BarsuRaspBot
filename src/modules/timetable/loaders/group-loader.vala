@@ -14,6 +14,7 @@ namespace BarsuTimetable {
         
         public async void load_faculties(bool sync = false) {
             var groups_file = File.new_for_path(".cache/TelegramBots/BarsuRaspBot/faculties.json");
+            var new_faculties = new ArrayList<Faculty>();
             
             if (!sync && groups_file.query_exists()) {
                 try {
@@ -40,8 +41,10 @@ namespace BarsuTimetable {
                             specialties += new Speciality(speciality_object.get_string_member("name"), groups);
                         }
                         
-                        faculties.add(new Faculty(faculty_object.get_string_member("name"), specialties));
+                        new_faculties.add(new Faculty(faculty_object.get_string_member("name"), specialties));
                     }
+                    
+                    faculties = new_faculties;
                 } catch (Error error) {
                     warning("Error while reading faculties: %s\n", error.message);
                 }
@@ -81,11 +84,12 @@ namespace BarsuTimetable {
                             specialties += new Speciality(speciality_name, groups);
                         }
                         
-                        faculties.add(new Faculty(faculty_name, specialties));
+                        new_faculties.add(new Faculty(faculty_name, specialties));
                     }
                     
                     last_fetch = new DateTime.now().to_string();
                     
+                    faculties = new_faculties;
                     yield save_faculties();
                 } catch (Error error) {
                     warning("Error while loading faculties: %s\n", error.message);
