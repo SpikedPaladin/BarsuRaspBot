@@ -51,6 +51,7 @@ namespace BarsuTimetable {
             bot.add_handler(new CallbackQueryHandler("disable_sub", query => button_action.disable_subscription.begin(query)));
             bot.add_handler(new CallbackQueryHandler("change_group", query => button_action.change_group.begin(query)));
             bot.add_handler(new CallbackQueryHandler(null, query => button_action.send_timetable.begin(query), query => query.data.has_prefix("timetable")));
+            bot.add_handler(new CallbackQueryHandler(null, query => button_action.send_teacher.begin(query), query => query.data.has_prefix("teacher")));
         }
     }
     
@@ -74,24 +75,17 @@ namespace BarsuTimetable {
             });
     }
     
-    public async void send_start_finished(string group, ChatId chat_id) {
+    public async void send_teacher_keyboard(string name, string date, ChatId chat_id) {
+        var timetable = yield timetable_manager.get_teacher(name, date);
+        var keyboard = create_teacher_keyboard(timetable, name, date);
+        
         yield bot.send(new SendMessage() {
             chat_id = chat_id,
             parse_mode = ParseMode.MARKDOWN,
-            text = @"👥️ Ты выбрал группу: *$(group)*\n\n" +
-                   "Расписание на сегодня - /day\n" +
-                   "Расписание на завтра - /tomorrow\n" +
-                   "Выбрать день недели - /rasp\n" +
-                   "Выбрать день след. недели - /raspnext\n" +
-                   "Расписание на эту неделю (Beta) - /week\n" +
-                   "Расписание на след. неделю (Beta) - /weeknext\n" +
-                   "Расписание звонков - /bells\n" +
-                   "Показать помощь - /help\n\n" +
-                   "⚙️ Изменить группу или включить уведомления - /settings\n\n" +
-                   "Все команды кликабельны, а также доступны по кнопке 'Меню'\n\n" +
-                   "Также бот поддерживает инлайн режим, в любом чате напиши: \n" +
-                   "`@BarsuRaspBot `(с пробелом). " +
-                   "Так можно быстро отправить расписание своему другу."
+            text = keyboard == null ? "😿️ Расписания пока что нет :(" :
+            @"🧑‍🏫️ Преподаватель: *$(name)*\n\n" +
+            "🗓️ Выберите день недели:",
+            reply_markup = keyboard
         });
     }
     
@@ -109,6 +103,19 @@ namespace BarsuTimetable {
         });
     }
     
+    public async void send_teacher_date(string day, string name, string date, CallbackQuery query) {
+        var timetable = yield timetable_manager.get_teacher(name, date);
+        var keyboard = create_teacher_keyboard(timetable, name, date, day);
+        
+        yield bot.send(new EditMessageText() {
+            chat_id = query.message.chat.id,
+            message_id = query.message.message_id,
+            parse_mode = ParseMode.MARKDOWN,
+            reply_markup = keyboard,
+            text = @"🧑‍🏫️ Преподаватель: *$(name)*\n" + timetable.to_string(day)
+        });
+    }
+    
     public async void send_timetable_date(string day, string group, string date, CallbackQuery query) {
         var timetable = yield timetable_manager.get_timetable(group, date);
         var keyboard = create_timetable_keyboard(timetable, group, date, day);
@@ -120,6 +127,34 @@ namespace BarsuTimetable {
             reply_markup = keyboard,
             text = @"👥️ Группа: *$(group)*\n" + timetable.to_string(day)
         });
+    }
+    
+    public async void send_next_teacher(string name, ChatId chat_id, bool send_empty = true) {
+        var timetable = yield timetable_manager.get_teacher(name, get_current_week().format("%F"));
+        var time = new DateTime.now();
+        var day = timetable?.get_day_schedule(time);
+        
+        if (day != null) {
+            var lesson = day.get_next_lesson(time);
+            
+            if (lesson != null)
+                yield bot.send(new SendMessage() {
+                    chat_id = chat_id,
+                    parse_mode = ParseMode.MARKDOWN,
+                    text = "⏭️ Следующее занятие:\n\n" + lesson.to_string()
+                });
+            else if (send_empty)
+                yield bot.send(new SendMessage() {
+                    chat_id = chat_id,
+                    parse_mode = ParseMode.MARKDOWN,
+                    text = "🎉️ На сегодня занятий больше нет!"
+                });
+        } else if (send_empty) {
+            yield bot.send(new SendMessage() {
+                chat_id = chat_id,
+                text = "🎉️ Сегодня занятий нет!"
+            });
+        }
     }
     
     public async void send_next_lesson(string group, ChatId chat_id, bool send_empty = true) {
@@ -150,6 +185,22 @@ namespace BarsuTimetable {
         }
     }
     
+    public InlineKeyboardMarkup? create_teacher_keyboard(TeacherTimetable? timetable, string group, string date, string? skip_button = null) {
+        if (timetable == null)
+            return null;
+        
+        var keyboard = new InlineKeyboardMarkup();
+        
+        foreach (var day in timetable.days) {
+            keyboard.add_button(new InlineKeyboardButton() {
+                text = skip_button == day.day ? @"($(day.day))" : day.day,
+                callback_data = skip_button == day.day ? "empty" : @"teacher:$(day.day):$(group):$(date)"
+            });
+        }
+        
+        return keyboard;
+    }
+    
     public InlineKeyboardMarkup? create_timetable_keyboard(Timetable? timetable, string group, string date, string? skip_button = null) {
         if (timetable == null)
             return null;
@@ -158,7 +209,7 @@ namespace BarsuTimetable {
         
         foreach (var day in timetable.days) {
             keyboard.add_button(new InlineKeyboardButton() {
-                text = day.day_of_week,
+                text = skip_button == day.day_of_week ? @"($(day.day_of_week))" : day.day_of_week,
                 callback_data = skip_button == day.day_of_week ? "empty" : @"timetable:$(day.day_of_week):$(group):$(date)"
             });
         }
@@ -167,9 +218,14 @@ namespace BarsuTimetable {
     }
     
     public string settings_text(Config config) {
-        return
-            "Настройки бота:\n\n" +
-            @"🔔️ Уведомления: *$(config.subscribed ? "ВКЛ" : "ОТКЛ")*\n" +
-            @"👥️ Группа: *$(config.group)*";
+        var str = "Настройки бота:\n\n";
+        str += @"🔔️ Уведомления: *$(config.subscribed ? "ВКЛ" : "ОТКЛ")*\n";
+        
+        if (config.type == ConfigType.TEACHER) {
+            str += @"🧑‍🏫️ Преподаватель: *$(config.name)*";
+        } else
+            str += @"👥️ Группа: *$(config.group)*";
+        
+        return str;
     }
 }

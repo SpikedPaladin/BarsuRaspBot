@@ -56,6 +56,7 @@ namespace BarsuTimetable {
                 }
                 
                 return new TeacherTimetable() {
+                    last_fetch = new DateTime.now(),
                     days = schedules,
                     name = name,
                     date = week

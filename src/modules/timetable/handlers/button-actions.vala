@@ -92,7 +92,7 @@ namespace BarsuTimetable {
         
         public async void change_group(CallbackQuery query) {
             if (query.message.chat.type == Chat.Type.PRIVATE) {
-                config_manager.set_user_state(query.from.id, SetupState.FACULTY);
+                config_manager.set_user_state(query.from.id, SetupState.POST);
                 
                 yield bot.send(new EditMessageText() {
                     chat_id = query.message.chat.id,
@@ -105,8 +105,8 @@ namespace BarsuTimetable {
                 yield bot.send(new SendMessage() {
                     chat_id = query.message.chat.id,
                     parse_mode = ParseMode.MARKDOWN,
-                    reply_markup = Setup.faculty_keyboard(),
-                    text = "🕶️ Выбери факультет"
+                    reply_markup = Keyboards.post_keyboard,
+                    text = "✍️ Ты студент или преподаватель?"
                 });
                 return;
             }
@@ -146,6 +146,12 @@ namespace BarsuTimetable {
             } else {
                 yield send_alert(query.id, "Изменять выбранную группу в общем чате может только владелец!");
             }
+        }
+        
+        public async void send_teacher(CallbackQuery query) {
+            var data = query.data.split(":");
+            
+            yield send_teacher_date(data[1], data[2], data[3], query);
         }
         
         public async void send_timetable(CallbackQuery query) {

@@ -16,24 +16,15 @@ namespace Setup {
     public class SetupCommands {
         
         public async void start(Message msg) {
-            config_manager.set_user_state(msg.from.id, SetupState.FACULTY);
+            config_manager.set_user_state(msg.from.id, SetupState.POST);
             
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 parse_mode = ParseMode.MARKDOWN,
-                reply_markup = faculty_keyboard(),
-                text = "*Добро пожаловать!*\n\n🕶️ Выбери свой факультет"
+                reply_markup = Keyboards.post_keyboard,
+                text = "*Добро пожаловать!*\n\n" +
+                       "✍️ Ты студент или преподаватель?\n"
             });
-            
-            // config_manager.set_user_state(msg.from.id, SetupState.POST);
-            
-            // yield bot.send(new SendMessage() {
-            //     chat_id = msg.chat.id,
-            //     parse_mode = ParseMode.MARKDOWN,
-            //     reply_markup = Keyboards.post_keyboard,
-            //     text = "*Добро пожаловать!*\n\n" +
-            //            "✍️ Ты студент или преподаватель?\n"
-            // });
         }
         
         public async void restart(Message msg) {

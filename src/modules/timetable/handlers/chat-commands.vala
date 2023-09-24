@@ -34,6 +34,22 @@ namespace BarsuTimetable {
                         chat_id = msg.chat.id,
                         text = @"🎉️ $(msg.get_command_name() == "day" ? "Сегодня" : "Завтра") пар нет!"
                     });
+            } else if (config_manager.find_user_config(msg.from.id)?.type == ConfigType.TEACHER) {
+                var timetable = yield timetable_manager.get_teacher(config_manager.find_user_config(msg.from.id).name, get_current_week().format("%F"));
+                var day = timetable?.get_day_schedule(date);
+                var name = config_manager.find_user_config(msg.from.id).name;
+                
+                if (day != null)
+                    yield bot.send(new SendMessage() {
+                        chat_id = msg.chat.id,
+                        parse_mode = ParseMode.MARKDOWN,
+                        text = @"🧑‍🏫️ Преподаватель: *$(name)*\n" + day.to_string()
+                    });
+                else
+                    yield bot.send(new SendMessage() {
+                        chat_id = msg.chat.id,
+                        text = @"🎉️ $(msg.get_command_name() == "day" ? "Сегодня" : "Завтра") занятий нет!"
+                    });
             } else if (msg.chat.type == Chat.Type.PRIVATE)
                 yield send_group_warning(msg.chat.id, msg.from.id);
             else
@@ -58,6 +74,8 @@ namespace BarsuTimetable {
             
             if (group != null)
                 yield send_timetable_keyboard(group, str_date, msg.chat.id);
+            else if (config_manager.find_user_config(msg.from.id)?.type == ConfigType.TEACHER)
+                yield send_teacher_keyboard(config_manager.find_user_config(msg.from.id).name, str_date, msg.chat.id);
             else if (msg.chat.type == Chat.Type.PRIVATE)
                 yield send_group_warning(msg.chat.id, msg.from.id);
             else
@@ -79,6 +97,8 @@ namespace BarsuTimetable {
             
             if (group != null)
                 yield send_next_lesson(group, msg.chat.id);
+            else if (config_manager.find_user_config(msg.from.id)?.type == ConfigType.TEACHER)
+                yield send_next_teacher(config_manager.find_user_config(msg.from.id).name, msg.chat.id);
             else if (msg.chat.type == Chat.Type.PRIVATE)
                 yield send_group_warning(msg.chat.id, msg.from.id);
             else
@@ -187,9 +207,8 @@ namespace BarsuTimetable {
                 }
                 return;
             }
-            var group = config_manager.find_user_group(msg.from.id);
             
-            if (group != null)
+            if (config_manager.find_user_config(msg.from.id).type != null)
                 yield send_settings(msg.chat.id, msg.from.id);
             else
                 yield send_group_warning(msg.chat.id, msg.from.id);
@@ -239,29 +258,26 @@ namespace BarsuTimetable {
                 return;
             }
             
-            var msg = "⚠️ *Сначала заверши настройку бота*";
-            
             if (config_manager.find_user_config(user_id) == null) {
-                config_manager.set_user_state(user_id, SetupState.FACULTY);
+                config_manager.set_user_state(user_id, SetupState.POST);
                 
                 yield bot.send(new SendMessage() {
                     chat_id = chat_id,
                     parse_mode = ParseMode.MARKDOWN,
-                    reply_markup = Setup.faculty_keyboard(),
-                    text = msg + "\n\nВыбери факультет"
+                    reply_markup = Keyboards.post_keyboard,
+                    text = "⚠️ *Сначала заверши настройку бота*\n\n✍️ Ты студент или преподаватель?"
                 });
                 
                 return;
             }
             
-            if (config_manager.find_user_config(user_id).type == ConfigType.TEACHER)
-                msg = "⚠️ *Расписание для преподавателей ещё не готово*\nКогда будет готово вы получите сообщение\nЕсли выбрали что-то неправильно /restart";
-            
-            yield bot.send(new SendMessage() {
-                chat_id = chat_id,
-                parse_mode = ParseMode.MARKDOWN,
-                text = msg
-            });
+            if (config_manager.find_user_config(user_id).type == ConfigType.TEACHER) {
+                yield bot.send(new SendMessage() {
+                    chat_id = chat_id,
+                    parse_mode = ParseMode.MARKDOWN,
+                    text = "⚠️ *Это команда временно недоступна для преподавателей*\nКогда будет готово вы получите сообщение"
+                });
+            }
         }
         
         private async void request_group(int64 user_id, ChatId chat_id) {

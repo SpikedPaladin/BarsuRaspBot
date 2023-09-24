@@ -56,10 +56,24 @@ namespace Setup {
                 
                 return;
             }
-            
             var config = config_manager.find_user_config(msg.from.id);
             config.name = name;
-            config.type = ConfigType.TEACHER;
+            
+            if (config.type != null) {
+                config.group = null;
+                config.type = ConfigType.TEACHER;
+                config_manager.set_user_state(msg.from.id, null);
+                
+                yield bot.send(new SendMessage() {
+                    chat_id = msg.chat.id,
+                    parse_mode = ParseMode.MARKDOWN,
+                    text = @"🧑‍🏫️ Преподаватель изменён на *$(name)*",
+                    reply_markup = new ReplyKeyboardRemove() // TODO new generation interaction
+                });
+                yield send_settings(msg.chat.id, msg.from.id);
+                return;
+            }
+            
             config_manager.set_user_state(msg.from.id, null);
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
@@ -67,8 +81,15 @@ namespace Setup {
                 reply_markup = new ReplyKeyboardRemove(),
                 text = @"🧑‍🏫️ Вы выбрали преподавателя: *$name*\n" +
                         "Расписание для преподавателей находится в разработке\n" +
-                        "Когда оно будет готово вы получите сообщение\n" +
-                        "Выбрать заново /restart"
+                        "Расписание на сегодня - /day\n" +
+                        "Расписание на завтра - /tomorrow\n" +
+                        "Выбрать день недели - /rasp\n" +
+                        "Выбрать день след. недели - /raspnext\n" +
+                        "Расписание на эту неделю (Beta) - /week\n" +
+                        "Расписание на след. неделю (Beta) - /weeknext\n" +
+                        "Расписание звонков - /bells\n" +
+                        "Показать помощь - /help\n\n" +
+                        "⚙️ Изменить преподавателя или включить уведомления - /settings"
             });
         }
         
@@ -125,10 +146,11 @@ namespace Setup {
             }
             
             var config = config_manager.find_user_config(msg.from.id);
-            config.type = ConfigType.STUDENT;
+            config.group = group;
             
             if (config.group != null) {
-                config.group = group;
+                config.name = null;
+                config.type = ConfigType.STUDENT;
                 config_manager.set_user_state(msg.from.id, null);
                 
                 yield bot.send(new SendMessage() {
@@ -141,7 +163,6 @@ namespace Setup {
                 return;
             }
             
-            config.group = group;
             config_manager.set_user_state(msg.from.id, null);
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,

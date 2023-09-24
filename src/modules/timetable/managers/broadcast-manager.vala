@@ -9,7 +9,10 @@ namespace BarsuTimetable {
                 if (!config.subscribed)
                     continue;
                 
-                yield send_next_lesson(config.group, new ChatId(config.id), false);
+                if (config.type == ConfigType.TEACHER)
+                    yield send_next_teacher(config.name, new ChatId(config.id), false);
+                else
+                    yield send_next_lesson(config.group, new ChatId(config.id), false);
             }
             foreach (var config in config_manager.get_chats()) {
                 if (!config.subscribed)

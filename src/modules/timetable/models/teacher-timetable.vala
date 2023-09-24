@@ -2,6 +2,7 @@ namespace BarsuTimetable {
     
     public class TeacherTimetable {
         public TeacherSchedule[] days;
+        public DateTime last_fetch;
         public string name;
         public string date;
         
