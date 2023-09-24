@@ -1,3 +1,4 @@
+using DataStore;
 using Telegram;
 using Gee;
 
@@ -12,9 +13,9 @@ namespace BarsuTimetable {
             string? group = null;
             
             if (msg.chat.type != Chat.Type.PRIVATE)
-                group = config_manager.find_chat_group(msg.chat.id) ?? config_manager.find_user_group(msg.from.id);
+                group = data.get_chat_group(msg.chat.id) ?? data.get_group(msg.from.id);
             else
-                group = config_manager.find_user_group(msg.from.id);
+                group = data.get_group(msg.from.id);
             
             if (args != null)
                 group = group_manager.parse_group(args);
@@ -34,10 +35,10 @@ namespace BarsuTimetable {
                         chat_id = msg.chat.id,
                         text = @"🎉️ $(msg.get_command_name() == "day" ? "Сегодня" : "Завтра") пар нет!"
                     });
-            } else if (config_manager.find_user_config(msg.from.id)?.type == ConfigType.TEACHER) {
-                var timetable = yield timetable_manager.get_teacher(config_manager.find_user_config(msg.from.id).name, get_current_week().format("%F"));
+            } else if (data.get_post(msg.from.id) == UserPost.TEACHER) {
+                var timetable = yield timetable_manager.get_teacher(data.get_config(msg.from.id).name, get_current_week().format("%F"));
                 var day = timetable?.get_day_schedule(date);
-                var name = config_manager.find_user_config(msg.from.id).name;
+                var name = data.get_config(msg.from.id).name;
                 
                 if (day != null)
                     yield bot.send(new SendMessage() {
@@ -63,9 +64,9 @@ namespace BarsuTimetable {
             string? group = null;
             
             if (msg.chat.type != Chat.Type.PRIVATE)
-                group = config_manager.find_chat_group(msg.chat.id) ?? config_manager.find_user_group(msg.from.id);
+                group = data.get_chat_group(msg.chat.id) ?? data.get_group(msg.from.id);
             else
-                group = config_manager.find_user_group(msg.from.id);
+                group = data.get_group(msg.from.id);
             
             if (args != null)
                 group = group_manager.parse_group(args);
@@ -74,8 +75,8 @@ namespace BarsuTimetable {
             
             if (group != null)
                 yield send_timetable_keyboard(group, str_date, msg.chat.id);
-            else if (config_manager.find_user_config(msg.from.id)?.type == ConfigType.TEACHER)
-                yield send_teacher_keyboard(config_manager.find_user_config(msg.from.id).name, str_date, msg.chat.id);
+            else if (data.get_post(msg.from.id) == UserPost.TEACHER)
+                yield send_teacher_keyboard(data.get_config(msg.from.id).name, str_date, msg.chat.id);
             else if (msg.chat.type == Chat.Type.PRIVATE)
                 yield send_group_warning(msg.chat.id, msg.from.id);
             else
@@ -88,17 +89,17 @@ namespace BarsuTimetable {
             string? group = null;
             
             if (msg.chat.type != Chat.Type.PRIVATE)
-                group = config_manager.find_chat_group(msg.chat.id) ?? config_manager.find_user_group(msg.from.id);
+                group = data.get_chat_group(msg.chat.id) ?? data.get_group(msg.from.id);
             else
-                group = config_manager.find_user_group(msg.from.id);
+                group = data.get_group(msg.from.id);
             
             if (args != null)
                 group = group_manager.parse_group(args);
             
             if (group != null)
                 yield send_next_lesson(group, msg.chat.id);
-            else if (config_manager.find_user_config(msg.from.id)?.type == ConfigType.TEACHER)
-                yield send_next_teacher(config_manager.find_user_config(msg.from.id).name, msg.chat.id);
+            else if (data.get_post(msg.from.id) == UserPost.TEACHER)
+                yield send_next_teacher(data.get_config(msg.from.id).name, msg.chat.id);
             else if (msg.chat.type == Chat.Type.PRIVATE)
                 yield send_group_warning(msg.chat.id, msg.from.id);
             else
@@ -112,9 +113,9 @@ namespace BarsuTimetable {
             string? group = null;
             
             if (msg.chat.type != Chat.Type.PRIVATE)
-                group = config_manager.find_chat_group(msg.chat.id) ?? config_manager.find_user_group(msg.from.id);
+                group = data.get_chat_group(msg.chat.id) ?? data.get_group(msg.from.id);
             else
-                group = config_manager.find_user_group(msg.from.id);
+                group = data.get_group(msg.from.id);
             
             if (args != null)
                 group = group_manager.parse_group(args);
@@ -193,7 +194,7 @@ namespace BarsuTimetable {
                 var chat_member = yield bot.get_chat_member(msg.chat.id, msg.from.id);
                 
                 if (chat_member is ChatMemberOwner) {
-                    var group = config_manager.find_chat_group(msg.chat.id);
+                    var group = data.get_chat_group(msg.chat.id);
                     
                     if (group != null)
                         yield send_settings(msg.chat.id);
@@ -208,7 +209,7 @@ namespace BarsuTimetable {
                 return;
             }
             
-            if (config_manager.find_user_config(msg.from.id).type != null)
+            if (data.get_post(msg.from.id) != null)
                 yield send_settings(msg.chat.id, msg.from.id);
             else
                 yield send_group_warning(msg.chat.id, msg.from.id);
@@ -248,7 +249,7 @@ namespace BarsuTimetable {
         }
         
         private async void send_group_warning(ChatId chat_id, int64 user_id) {
-            if (config_manager.find_user_group(user_id) != null) {
+            if (data.get_group(user_id) != null) {
                 yield bot.send(new SendMessage() {
                     chat_id = chat_id,
                     parse_mode = ParseMode.MARKDOWN,
@@ -258,8 +259,8 @@ namespace BarsuTimetable {
                 return;
             }
             
-            if (config_manager.find_user_config(user_id) == null) {
-                config_manager.set_user_state(user_id, SetupState.POST);
+            if (data.get_config(user_id) == null) {
+                data.set_state(user_id, UserState.POST);
                 
                 yield bot.send(new SendMessage() {
                     chat_id = chat_id,
@@ -271,7 +272,7 @@ namespace BarsuTimetable {
                 return;
             }
             
-            if (config_manager.find_user_config(user_id).type == ConfigType.TEACHER) {
+            if (data.get_post(user_id) == UserPost.TEACHER) {
                 yield bot.send(new SendMessage() {
                     chat_id = chat_id,
                     parse_mode = ParseMode.MARKDOWN,
@@ -281,7 +282,7 @@ namespace BarsuTimetable {
         }
         
         private async void request_group(int64 user_id, ChatId chat_id) {
-            var group = config_manager.find_user_group(user_id);
+            var group = data.get_group(user_id);
             
             if (group == null)
                 yield bot.send(new SendMessage() {

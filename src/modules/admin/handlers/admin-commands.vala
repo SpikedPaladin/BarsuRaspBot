@@ -1,4 +1,5 @@
 using BarsuTimetable;
+using DataStore;
 using Telegram;
 using Gee;
 
@@ -10,21 +11,21 @@ namespace Admin {
             int sub_count = 0, registered = 0, in_setup = 0;
             
             HashMap<string, int> chats = new HashMap<string, int>();
-            foreach (var config in config_manager.get_chats()) {
+            foreach (var config in data.get_chats()) {
                 if (chats.has_key(config.group))
                     chats.set(config.group, chats.get(config.group) + 1);
                 else
                     chats.set(config.group, 1);
             }
             
-            foreach (var config in config_manager.get_users()) {
+            foreach (var config in data.get_users()) {
                 if (config.subscribed)
                     sub_count++;
                 
                 if (config.state != null) {
                     in_setup++;
                 } else {
-                    if (config.type != null)
+                    if (config.post != null)
                         registered++;
                 }
             }
@@ -38,7 +39,7 @@ namespace Admin {
             text += @"Всего: *$count*\n";
             
             text += "\n👤️ Пользователи:\n";
-            text += @"Всего: $(config_manager.get_users().size) (*$registered*/$in_setup)\n";
+            text += @"Всего: $(data.get_users().size) (*$registered*/$in_setup)\n";
             text += @"Подписано: $sub_count";
             
             yield bot.send(new SendMessage() {

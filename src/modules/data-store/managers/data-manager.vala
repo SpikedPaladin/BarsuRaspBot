@@ -1,10 +1,10 @@
 using Telegram;
 using Gee;
 
-namespace BarsuTimetable {
+namespace DataStore {
     
-    public class ConfigManager {
-        private ConfigLoader loader = new ConfigLoader();
+    public class DataManager {
+        private DataLoader loader = new DataLoader();
         
         public async void load() {
             yield loader.load_configs();
@@ -18,7 +18,7 @@ namespace BarsuTimetable {
             return loader.chats;
         }
         
-        public void remove_config(int64 id, bool is_chat) {
+        public void remove_config(int64 id, bool is_chat = false) {
             var array = is_chat ? loader.chats : loader.users;
             
             var config = array.first_match((config) => {
@@ -29,7 +29,7 @@ namespace BarsuTimetable {
             loader.save_configs.begin();
         }
         
-        public SetupState? get_user_state(int64 user_id) {
+        public UserState? get_state(int64 user_id) {
             var found_config = loader.users.first_match((config) => {
                 return config.id == user_id;
             });
@@ -41,7 +41,7 @@ namespace BarsuTimetable {
             return null;
         }
         
-        public void set_user_state(int64 user_id, SetupState? state) {
+        public void set_state(int64 user_id, UserState? state) {
             var found_config = loader.users.first_match((config) => {
                 return config.id == user_id;
             });
@@ -58,24 +58,32 @@ namespace BarsuTimetable {
             loader.save_configs.begin();
         }
         
-        public void set_user_type(int64 user_id, ConfigType type) {
+        public UserPost? get_post(int64 user_id) {
             var found_config = loader.users.first_match((config) => {
                 return config.id == user_id;
             });
             
             if (found_config != null) {
-                found_config.type = type;
-            } else {
-                loader.users.add(new Config() {
-                    id = user_id,
-                    type = type
-                });
+                return found_config.post;
             }
+            
+            return null;
+        }
+        
+        public void set_post(int64 user_id, UserPost post) {
+            var found_config = loader.users.first_match((config) => {
+                return config.id == user_id;
+            });
+            
+            if (found_config != null)
+                found_config.post = post;
+            else
+                Util.log(@"(set_post) Not found user config ($user_id)", Util.LogLevel.WARNING);
             
             loader.save_configs.begin();
         }
         
-        public Config? find_user_config(int64 user_id) {
+        public Config? get_config(int64 user_id) {
             var found_config = loader.users.first_match((config) => {
                 return config.id == user_id;
             });
@@ -87,7 +95,7 @@ namespace BarsuTimetable {
             return null;
         }
         
-        public string? find_user_group(int64 user_id) {
+        public string? get_group(int64 user_id) {
             var found_config = loader.users.first_match((config) => {
                 return config.id == user_id;
             });
@@ -99,26 +107,20 @@ namespace BarsuTimetable {
             return null;
         }
         
-        public void update_user_group(int64 user_id, string group) {
+        public void set_group(int64 user_id, string group) {
             var found_config = loader.users.first_match((config) => {
                 return config.id == user_id;
             });
             
-            if (found_config != null) {
+            if (found_config != null)
                 found_config.group = group;
-            } else {
-                var config = new Config() {
-                    id = user_id,
-                    group = group
-                };
-                
-                loader.users.add(config);
-            }
+            else
+                Util.log(@"(set_group) Not found user config ($user_id)", Util.LogLevel.WARNING);
             
             loader.save_configs.begin();
         }
         
-        public Config update_user_sub(int64 user_id, bool enabled) {
+        public Config set_subscription(int64 user_id, bool enabled) {
             var found_config = loader.users.first_match((config) => {
                 return config.id == user_id;
             });
@@ -130,7 +132,7 @@ namespace BarsuTimetable {
             return found_config;
         }
         
-        public Config? find_chat_config(ChatId chat_id) {
+        public Config? get_chat_config(ChatId chat_id) {
             var found_config = loader.chats.first_match((config) => {
                 return config.id == chat_id.id;
             });
@@ -142,7 +144,7 @@ namespace BarsuTimetable {
             return null;
         }
         
-        public string? find_chat_group(ChatId chat_id) {
+        public string? get_chat_group(ChatId chat_id) {
             var found_config = loader.chats.first_match((config) => {
                 return config.id == chat_id.id;
             });
@@ -154,7 +156,7 @@ namespace BarsuTimetable {
             return null;
         }
         
-        public void update_chat_group(ChatId chat_id, string group) {
+        public void set_chat_group(ChatId chat_id, string group) {
             var found_config = loader.chats.first_match((config) => {
                 return config.id == chat_id.id;
             });
@@ -173,7 +175,7 @@ namespace BarsuTimetable {
             loader.save_configs.begin();
         }
         
-        public Config update_chat_sub(ChatId chat_id, bool enabled) {
+        public Config set_chat_subscription(ChatId chat_id, bool enabled) {
             var found_config = loader.chats.first_match((config) => {
                 return config.id == chat_id.id;
             });

@@ -1,3 +1,4 @@
+using DataStore;
 using Telegram;
 
 namespace BarsuTimetable {
@@ -38,7 +39,7 @@ namespace BarsuTimetable {
         }
         
         public async void send_timetable(InlineQuery query) {
-            var config = config_manager.find_user_config(query.from.id);
+            var config = data.get_config(query.from.id);
             
             yield send_inline_timetable(query.id, config.group);
         }

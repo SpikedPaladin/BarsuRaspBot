@@ -1,4 +1,5 @@
 using BarsuTimetable;
+using DataStore;
 using Telegram;
 
 namespace Setup {
@@ -16,7 +17,7 @@ namespace Setup {
     public class SetupCommands {
         
         public async void start(Message msg) {
-            config_manager.set_user_state(msg.from.id, SetupState.POST);
+            data.set_state(msg.from.id, UserState.POST);
             
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
@@ -28,7 +29,7 @@ namespace Setup {
         }
         
         public async void restart(Message msg) {
-            config_manager.remove_config(msg.from.id, false);
+            data.remove_config(msg.from.id);
             
             yield start(msg);
         }

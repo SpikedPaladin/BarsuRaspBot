@@ -1,4 +1,5 @@
 using BarsuTimetable;
+using DataStore;
 using Telegram;
 
 namespace Setup {
@@ -7,7 +8,7 @@ namespace Setup {
         
         public async void post(Message msg) {
             if (msg.text.down().contains("преподаватель")) {
-                config_manager.set_user_state(msg.from.id, SetupState.DEPARTMENT);
+                data.set_state(msg.from.id, UserState.DEPARTMENT);
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
                     reply_markup = department_keyboard(),
@@ -17,7 +18,7 @@ namespace Setup {
                 return;
             }
             
-            config_manager.set_user_state(msg.from.id, SetupState.FACULTY);
+            data.set_state(msg.from.id, UserState.FACULTY);
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 reply_markup = faculty_keyboard(),
@@ -37,7 +38,7 @@ namespace Setup {
                 return;
             }
             
-            config_manager.set_user_state(msg.from.id, SetupState.NAME);
+            data.set_state(msg.from.id, UserState.NAME);
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 reply_markup = name_keyboard(department),
@@ -56,13 +57,13 @@ namespace Setup {
                 
                 return;
             }
-            var config = config_manager.find_user_config(msg.from.id);
+            var config = data.get_config(msg.from.id);
             config.name = name;
             
-            if (config.type != null) {
+            if (config.post != null) {
                 config.group = null;
-                config.type = ConfigType.TEACHER;
-                config_manager.set_user_state(msg.from.id, null);
+                config.post = UserPost.TEACHER;
+                data.set_state(msg.from.id, null);
                 
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
@@ -74,7 +75,7 @@ namespace Setup {
                 return;
             }
             
-            config_manager.set_user_state(msg.from.id, null);
+            data.set_state(msg.from.id, null);
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 parse_mode = ParseMode.MARKDOWN,
@@ -105,7 +106,7 @@ namespace Setup {
                 return;
             }
             
-            config_manager.set_user_state(msg.from.id, SetupState.SPECIALITY);
+            data.set_state(msg.from.id, UserState.SPECIALITY);
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 reply_markup = speciality_keyboard(faculty),
@@ -125,7 +126,7 @@ namespace Setup {
                 return;
             }
             
-            config_manager.set_user_state(msg.from.id, SetupState.GROUP);
+            data.set_state(msg.from.id, UserState.GROUP);
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 reply_markup = group_keyboard(speciality),
@@ -145,13 +146,13 @@ namespace Setup {
                 return;
             }
             
-            var config = config_manager.find_user_config(msg.from.id);
+            var config = data.get_config(msg.from.id);
             config.group = group;
             
-            if (config.group != null) {
+            if (config.post != null) {
                 config.name = null;
-                config.type = ConfigType.STUDENT;
-                config_manager.set_user_state(msg.from.id, null);
+                config.post = UserPost.STUDENT;
+                data.set_state(msg.from.id, null);
                 
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
@@ -163,7 +164,7 @@ namespace Setup {
                 return;
             }
             
-            config_manager.set_user_state(msg.from.id, null);
+            data.set_state(msg.from.id, null);
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 parse_mode = ParseMode.MARKDOWN,

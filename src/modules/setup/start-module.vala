@@ -1,4 +1,5 @@
 using BarsuTimetable;
+using DataStore;
 using Telegram;
 
 namespace Setup {
@@ -13,7 +14,7 @@ namespace Setup {
             var setup_commands = new SetupCommands();
             bot.add_handler(new CommandHandler("start",
                 msg => setup_commands.start.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.find_user_config(msg.from.id) == null
+                msg => msg.chat.type == Chat.Type.PRIVATE && data.get_config(msg.from.id) == null
             ));
             bot.add_handler(new CommandHandler("restart",
                 msg => setup_commands.restart.begin(msg),
@@ -23,27 +24,27 @@ namespace Setup {
             var setup_messages = new SetupMessages();
             bot.add_handler(new MessageHandler(null,
                 msg => setup_messages.post.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.get_user_state(msg.from.id) == SetupState.POST
+                msg => msg.chat.type == Chat.Type.PRIVATE && data.get_state(msg.from.id) == UserState.POST
             ));
             bot.add_handler(new MessageHandler(null,
                 msg => setup_messages.department.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.get_user_state(msg.from.id) == SetupState.DEPARTMENT
+                msg => msg.chat.type == Chat.Type.PRIVATE && data.get_state(msg.from.id) == UserState.DEPARTMENT
             ));
             bot.add_handler(new MessageHandler(null,
                 msg => setup_messages.name.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.get_user_state(msg.from.id) == SetupState.NAME
+                msg => msg.chat.type == Chat.Type.PRIVATE && data.get_state(msg.from.id) == UserState.NAME
             ));
             bot.add_handler(new MessageHandler(null,
                 msg => setup_messages.faculty.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.get_user_state(msg.from.id) == SetupState.FACULTY
+                msg => msg.chat.type == Chat.Type.PRIVATE && data.get_state(msg.from.id) == UserState.FACULTY
             ));
             bot.add_handler(new MessageHandler(null,
                 msg => setup_messages.speciality.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.get_user_state(msg.from.id) == SetupState.SPECIALITY
+                msg => msg.chat.type == Chat.Type.PRIVATE && data.get_state(msg.from.id) == UserState.SPECIALITY
             ));
             bot.add_handler(new MessageHandler(null,
                 msg => setup_messages.group.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && config_manager.get_user_state(msg.from.id) == SetupState.GROUP
+                msg => msg.chat.type == Chat.Type.PRIVATE && data.get_state(msg.from.id) == UserState.GROUP
             ));
         }
     }

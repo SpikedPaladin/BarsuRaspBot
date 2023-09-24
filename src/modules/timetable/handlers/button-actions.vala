@@ -1,3 +1,4 @@
+using DataStore;
 using Telegram;
 
 namespace BarsuTimetable {
@@ -23,7 +24,7 @@ namespace BarsuTimetable {
                     text = "⚙️ Смена группы отменена"
                 });
                 
-                config_manager.set_user_state(query.from.id, null);
+                data.set_state(query.from.id, null);
                 yield send_settings(query.message.chat.id, query.from.id);
                 
                 return;
@@ -31,7 +32,7 @@ namespace BarsuTimetable {
             
             var chat_member = yield bot.get_chat_member(query.message.chat.id, query.from.id);
             if (chat_member is ChatMemberOwner)
-                if (config_manager.find_chat_config(query.message.chat.id) == null)
+                if (data.get_chat_config(query.message.chat.id) == null)
                     yield bot.send(new DeleteMessage() {
                         chat_id = query.message.chat.id,
                         message_id = query.message.message_id
@@ -46,10 +47,10 @@ namespace BarsuTimetable {
             var chat_member = yield bot.get_chat_member(query.message.chat.id, query.from.id);
             
             if (chat_member is ChatMemberOwner) {
-                var group = config_manager.find_user_group(query.from.id);
+                var group = data.get_group(query.from.id);
                 
                 if (group != null) {
-                    config_manager.update_chat_group(query.message.chat.id, group);
+                    data.set_chat_group(query.message.chat.id, group);
                     yield send_settings(query.message.chat.id, null, query.message.message_id);
                 } else
                     yield send_alert(query.id, "Выбери сначала группу для себя");
@@ -92,7 +93,7 @@ namespace BarsuTimetable {
         
         public async void change_group(CallbackQuery query) {
             if (query.message.chat.type == Chat.Type.PRIVATE) {
-                config_manager.set_user_state(query.from.id, SetupState.POST);
+                data.set_state(query.from.id, UserState.POST);
                 
                 yield bot.send(new EditMessageText() {
                     chat_id = query.message.chat.id,
@@ -114,8 +115,8 @@ namespace BarsuTimetable {
             var chat_member = yield bot.get_chat_member(query.message.chat.id, query.from.id);
             
             if (chat_member is ChatMemberOwner) {
-                var chat_group = config_manager.find_chat_group(query.message.chat.id);
-                var group = config_manager.find_user_group(query.from.id);
+                var chat_group = data.get_chat_group(query.message.chat.id);
+                var group = data.get_group(query.from.id);
                 
                 if (chat_group == group) {
                     yield bot.send(new EditMessageText() {
@@ -180,8 +181,8 @@ namespace BarsuTimetable {
                 message_id = message_id,
                 text = settings_text(
                     for_chat ?
-                        config_manager.update_chat_sub(chat_id, enabled) :
-                        config_manager.update_user_sub(id, enabled)
+                        data.set_chat_subscription(chat_id, enabled) :
+                        data.set_subscription(id, enabled)
                 ),
                 parse_mode = ParseMode.MARKDOWN,
                 reply_markup = enabled ? Keyboards.disable_sub_keyboard : Keyboards.enable_sub_keyboard

@@ -3,13 +3,11 @@ bot_sources += files(
     'handlers/chat-commands.vala',
     'handlers/inline-timetable.vala',
     
-    'loaders/config-loader.vala',
     'loaders/group-loader.vala',
     'loaders/image-loader.vala',
     'loaders/timetable-loader.vala',
     
     'managers/broadcast-manager.vala',
-    'managers/config-manager.vala',
     'managers/group-manager.vala',
     'managers/image-manager.vala',
     'managers/schedule-manager.vala',
