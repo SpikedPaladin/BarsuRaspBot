@@ -4,7 +4,7 @@ namespace BarsuTimetable {
     
     public class GroupLoader {
         public ArrayList<Department> departments;
-        public ArrayList<Faculty> faculties = new ArrayList<Faculty>();
+        public ArrayList<Faculty> faculties;
         public string last_fetch;
         
         public async void sync_faculties() {
