@@ -35,7 +35,7 @@ namespace Keyboards {
             .new_row()
             .add_button(new KeyboardButton() { text = "🧑‍🏫️ Преподаватель" });
         
-        main_keyboard = new ReplyKeyboardMarkup() { is_persistent = true }
+        main_keyboard = new ReplyKeyboardMarkup() { is_persistent = true, resize_keyboard = true }
             .add_button(new KeyboardButton() { text = "▶️ Сегодня" })
             .add_button(new KeyboardButton() { text = "⏭️ Завтра" })
             .new_row()

@@ -20,7 +20,7 @@ namespace BarsuTimetable {
                 
                 yield bot.send(new SendMessage() {
                     chat_id = query.message.chat.id,
-                    reply_markup = new ReplyKeyboardRemove(),
+                    reply_markup = Keyboards.main_keyboard,
                     text = "⚙️ Смена группы отменена"
                 });
                 
