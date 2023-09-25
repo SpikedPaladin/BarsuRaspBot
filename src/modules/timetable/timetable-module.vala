@@ -50,7 +50,72 @@ namespace BarsuTimetable {
             bot.add_handler(new CallbackQueryHandler("change_group", query => button_action.change_group.begin(query)));
             bot.add_handler(new CallbackQueryHandler(null, query => button_action.send_timetable.begin(query), query => query.data.has_prefix("timetable")));
             bot.add_handler(new CallbackQueryHandler(null, query => button_action.send_teacher.begin(query), query => query.data.has_prefix("teacher")));
+            
+            bot.add_handler(new CallbackQueryHandler(null, 
+                query => {
+                    var parts = query.data.split(":");
+                    
+                    if (parts[1] == "group")
+                        send_timetable_keyboard.begin(parts[2], get_current_week().format("%F"), query.message.chat.id, query.message.message_id);
+                    else
+                        send_teacher_keyboard.begin(parts[2], get_current_week().format("%F"), query.message.chat.id, query.message.message_id);
+                },
+                query => query.data.has_prefix("search")
+            ));
+            
+            bot.add_handler(new MessageHandler(null,
+                msg => {
+                    if (msg.text.char_count() == 1 || msg.text.char_count() > 20)
+                        return;
+                    
+                    var text = "🔍️ *Поиск*:\n\n";
+                    text += @"Запрос: \"`$(msg.text)`\"";
+                    
+                    var keyboard = search_keyboard(msg.text);
+                    
+                    if (keyboard == null)
+                        text += "\nПо этому запросу ничего не найдено";
+                    
+                    bot.send.begin(new SendMessage() {
+                        chat_id = msg.chat.id,
+                        reply_markup = keyboard,
+                        parse_mode = ParseMode.MARKDOWN,
+                        text = text
+                    });
+                },
+                msg => data.get_state(msg.from.id) == null
+            ));
         }
+    }
+    
+    public InlineKeyboardMarkup? search_keyboard(string query) {
+        var keyboard = new InlineKeyboardMarkup();
+        bool found = false;
+        
+        foreach (var faculty in group_manager.get_faculties())
+            foreach (var speciality in faculty.specialties)
+                foreach (var group in speciality.groups)
+                    if (group.down().has_prefix(query.down())) {
+                        found = true;
+                        if (keyboard.inline_keyboard.last()?.data?.length() == 2)
+                            keyboard.new_row();
+                        keyboard.add_button(new InlineKeyboardButton() { text = group, callback_data = @"search:group:$group" });
+                    }
+        
+        foreach (var department in group_manager.get_departments())
+            foreach (var teacher in department.teachers)
+                if (teacher.down().has_prefix(query.down())) {
+                    found = true;
+                    if (keyboard.inline_keyboard.length() > 0)
+                        keyboard.new_row();
+                    
+                    keyboard.add_button(new InlineKeyboardButton() { text = @"$teacher - $(department.name)", callback_data = @"search:teacher:$teacher" });
+                }
+        
+        if (found)
+            return keyboard;
+        
+        return null;
     }
     
     public async void send_settings(ChatId chat_id, int64? user_id = null, int? message_id = null) {
@@ -73,32 +138,54 @@ namespace BarsuTimetable {
             });
     }
     
-    public async void send_teacher_keyboard(string name, string date, ChatId chat_id) {
+    public async void send_teacher_keyboard(string name, string date, ChatId chat_id, int? message_id = null) {
         var timetable = yield timetable_manager.get_teacher(name, date);
         var keyboard = create_teacher_keyboard(timetable, name, date);
         
-        yield bot.send(new SendMessage() {
-            chat_id = chat_id,
-            parse_mode = ParseMode.MARKDOWN,
-            text = keyboard == null ? "😿️ Расписания пока что нет :(" :
-            @"🧑‍🏫️ Преподаватель: *$(name)*\n\n" +
-            "🗓️ Выберите день недели:",
-            reply_markup = keyboard
-        });
+        if (message_id != null)
+            yield bot.send(new EditMessageText() {
+                chat_id = chat_id,
+                message_id = message_id,
+                parse_mode = ParseMode.MARKDOWN,
+                text = keyboard == null ? "😿️ Расписания пока что нет :(" :
+                @"🧑‍🏫️ Преподаватель: *$(name)*\n\n" +
+                "🗓️ Выберите день недели:",
+                reply_markup = keyboard
+            });
+        else
+            yield bot.send(new SendMessage() {
+                chat_id = chat_id,
+                parse_mode = ParseMode.MARKDOWN,
+                text = keyboard == null ? "😿️ Расписания пока что нет :(" :
+                @"🧑‍🏫️ Преподаватель: *$(name)*\n\n" +
+                "🗓️ Выберите день недели:",
+                reply_markup = keyboard
+            });
     }
     
-    public async void send_timetable_keyboard(string group, string date, ChatId chat_id) {
+    public async void send_timetable_keyboard(string group, string date, ChatId chat_id, int? message_id = null) {
         var timetable = yield timetable_manager.get_timetable(group, date);
         var keyboard = create_timetable_keyboard(timetable, group, date);
         
-        yield bot.send(new SendMessage() {
-            chat_id = chat_id,
-            parse_mode = ParseMode.MARKDOWN,
-            text = keyboard == null ? "😿️ Расписания пока что нет :(" :
-            @"👥️ Группа: *$(group)*\n\n" +
-            "🗓️ Выбери день недели:",
-            reply_markup = keyboard
-        });
+        if (message_id != null)
+            yield bot.send(new EditMessageText() {
+                chat_id = chat_id,
+                message_id = message_id,
+                parse_mode = ParseMode.MARKDOWN,
+                text = keyboard == null ? "😿️ Расписания пока что нет :(" :
+                @"👥️ Группа: *$(group)*\n\n" +
+                "🗓️ Выбери день недели:",
+                reply_markup = keyboard
+            });
+        else
+            yield bot.send(new SendMessage() {
+                chat_id = chat_id,
+                parse_mode = ParseMode.MARKDOWN,
+                text = keyboard == null ? "😿️ Расписания пока что нет :(" :
+                @"👥️ Группа: *$(group)*\n\n" +
+                "🗓️ Выбери день недели:",
+                reply_markup = keyboard
+            });
     }
     
     public async void send_teacher_date(string day, string name, string date, CallbackQuery query) {
