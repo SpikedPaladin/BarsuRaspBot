@@ -8,6 +8,24 @@ namespace Admin {
     public class AdminCommands {
         
         public async void stat(Message msg) {
+            if (msg.get_command_arguments() == "teacher") {
+                string text = "Преподаватели:\n";
+                foreach (var config in data.get_users()) {
+                    if (config.post != UserPost.TEACHER)
+                        continue;
+                    
+                    text += @"[$(config.name)](tg://user?id=$(config.id))\n";
+                }
+                
+                yield bot.send(new SendMessage() {
+                    chat_id = msg.chat.id,
+                    parse_mode = ParseMode.MARKDOWN,
+                    text = text
+                });
+                
+                return;
+            }
+            
             int sub_count = 0, registered = 0, in_setup = 0, teachers = 0;
             
             HashMap<string, int> chats = new HashMap<string, int>();
