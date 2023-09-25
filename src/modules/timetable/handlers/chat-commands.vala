@@ -9,7 +9,7 @@ namespace BarsuTimetable {
         public async void day_command(Message msg) {
             var args = msg.get_command_arguments();
             
-            var date = msg.get_command_name() == "day" ? new DateTime.now() : new DateTime.now().add_days(1);
+            var date = (msg.text == "▶️ Сегодня" || msg?.get_command_name() == "day") ? new DateTime.now() : new DateTime.now().add_days(1);
             string? group = null;
             
             if (msg.chat.type != Chat.Type.PRIVATE)
@@ -60,7 +60,7 @@ namespace BarsuTimetable {
         public async void rasp_command(Message msg) {
             var args = msg.get_command_arguments();
             
-            var date = msg.get_command_name().has_suffix("next") ? get_next_week() : get_current_week();
+            var date = msg.is_command() && msg.get_command_name().has_suffix("next") ? get_next_week() : get_current_week();
             string? group = null;
             
             if (msg.chat.type != Chat.Type.PRIVATE)
@@ -107,7 +107,7 @@ namespace BarsuTimetable {
         }
         
         public async void week_command(Message msg) {
-            var date = msg.get_command_name().has_suffix("next") ? get_next_week() : get_current_week();
+            var date = msg.is_command() && msg.get_command_name().has_suffix("next") ? get_next_week() : get_current_week();
             var args = msg.get_command_arguments();
             
             string? group = null;

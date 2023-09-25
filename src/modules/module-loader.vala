@@ -21,11 +21,11 @@ public class ModuleLoader {
         bus_module = new BusModule();
         
         Util.log(@"Loading modules...");
+        yield bus_module.load();
         yield data_store_module.load();
         yield timetable_module.load();
         yield admin_module.load();
         yield setup_module.load();
-        yield bus_module.load();
         Util.log(@"Modules loaded!");
     }
 }

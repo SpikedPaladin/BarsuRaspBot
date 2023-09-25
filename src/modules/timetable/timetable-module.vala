@@ -31,14 +31,21 @@ namespace BarsuTimetable {
             
             var chat_commands = new ChatCommands();
             bot.add_handler(new CommandHandler("day", msg => chat_commands.day_command.begin(msg)));
+            bot.add_handler(new MessageHandler("▶️ Сегодня", msg => chat_commands.day_command.begin(msg)));
             bot.add_handler(new CommandHandler("tomorrow", msg => chat_commands.day_command.begin(msg)));
+            bot.add_handler(new MessageHandler("⏭️ Завтра", msg => chat_commands.day_command.begin(msg)));
             bot.add_handler(new CommandHandler("rasp", msg => chat_commands.rasp_command.begin(msg)));
+            bot.add_handler(new MessageHandler("🗓️ Выбрать день", msg => chat_commands.rasp_command.begin(msg)));
             bot.add_handler(new CommandHandler("raspnext", msg => chat_commands.rasp_command.begin(msg)));
             bot.add_handler(new CommandHandler("next", msg => chat_commands.next_command.begin(msg)));
+            bot.add_handler(new MessageHandler("⏩️ След. пара", msg => chat_commands.next_command.begin(msg)));
             bot.add_handler(new CommandHandler("week", msg => chat_commands.week_command.begin(msg)));
+            bot.add_handler(new MessageHandler("🖼️ Вся неделя", msg => chat_commands.week_command.begin(msg)));
             bot.add_handler(new CommandHandler("weeknext", msg => chat_commands.week_command.begin(msg)));
             bot.add_handler(new CommandHandler("bells", msg => chat_commands.bells_command.begin(msg)));
+            bot.add_handler(new MessageHandler("🔔️ Звонки", msg => chat_commands.bells_command.begin(msg)));
             bot.add_handler(new CommandHandler("settings", msg => chat_commands.settings_command.begin(msg)));
+            bot.add_handler(new MessageHandler("⚙️ Настройки", msg => chat_commands.settings_command.begin(msg)));
             bot.add_handler(new CommandHandler("help", msg => chat_commands.help_command.begin(msg)));
             
             var button_action = new ButtonActions();

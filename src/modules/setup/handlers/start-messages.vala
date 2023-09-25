@@ -69,7 +69,7 @@ namespace Setup {
                     chat_id = msg.chat.id,
                     parse_mode = ParseMode.MARKDOWN,
                     text = @"🧑‍🏫️ Преподаватель изменён на *$(name)*",
-                    reply_markup = new ReplyKeyboardRemove() // TODO new generation interaction
+                    reply_markup = Keyboards.main_keyboard
                 });
                 yield send_settings(msg.chat.id, msg.from.id);
                 return;
@@ -80,7 +80,7 @@ namespace Setup {
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 parse_mode = ParseMode.MARKDOWN,
-                reply_markup = new ReplyKeyboardRemove(),
+                reply_markup = Keyboards.main_keyboard,
                 text = @"🧑‍🏫️ Вы выбрали преподавателя: *$name*\n" +
                         "Расписание для преподавателей находится в разработке\n" +
                         "Расписание на сегодня - /day\n" +
@@ -157,7 +157,7 @@ namespace Setup {
                     chat_id = msg.chat.id,
                     parse_mode = ParseMode.MARKDOWN,
                     text = @"👥️ Группа изменена на *$(group)*",
-                    reply_markup = new ReplyKeyboardRemove() // TODO new generation interaction
+                    reply_markup = Keyboards.main_keyboard
                 });
                 yield send_settings(msg.chat.id, msg.from.id);
                 return;
@@ -168,7 +168,7 @@ namespace Setup {
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 parse_mode = ParseMode.MARKDOWN,
-                reply_markup = new ReplyKeyboardRemove(),
+                reply_markup = Keyboards.main_keyboard,
                 text = @"👥️ Ты выбрал группу: *$(group)*\n\n" +
                        "Расписание на сегодня - /day\n" +
                        "Расписание на завтра - /tomorrow\n" +

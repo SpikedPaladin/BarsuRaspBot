@@ -35,15 +35,17 @@ namespace Keyboards {
             .new_row()
             .add_button(new KeyboardButton() { text = "🧑‍🏫️ Преподаватель" });
         
-        main_keyboard = new ReplyKeyboardMarkup()
-            .add_button(new KeyboardButton() { text = "Сегодня" })
-            .add_button(new KeyboardButton() { text = "Завтра" })
+        main_keyboard = new ReplyKeyboardMarkup() { is_persistent = true }
+            .add_button(new KeyboardButton() { text = "▶️ Сегодня" })
+            .add_button(new KeyboardButton() { text = "⏭️ Завтра" })
             .new_row()
-            .add_button(new KeyboardButton() { text = "Выбрать день" })
+            .add_button(new KeyboardButton() { text = "⏩️ След. пара" })
+            .add_button(new KeyboardButton() { text = "🗓️ Выбрать день" })
             .new_row()
-            .add_button(new KeyboardButton() { text = "Вся неделя" })
-            .add_button(new KeyboardButton() { text = "Звонки" })
-            .add_button(new KeyboardButton() { text = "Автобусы" })
-            .add_button(new KeyboardButton() { text = "Настройки" });
+            .add_button(new KeyboardButton() { text = "🖼️ Вся неделя" })
+            .new_row()
+            .add_button(new KeyboardButton() { text = "🔔️ Звонки" })
+            .add_button(new KeyboardButton() { text = "🚍️ Автобусы" })
+            .add_button(new KeyboardButton() { text = "⚙️ Настройки" });
     }
 }

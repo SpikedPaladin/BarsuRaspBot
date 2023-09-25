@@ -15,6 +15,7 @@ namespace Bus {
         
         public void add_handlers() {
             var chat_commands = new ChatCommands();
+            bot.add_handler(new MessageHandler("🚍️ Автобусы", msg => chat_commands.send_bus.begin(msg)));
             bot.add_handler(new CommandHandler("bus", msg => chat_commands.send_bus.begin(msg)));
             
             var button_actions = new ButtonActions();
