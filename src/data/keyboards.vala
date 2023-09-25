@@ -7,6 +7,7 @@ namespace Keyboards {
     public static InlineKeyboardMarkup enable_sub_keyboard;
     public static InlineKeyboardMarkup disable_sub_keyboard;
     
+    public static ReplyKeyboardMarkup main_keyboard;
     public static ReplyKeyboardMarkup post_keyboard;
     
     public static void load() {
@@ -33,33 +34,16 @@ namespace Keyboards {
             .add_button(new KeyboardButton() { text = "🧑‍🎓️ Студент" })
             .new_row()
             .add_button(new KeyboardButton() { text = "🧑‍🏫️ Преподаватель" });
-    }
-    
-    public static ReplyKeyboardMarkup department_keyboard() {
-        var keyboard = new ReplyKeyboardMarkup() { is_persistent = true, resize_keyboard = true };
         
-        keyboard.add_button(new KeyboardButton() { text = "Без кафедры" })
-                .new_row()
-                .add_button(new KeyboardButton() { text = "БУХ" })
-                .add_button(new KeyboardButton() { text = "ГиУПД" })
-                .add_button(new KeyboardButton() { text = "ДиНО" })
-                .add_button(new KeyboardButton() { text = "ЕНД" })
-                .new_row()
-                .add_button(new KeyboardButton() { text = "ИТиФМД" })
-                .add_button(new KeyboardButton() { text = "ОПДиГУ" })
-                .add_button(new KeyboardButton() { text = "ПИП" })
-                .add_button(new KeyboardButton() { text = "ПиСГД" })
-                .new_row()
-                .add_button(new KeyboardButton() { text = "ПиФВ" })
-                .add_button(new KeyboardButton() { text = "ТиПЭ" })
-                .add_button(new KeyboardButton() { text = "ТОМ" })
-                .add_button(new KeyboardButton() { text = "ТОСПиА" })
-                .new_row()
-                .add_button(new KeyboardButton() { text = "ТПГЯ" })
-                .add_button(new KeyboardButton() { text = "Филол" })
-                .new_row()
-                .add_button(new KeyboardButton() { text = "Заново" });
-        
-        return keyboard;
+        main_keyboard = new ReplyKeyboardMarkup()
+            .add_button(new KeyboardButton() { text = "Сегодня" })
+            .add_button(new KeyboardButton() { text = "Завтра" })
+            .new_row()
+            .add_button(new KeyboardButton() { text = "Выбрать день" })
+            .new_row()
+            .add_button(new KeyboardButton() { text = "Вся неделя" })
+            .add_button(new KeyboardButton() { text = "Звонки" })
+            .add_button(new KeyboardButton() { text = "Автобусы" })
+            .add_button(new KeyboardButton() { text = "Настройки" });
     }
 }
