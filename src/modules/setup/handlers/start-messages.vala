@@ -75,6 +75,7 @@ namespace Setup {
                 return;
             }
             
+            config.post = UserPost.TEACHER;
             data.set_state(msg.from.id, null);
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
@@ -164,6 +165,7 @@ namespace Setup {
                 return;
             }
             
+            config.post = UserPost.STUDENT;
             data.set_state(msg.from.id, null);
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
