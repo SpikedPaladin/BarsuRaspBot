@@ -91,6 +91,7 @@ namespace BarsuTimetable {
             }
         }
         
+        // TODO check for msg time
         public async void change_group(CallbackQuery query) {
             if (query.message.chat.type == Chat.Type.PRIVATE) {
                 data.set_state(query.from.id, UserState.POST);

@@ -7,8 +7,8 @@ namespace Admin {
     
     public class AdminCommands {
         
-        public async void stat_command(Message msg) {
-            int sub_count = 0, registered = 0, in_setup = 0;
+        public async void stat(Message msg) {
+            int sub_count = 0, registered = 0, in_setup = 0, teachers = 0;
             
             HashMap<string, int> chats = new HashMap<string, int>();
             foreach (var config in data.get_chats()) {
@@ -22,12 +22,14 @@ namespace Admin {
                 if (config.subscribed)
                     sub_count++;
                 
-                if (config.state != null) {
+                if (config.state != null)
                     in_setup++;
-                } else {
-                    if (config.post != null)
-                        registered++;
-                }
+                
+                if (config.post != null)
+                    registered++;
+                
+                if (config.post == UserPost.TEACHER)
+                    teachers++;
             }
             
             int count = 0;
@@ -40,6 +42,7 @@ namespace Admin {
             
             text += "\n👤️ Пользователи:\n";
             text += @"Всего: $(data.get_users().size) (*$registered*/$in_setup)\n";
+            text += @"Преподаватели: *$teachers*\n";
             text += @"Подписано: $sub_count";
             
             yield bot.send(new SendMessage() {
@@ -49,7 +52,7 @@ namespace Admin {
             });
         }
         
-        public async void broadcast_command(Message msg) {
+        public async void broadcast(Message msg) {
             if (msg.reply_to_message == null) {
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
@@ -62,7 +65,7 @@ namespace Admin {
             yield broadcast_manager.send_broadcast(msg.chat.id, msg.reply_to_message.message_id, false);
         }
         
-        public async void sync_command(Message msg) {
+        public async void sync(Message msg) {
             var last_fetch = group_manager.get_last_fetch();
             var response = yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,

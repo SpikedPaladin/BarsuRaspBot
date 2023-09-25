@@ -28,9 +28,6 @@ namespace DataStore {
                         if (user.has_member("state"))
                             config.state = UserState.parse(user.get_string_member("state"));
                         
-                        if (user.has_member("type"))
-                            config.post = UserPost.parse(user.get_string_member("type"));
-                        
                         if (user.has_member("post"))
                             config.post = UserPost.parse(user.get_string_member("post"));
                         
