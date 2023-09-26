@@ -1,6 +1,7 @@
 using Telegram;
 
 namespace Keyboards {
+    public static InlineKeyboardMarkup start_keyboard;
     public static InlineKeyboardMarkup owner_keyboard;
     public static InlineKeyboardMarkup cancel_keyboard;
     public static InlineKeyboardMarkup open_bot_keyboard;
@@ -11,6 +12,8 @@ namespace Keyboards {
     public static ReplyKeyboardMarkup post_keyboard;
     
     public static void load() {
+        start_keyboard = new InlineKeyboardMarkup()
+            .add_button(new InlineKeyboardButton() { text = "Выбрать группу/преподавателя", callback_data = "change_group" });
         cancel_keyboard = new InlineKeyboardMarkup()
             .add_button(new InlineKeyboardButton() { text = "Отмена", callback_data = "cancel" });
         owner_keyboard = new InlineKeyboardMarkup()
