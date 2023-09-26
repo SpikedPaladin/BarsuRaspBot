@@ -30,6 +30,11 @@ namespace BarsuTimetable {
             return null;
         }
         
+        public string pretty_date() {
+            var parts = date.split("-");
+            return parts[2] + "." + parts[1] + "." + parts[0];
+        }
+        
         public string to_string(string? day_of_week = null) {
             var str = "";
             

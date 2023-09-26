@@ -184,8 +184,12 @@ namespace BarsuTimetable {
             cr.translate(0, 0);
             cr.set_source_rgb(0.2, 0.2, 0.2);
             cr.set_font_size(30);
-            cr.move_to(350, offset + 20);
+            cr.move_to(380, offset + 20);
             cr.show_text("t.me/BarsuRaspBot");
+            
+            cr.set_source_rgb(0.6, 0.6, 0.6);
+            cr.move_to(20, offset + 20);
+            cr.show_text(@"$(timetable.group) | $(timetable.pretty_date())");
             
             uchar[] data = {};
             surface.write_to_png_stream((png_data) => {
