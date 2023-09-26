@@ -96,13 +96,21 @@ namespace BarsuTimetable {
             if (query.message.chat.type == Chat.Type.PRIVATE) {
                 data.set_state(query.from.id, UserState.POST);
                 
-                yield bot.send(new EditMessageText() {
-                    chat_id = query.message.chat.id,
-                    message_id = query.message.message_id,
-                    text =
-                    "⚠️ Ты выбрал сменить группу\n",
-                    reply_markup = Keyboards.cancel_keyboard
-                });
+                if (query.message.text.has_prefix("👋️ Привет"))
+                    yield bot.send(new SendMessage() {
+                        chat_id = query.message.chat.id,
+                        text = "ℹ️ Если твоей группы нет - нажми _Отменить_",
+                        reply_markup = Keyboards.cancel_keyboard
+                    });
+                else
+                    yield bot.send(new EditMessageText() {
+                        chat_id = query.message.chat.id,
+                        message_id = query.message.message_id,
+                        text =
+                        "⚠️ Ты выбрал изменить группу\n" +
+                        "ℹ️ Если твоей группы нет - нажми _Отменить_",
+                        reply_markup = Keyboards.cancel_keyboard
+                    });
                 
                 yield bot.send(new SendMessage() {
                     chat_id = query.message.chat.id,
@@ -158,6 +166,41 @@ namespace BarsuTimetable {
         
         public async void send_timetable(CallbackQuery query) {
             var data = query.data.split(":");
+            
+            if (data.length == 3) {
+                var image = yield image_manager.get_image(data[1], data[2]);
+                
+                if (image.file_id != null) {
+                    yield bot.send(new EditMessageMedia() {
+                        chat_id = query.message.chat.id,
+                        message_id = query.message.message_id,
+                        media = new InputMediaPhoto() {
+                            media = image.file_id
+                        }
+                    });
+                } else {
+                    var response = yield bot.send(new EditMessageMedia() {
+                        chat_id = query.message.chat.id,
+                        message_id = query.message.message_id,
+                        media = new InputMediaPhoto() {
+                            media = "week-image.png",
+                            bytes = image.bytes
+                        }
+                    });
+                    
+                    if (!response.ok)
+                        return;
+                    
+                    var message = new Message(response.result.get_object());
+                    image.bytes = null;
+                    image.file_id = message.photo[0].file_id;
+                    
+                    // Manual put is required
+                    image_manager.update_cache(image);
+                }
+                
+                return;
+            }
             
             yield send_timetable_date(data[1], data[2], data[3], query);
         }

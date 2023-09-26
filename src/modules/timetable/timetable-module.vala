@@ -70,24 +70,26 @@ namespace BarsuTimetable {
                 query => query.data.has_prefix("search")
             ));
             
-            bot.add_handler(new MessageHandler(null,
+            bot.add_handler(new MessageHandler("",
                 msg => {
                     if (msg.text.char_count() == 1 || msg.text.char_count() > 20)
                         return;
                     
                     var text = "🔍️ *Поиск*:\n\n";
-                    text += @"Запрос: \"`$(msg.text)`\"";
+                    text += @"Твой запрос: \"`$(msg.text)`\"";
                     
                     var keyboard = search_keyboard(msg.text);
                     
                     if (keyboard == null)
                         text += "\nПо этому запросу ничего не найдено";
+                    else
+                        text += "\nВот что я нашел по этому запросу:";
                     
-                    bot.send.begin(new SendMessage() {
+                    bot.send.begin(new SendPhoto() {
                         chat_id = msg.chat.id,
                         reply_markup = keyboard,
-                        parse_mode = ParseMode.MARKDOWN,
-                        text = text
+                        photo = "https://i.ibb.co/3BJKb3b/search-brb.png",
+                        caption = text
                     });
                 },
                 msg => data.get_state(msg.from.id) == null
@@ -150,20 +152,22 @@ namespace BarsuTimetable {
         var keyboard = create_teacher_keyboard(timetable, name, date);
         
         if (message_id != null)
-            yield bot.send(new EditMessageText() {
+            yield bot.send(new EditMessageMedia() {
                 chat_id = chat_id,
                 message_id = message_id,
-                parse_mode = ParseMode.MARKDOWN,
-                text = keyboard == null ? "😿️ Расписания пока что нет :(" :
-                @"🧑‍🏫️ Преподаватель: *$(name)*\n\n" +
-                "🗓️ Выберите день недели:",
+                media = new InputMediaPhoto() {
+                    media = "https://i.ibb.co/8bTMMr9/timetable-brb.png",
+                    caption = keyboard == null ? "😿️ Расписания пока что нет :(" :
+                    @"🧑‍🏫️ Преподаватель: *$(name)*\n\n" +
+                    "🗓️ Выберите день недели:"
+                },
                 reply_markup = keyboard
             });
         else
-            yield bot.send(new SendMessage() {
+            yield bot.send(new SendPhoto() {
                 chat_id = chat_id,
-                parse_mode = ParseMode.MARKDOWN,
-                text = keyboard == null ? "😿️ Расписания пока что нет :(" :
+                photo = "https://i.ibb.co/8bTMMr9/timetable-brb.png",
+                caption = keyboard == null ? "😿️ Расписания пока что нет :(" :
                 @"🧑‍🏫️ Преподаватель: *$(name)*\n\n" +
                 "🗓️ Выберите день недели:",
                 reply_markup = keyboard
@@ -172,23 +176,25 @@ namespace BarsuTimetable {
     
     public async void send_timetable_keyboard(string group, string date, ChatId chat_id, int? message_id = null) {
         var timetable = yield timetable_manager.get_timetable(group, date);
-        var keyboard = create_timetable_keyboard(timetable, group, date);
+        var keyboard = create_timetable_keyboard(timetable, group, date, null, true);
         
         if (message_id != null)
-            yield bot.send(new EditMessageText() {
+            yield bot.send(new EditMessageMedia() {
                 chat_id = chat_id,
                 message_id = message_id,
-                parse_mode = ParseMode.MARKDOWN,
-                text = keyboard == null ? "😿️ Расписания пока что нет :(" :
-                @"👥️ Группа: *$(group)*\n\n" +
-                "🗓️ Выбери день недели:",
+                media = new InputMediaPhoto() {
+                    media = "https://i.ibb.co/8bTMMr9/timetable-brb.png",
+                    caption = keyboard == null ? "😿️ Расписания пока что нет :(" :
+                    @"👥️ Группа: *$(group)*\n\n" +
+                    "🗓️ Выбери день недели:"
+                },
                 reply_markup = keyboard
             });
         else
-            yield bot.send(new SendMessage() {
+            yield bot.send(new SendPhoto() {
                 chat_id = chat_id,
-                parse_mode = ParseMode.MARKDOWN,
-                text = keyboard == null ? "😿️ Расписания пока что нет :(" :
+                photo = "https://i.ibb.co/8bTMMr9/timetable-brb.png",
+                caption = keyboard == null ? "😿️ Расписания пока что нет :(" :
                 @"👥️ Группа: *$(group)*\n\n" +
                 "🗓️ Выбери день недели:",
                 reply_markup = keyboard
@@ -198,6 +204,21 @@ namespace BarsuTimetable {
     public async void send_teacher_date(string day, string name, string date, CallbackQuery query) {
         var timetable = yield timetable_manager.get_teacher(name, date);
         var keyboard = create_teacher_keyboard(timetable, name, date, day);
+        
+        if (query.message.photo != null) {
+            yield bot.send(new DeleteMessage() {
+                chat_id = query.message.chat.id,
+                message_id = query.message.message_id,
+            });
+            
+            yield bot.send(new SendMessage() {
+                chat_id = query.message.chat.id,
+                reply_markup = keyboard,
+                text = @"🧑‍🏫️ Преподаватель: *$(name)*\n" + timetable.to_string(day)
+            });
+            
+            return;
+        }
         
         yield bot.send(new EditMessageText() {
             chat_id = query.message.chat.id,
@@ -211,6 +232,21 @@ namespace BarsuTimetable {
     public async void send_timetable_date(string day, string group, string date, CallbackQuery query) {
         var timetable = yield timetable_manager.get_timetable(group, date);
         var keyboard = create_timetable_keyboard(timetable, group, date, day);
+        
+        if (query.message.photo != null) {
+            yield bot.send(new DeleteMessage() {
+                chat_id = query.message.chat.id,
+                message_id = query.message.message_id,
+            });
+            
+            yield bot.send(new SendMessage() {
+                chat_id = query.message.chat.id,
+                reply_markup = keyboard,
+                text = @"👥️ Группа: *$(group)*\n" + timetable.to_string(day)
+            });
+            
+            return;
+        }
         
         yield bot.send(new EditMessageText() {
             chat_id = query.message.chat.id,
@@ -286,14 +322,14 @@ namespace BarsuTimetable {
         foreach (var day in timetable.days) {
             keyboard.add_button(new InlineKeyboardButton() {
                 text = skip_button == day.day ? @"($(day.day))" : day.day,
-                callback_data = skip_button == day.day ? "empty" : @"teacher:$(day.day):$(group):$(date)"
+                callback_data = skip_button == day.day ? "empty" : @"teacher:$(day.day):$group:$date"
             });
         }
         
         return keyboard;
     }
     
-    public InlineKeyboardMarkup? create_timetable_keyboard(Timetable? timetable, string group, string date, string? skip_button = null) {
+    public InlineKeyboardMarkup? create_timetable_keyboard(Timetable? timetable, string group, string date, string? skip_button = null, bool week = false) {
         if (timetable == null)
             return null;
         
@@ -302,9 +338,12 @@ namespace BarsuTimetable {
         foreach (var day in timetable.days) {
             keyboard.add_button(new InlineKeyboardButton() {
                 text = skip_button == day.day_of_week ? @"($(day.day_of_week))" : day.day_of_week,
-                callback_data = skip_button == day.day_of_week ? "empty" : @"timetable:$(day.day_of_week):$(group):$(date)"
+                callback_data = skip_button == day.day_of_week ? "empty" : @"timetable:$(day.day_of_week):$group:$date"
             });
         }
+        
+        if (week)
+            keyboard.new_row().add_button(new InlineKeyboardButton() { text = "🖼️ Вся неделя", callback_data = @"timetable:$group:$date" });
         
         return keyboard;
     }

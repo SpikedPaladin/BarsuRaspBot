@@ -126,7 +126,7 @@ namespace BarsuTimetable {
                     action = ChatAction.UPLOAD_PHOTO
                 });
                 
-                var image = yield image_manager.get_image(group, date);
+                var image = yield image_manager.get_image(group, date.format("%F"));
                 
                 if (image == null) {
                     yield bot.send(new SendMessage() {
@@ -259,14 +259,15 @@ namespace BarsuTimetable {
                 return;
             }
             
-            if (data.get_config(user_id) == null) {
-                data.set_state(user_id, UserState.POST);
-                
+            if (data.get_config(user_id) == null)
+                data.create_config(user_id);
+            
+            if (data.get_post(user_id) == null) {
                 yield bot.send(new SendMessage() {
                     chat_id = chat_id,
                     parse_mode = ParseMode.MARKDOWN,
-                    reply_markup = Keyboards.post_keyboard,
-                    text = "⚠️ *Сначала заверши настройку бота*\n\n✍️ Ты студент или преподаватель?"
+                    text = "⚠️ *Сначала выбери группу/преподавателя!*",
+                    reply_markup = Keyboards.start_keyboard
                 });
                 
                 return;

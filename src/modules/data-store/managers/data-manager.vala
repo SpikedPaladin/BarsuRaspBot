@@ -18,6 +18,11 @@ namespace DataStore {
             return loader.chats;
         }
         
+        public void create_config(int64 user_id) {
+            loader.users.add(new Config() { id = user_id });
+            loader.save_configs.begin();
+        }
+        
         public void remove_config(int64 id, bool is_chat = false) {
             var array = is_chat ? loader.chats : loader.users;
             
@@ -46,14 +51,10 @@ namespace DataStore {
                 return config.id == user_id;
             });
             
-            if (found_config != null) {
+            if (found_config != null)
                 found_config.state = state;
-            } else {
-                loader.users.add(new Config() {
-                    id = user_id,
-                    state = state
-                });
-            }
+            else
+                Util.log(@"(set_state) Not found user config ($user_id)", Util.LogLevel.WARNING);
             
             loader.save_configs.begin();
         }

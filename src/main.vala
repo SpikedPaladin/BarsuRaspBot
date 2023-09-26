@@ -14,7 +14,7 @@ void main() {
     Xml.set_generic_error_func(null, () => {});
     Keyboards.load();
     
-    Telegram.DEFAULT_PARSE_MODE = Telegram.ParseMode.MARKDOWNV2;
+    Telegram.DEFAULT_PARSE_MODE = Telegram.ParseMode.MARKDOWN;
     
     // Session for loading from web
     session = new Soup.Session();
