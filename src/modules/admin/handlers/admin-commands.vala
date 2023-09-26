@@ -114,23 +114,15 @@ namespace Admin {
             };
             var rasp = new BotCommand() {
                 command = "rasp",
-                description = "Выбрать день"
+                description = "На эту неделю"
             };
             var raspnext = new BotCommand() {
                 command = "raspnext",
-                description = "Выбрать день (след. неделя)"
+                description = "На след. неделю"
             };
             var next = new BotCommand() {
                 command = "next",
                 description = "Следующая пара"
-            };
-            var week = new BotCommand() {
-                command = "week",
-                description = "На эту неделю"
-            };
-            var weeknext = new BotCommand() {
-                command = "weeknext",
-                description = "На след. неделю"
             };
             var bells = new BotCommand() {
                 command = "bells",
@@ -150,15 +142,15 @@ namespace Admin {
             };
             
             yield bot.send(new SetMyCommands() {
-                commands = { day, tomorrow, rasp, raspnext, next, week, weeknext, bells, bus, help },
+                commands = { day, tomorrow, rasp, raspnext, next, bells, bus, help },
                 scope = new BotCommandScopeDefault()
             });
             yield bot.send(new SetMyCommands() {
-                commands = { day, tomorrow, rasp, raspnext, next, week, weeknext, bells, bus, settings, help },
+                commands = { day, tomorrow, rasp, raspnext, next, bells, bus, settings, help },
                 scope = new BotCommandScopeAllPrivateChats()
             });
             yield bot.send(new SetMyCommands() {
-                commands = { day, tomorrow, rasp, raspnext, next, week, weeknext, bells, bus, settings, help },
+                commands = { day, tomorrow, rasp, raspnext, next, bells, bus, settings, help },
                 scope = new BotCommandScopeAllChatAdministrators()
             });
         }

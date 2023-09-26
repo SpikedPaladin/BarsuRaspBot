@@ -41,11 +41,9 @@ namespace Keyboards {
         main_keyboard = new ReplyKeyboardMarkup() { is_persistent = true, resize_keyboard = true }
             .add_button(new KeyboardButton() { text = "▶️ Сегодня" })
             .add_button(new KeyboardButton() { text = "⏭️ Завтра" })
-            .new_row()
             .add_button(new KeyboardButton() { text = "⏩️ След. пара" })
-            .add_button(new KeyboardButton() { text = "🗓️ Выбрать день" })
             .new_row()
-            .add_button(new KeyboardButton() { text = "🖼️ Вся неделя" })
+            .add_button(new KeyboardButton() { text = "🗓️ На неделю" })
             .new_row()
             .add_button(new KeyboardButton() { text = "🔔️ Звонки" })
             .add_button(new KeyboardButton() { text = "🚍️ Автобусы" })

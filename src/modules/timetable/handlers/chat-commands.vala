@@ -106,65 +106,6 @@ namespace BarsuTimetable {
                 yield send_group_error("next", msg.chat.id);
         }
         
-        public async void week_command(Message msg) {
-            var date = msg.is_command() && msg.get_command_name().has_suffix("next") ? get_next_week() : get_current_week();
-            var args = msg.get_command_arguments();
-            
-            string? group = null;
-            
-            if (msg.chat.type != Chat.Type.PRIVATE)
-                group = data.get_chat_group(msg.chat.id) ?? data.get_group(msg.from.id);
-            else
-                group = data.get_group(msg.from.id);
-            
-            if (args != null)
-                group = group_manager.parse_group(args);
-            
-            if (group != null) {
-                yield bot.send(new SendChatAction() {
-                    chat_id = msg.chat.id,
-                    action = ChatAction.UPLOAD_PHOTO
-                });
-                
-                var image = yield image_manager.get_image(group, date.format("%F"));
-                
-                if (image == null) {
-                    yield bot.send(new SendMessage() {
-                        chat_id = msg.chat.id,
-                        text = "😿️ Расписания пока что нет :("
-                    });
-                    
-                    return;
-                }
-                
-                if (image.file_id != null) {
-                    yield bot.send(new SendPhoto() {
-                        chat_id = msg.chat.id,
-                        photo = image.file_id,
-                    });
-                } else {
-                    var response = yield bot.send(new SendPhoto() {
-                        chat_id = msg.chat.id,
-                        photo = "week-timetable.png",
-                        bytes = image.bytes
-                    });
-                    
-                    if (!response.ok)
-                        return;
-                    
-                    var message = new Message(response.result.get_object());
-                    image.bytes = null;
-                    image.file_id = message.photo[0].file_id;
-                    
-                    // Manual put is required
-                    image_manager.update_cache(image);
-                }
-            } else if (msg.chat.type == Chat.Type.PRIVATE)
-                yield send_group_warning(msg.chat.id, msg.from.id);
-            else
-                yield send_group_error(msg.get_command_name(), msg.chat.id);
-        }
-        
         public async void bells_command(Message msg) {
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
@@ -226,8 +167,6 @@ namespace BarsuTimetable {
                 "/raspnext - 🗓️ Показать расписание на след. неделю\n" +
                 "/rasp <Группа> - 🗓️ Показать расписание для указанной группы\n" +
                 "/next - ⏭️ Показать следующую пару\n" +
-                "/week - 🖼️ Расписание на всю неделю\n" +
-                "/weeknext - 🖼️ Расписание на всю след. неделю\n" +
                 "/bells - 🔔️ Расписание звонков\n" +
                 "/bus - 🚍️ Ближайшие автобусы\n" +
                 "/settings - ⚙️ Изменить настройки бота\n" +
