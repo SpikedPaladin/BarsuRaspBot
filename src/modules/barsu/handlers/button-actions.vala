@@ -18,11 +18,18 @@ namespace Barsu {
                     message_id = query.message.message_id
                 });
                 
-                yield bot.send(new SendMessage() {
-                    chat_id = query.message.chat.id,
-                    reply_markup = Keyboards.main_keyboard,
-                    text = "⚙️ Смена группы отменена"
-                });
+                if (data.get_post(query.from.id) == null)
+                    yield bot.send(new SendMessage() {
+                        chat_id = query.message.chat.id,
+                        reply_markup = new ReplyKeyboardRemove(),
+                        text = "ℹ️ Выбор группы отменен!"
+                    });
+                else
+                    yield bot.send(new SendMessage() {
+                        chat_id = query.message.chat.id,
+                        reply_markup = Keyboards.main_keyboard,
+                        text = "⚙️ Смена группы отменена"
+                    });
                 
                 data.set_state(query.from.id, null);
                 yield send_settings(query.message.chat.id, query.from.id);
