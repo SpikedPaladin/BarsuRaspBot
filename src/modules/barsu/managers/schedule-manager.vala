@@ -1,6 +1,6 @@
 using Telegram;
 
-namespace BarsuTimetable {
+namespace Barsu {
     
     public class ScheduleManager {
         public Schedule[] schedules = {

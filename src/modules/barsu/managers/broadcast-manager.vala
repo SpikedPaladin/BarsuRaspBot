@@ -1,7 +1,7 @@
 using DataStore;
 using Telegram;
 
-namespace BarsuTimetable {
+namespace Barsu {
     
     public class BroadcastManager {
         

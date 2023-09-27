@@ -1,6 +1,6 @@
 using Gee;
 
-namespace BarsuTimetable {
+namespace Barsu {
     
     public class ImageManager {
         private ImageLoader loader = new ImageLoader();

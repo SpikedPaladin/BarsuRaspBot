@@ -2,7 +2,7 @@ using DataStore;
 using Telegram;
 using Gee;
 
-namespace BarsuTimetable {
+namespace Barsu {
     
     public class ChatCommands {
         
@@ -60,7 +60,7 @@ namespace BarsuTimetable {
         public async void rasp_command(Message msg) {
             var args = msg.get_command_arguments();
             
-            var date = msg.is_command() && msg.get_command_name().has_suffix("next") ? get_next_week() : get_current_week();
+            var date = (msg.is_command() && msg.get_command_name().has_suffix("next") || msg.text == "🗓️ След. неделя") ? get_next_week() : get_current_week();
             string? group = null;
             
             if (msg.chat.type != Chat.Type.PRIVATE)

@@ -1,6 +1,6 @@
 using Gee;
 
-namespace BarsuTimetable {
+namespace Barsu {
     
     public class ImageLoader {
         public ArrayList<TimetableImage> images = new ArrayList<TimetableImage>();

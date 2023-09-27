@@ -1,6 +1,6 @@
 using Gee;
 
-namespace BarsuTimetable {
+namespace Barsu {
     
     public class TimetableManager {
         public ConcurrentList<Teacher.Timetable> teacher_cache = new ConcurrentList<Teacher.Timetable>();

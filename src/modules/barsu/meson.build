@@ -12,5 +12,5 @@ bot_sources += files(
     
     'models/timetable-image.vala',
     
-    'timetable-module.vala'
+    'barsu-module.vala'
 )

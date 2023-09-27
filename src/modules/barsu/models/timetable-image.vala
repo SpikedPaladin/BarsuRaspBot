@@ -1,4 +1,4 @@
-namespace BarsuTimetable {
+namespace Barsu {
     
     public class TimetableImage {
         public string? file_id;

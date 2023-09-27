@@ -1,4 +1,4 @@
-using BarsuTimetable;
+using Barsu;
 using DataStore;
 using Telegram;
 

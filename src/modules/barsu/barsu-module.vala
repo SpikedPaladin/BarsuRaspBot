@@ -1,13 +1,13 @@
 using DataStore;
 using Telegram;
 
-namespace BarsuTimetable {
+namespace Barsu {
     public TimetableManager timetable_manager;
     public BroadcastManager broadcast_manager;
     public ScheduleManager schedule_manager;
     public ImageManager image_manager;
     
-    public class TimetableModule {
+    public class BarsuModule {
         
         public async void load() {
             timetable_manager = new TimetableManager();
@@ -32,8 +32,10 @@ namespace BarsuTimetable {
             bot.add_handler(new CommandHandler("tomorrow", msg => chat_commands.day_command.begin(msg)));
             bot.add_handler(new MessageHandler("⏭️ Завтра", msg => chat_commands.day_command.begin(msg)));
             bot.add_handler(new CommandHandler("rasp", msg => chat_commands.rasp_command.begin(msg)));
+            bot.add_handler(new MessageHandler("🗓️ Эта неделя", msg => chat_commands.rasp_command.begin(msg)));
             bot.add_handler(new MessageHandler("🗓️ На неделю", msg => chat_commands.rasp_command.begin(msg)));
             bot.add_handler(new CommandHandler("raspnext", msg => chat_commands.rasp_command.begin(msg)));
+            bot.add_handler(new MessageHandler("🗓️ След. неделя", msg => chat_commands.rasp_command.begin(msg)));
             bot.add_handler(new CommandHandler("next", msg => chat_commands.next_command.begin(msg)));
             bot.add_handler(new MessageHandler("⏩️ След. пара", msg => chat_commands.next_command.begin(msg)));
             bot.add_handler(new CommandHandler("bells", msg => chat_commands.bells_command.begin(msg)));

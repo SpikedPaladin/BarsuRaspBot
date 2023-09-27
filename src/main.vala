@@ -1,4 +1,4 @@
-using BarsuTimetable;
+using Barsu;
 using Setup;
 using Admin;
 using Bus;
