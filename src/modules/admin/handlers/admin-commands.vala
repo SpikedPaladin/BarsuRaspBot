@@ -7,14 +7,71 @@ namespace Admin {
     
     public class AdminCommands {
         
+        public async void ping(Message msg) {
+            var id = int64.parse(msg.get_command_arguments());
+            var chat = yield bot.get_chat(new ChatId(id));
+            
+            if (chat != null)
+                yield bot.send(new SendMessage() {
+                    chat_id = msg.chat.id,
+                    text = @"Попался гадёныш!\n@$(chat.username ?? "[Пиздюк](tg://user?id=$(chat.id))")"
+                });
+            else
+                yield bot.send(new SendMessage() {
+                    chat_id = msg.chat.id,
+                    text = @"Пидор забанил!"
+                });
+        }
+        
+        public async void remove(Message msg) {
+            var id = int64.parse(msg.text);
+            
+            if (data.get_config(id) != null) {
+                data.remove_config(id, false);
+                
+                yield bot.send(new SendMessage() {
+                    chat_id = msg.chat.id,
+                    text = "Ебнул дауна!"
+                });
+            } else
+                yield bot.send(new SendMessage() {
+                    chat_id = msg.chat.id,
+                    text = "Повезло додику его конфига нет!"
+                });
+        }
+        
+        public async void group(Message msg) {
+            var group = data.parse_group(msg.get_command_arguments());
+            int count = 0;
+            if (group != null) {
+                var text = "Попались ебланчики:\n";
+                foreach (var config in data.get_users()) {
+                    if (config.group != group)
+                        continue;
+                    
+                    text += @"[Пиздюк](tg://user?id=$(config.id)) `$(config.id)`\n";
+                    count++;
+                }
+                
+                yield bot.send(new SendMessage() {
+                    chat_id = msg.chat.id,
+                    text = text + @"Всего пиздюков: $count"
+                });
+            } else
+                yield bot.send(new SendMessage() {
+                    chat_id = msg.chat.id,
+                    text = "Блять ну ты/я еблан пиздец"
+                });
+        }
+        
         public async void stat(Message msg) {
             if (msg.get_command_arguments() == "teacher") {
-                string text = "Преподаватели:\n";
+                string text = "Преподы:\n";
                 foreach (var config in data.get_users()) {
                     if (config.post != UserPost.TEACHER)
                         continue;
                     
-                    text += @"[$(config.name)](tg://user?id=$(config.id))\n";
+                    text += @"[$(config.name)](tg://user?id=$(config.id)) `$(config.id)`\n";
                 }
                 
                 yield bot.send(new SendMessage() {
@@ -26,22 +83,17 @@ namespace Admin {
                 return;
             }
             
-            int sub_count = 0, registered = 0, in_setup = 0, teachers = 0;
-            
-            HashMap<string, int> chats = new HashMap<string, int>();
-            foreach (var config in data.get_chats()) {
-                if (chats.has_key(config.group))
-                    chats.set(config.group, chats.get(config.group) + 1);
-                else
-                    chats.set(config.group, 1);
-            }
+            int sub_count = 0, registered = 0, changing = 0, start_selecting = 0, teachers = 0;
             
             foreach (var config in data.get_users()) {
                 if (config.subscribed)
                     sub_count++;
                 
-                if (config.state != null)
-                    in_setup++;
+                if (config.post != null && config.state != null)
+                    changing++;
+                
+                if (config.post == null && config.state != null)
+                    start_selecting++;
                 
                 if (config.post != null)
                     registered++;
@@ -50,21 +102,14 @@ namespace Admin {
                     teachers++;
             }
             
-            int count = 0;
-            string text = "👥️ Группы:\n";
-            foreach (var chat in chats) {
-                text += @"$(chat.key) - $(chat.value)\n";
-                count += chat.value;
-            }
-            text += @"Всего: *$count*\n";
+            string text = @"👥️ Чатиксы: *$(data.get_chats().size)*\n";
             
-            text += "\n👤️ Пользователи:\n";
-            text += @"Всего: $(data.get_users().size) (*$registered*/$in_setup)\n";
-            text += @"Преподаватели: *$teachers*\n";
-            text += @"Подписано: $sub_count";
+            text += "\n👤️ Юзеры:\n";
+            text += @"Всего: $(data.get_users().size) (*$registered*/$changing/$start_selecting)\n";
+            text += @"Преподов: *$teachers*\n";
+            text += @"Подсосы: $sub_count";
             
             yield bot.send(new SendMessage() {
-                parse_mode = ParseMode.MARKDOWN,
                 chat_id = msg.chat.id,
                 text = text
             });

@@ -10,9 +10,9 @@ namespace Admin {
         
         public void add_handlers() {
             var admin_commands = new AdminCommands();
-            bot.add_handler(new CommandHandler("clearconfig", msg => {
-                DataStore.data.remove_config(msg.from.id);
-            }, msg => msg.from.id == BOSS_ID));
+            bot.add_handler(new CommandHandler("ping", msg => admin_commands.ping.begin(msg), msg => msg.from.id == BOSS_ID && msg.text != null));
+            bot.add_handler(new CommandHandler("remove", msg => admin_commands.remove.begin(msg), msg => msg.from.id == BOSS_ID && msg.text != null));
+            bot.add_handler(new CommandHandler("group", msg => admin_commands.group.begin(msg), msg => msg.from.id == BOSS_ID));
             bot.add_handler(new CommandHandler("stat", msg => admin_commands.stat.begin(msg), msg => msg.from.id == BOSS_ID));
             bot.add_handler(new CommandHandler("sync", msg => admin_commands.sync.begin(msg), msg => msg.from.id == BOSS_ID));
             bot.add_handler(new CommandHandler("broadcast", msg => admin_commands.broadcast.begin(msg), msg => msg.from.id == BOSS_ID));
