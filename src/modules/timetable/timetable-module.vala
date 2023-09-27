@@ -307,7 +307,7 @@ namespace BarsuTimetable {
         }
     }
     
-    public InlineKeyboardMarkup? create_teacher_keyboard(TeacherTimetable? timetable, string group, string date, string? skip_button = null) {
+    public InlineKeyboardMarkup? create_teacher_keyboard(Teacher.Timetable? timetable, string group, string date, string? skip_button = null) {
         if (timetable == null)
             return null;
         
@@ -323,7 +323,7 @@ namespace BarsuTimetable {
         return keyboard;
     }
     
-    public InlineKeyboardMarkup? create_timetable_keyboard(Timetable? timetable, string group, string date, string? skip_button = null, bool week = false) {
+    public InlineKeyboardMarkup? create_timetable_keyboard(Student.Timetable? timetable, string group, string date, string? skip_button = null, bool week = false) {
         if (timetable == null)
             return null;
         

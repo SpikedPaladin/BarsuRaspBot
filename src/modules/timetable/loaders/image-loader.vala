@@ -64,7 +64,7 @@ namespace BarsuTimetable {
             }
         }
         
-        public Bytes create_image(Timetable timetable) {
+        public Bytes create_image(Student.Timetable timetable) {
             var surface = new Cairo.ImageSurface(Cairo.Format.RGB24, 1000, calculate_surface_height(timetable));
             var cr = new Cairo.Context(surface);
             
@@ -202,7 +202,7 @@ namespace BarsuTimetable {
             return new Bytes.take(data);
         }
         
-        private int calculate_surface_height(Timetable timetable) {
+        private int calculate_surface_height(Student.Timetable timetable) {
             int offset = 80;
             foreach (var day in timetable.days) {
                 int lesson_offset = 0;
@@ -220,7 +220,7 @@ namespace BarsuTimetable {
             return offset + 40;
         }
         
-        private int calculate_card_offset(DaySchedule day) {
+        private int calculate_card_offset(Student.DaySchedule day) {
             var card_offset = 0;
             
             foreach (var lesson in day.lessons) {

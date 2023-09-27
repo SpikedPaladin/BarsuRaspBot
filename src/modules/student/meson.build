@@ -1,5 +1,6 @@
 bot_sources += files(
     'loaders/faculty-loader.vala',
+    'loaders/timetable-loader.vala',
     
     'models/day-schedule.vala',
     'models/faculty.vala',

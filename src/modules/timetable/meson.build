@@ -4,18 +4,12 @@ bot_sources += files(
     'handlers/inline-timetable.vala',
     
     'loaders/image-loader.vala',
-    'loaders/timetable-loader.vala',
     
     'managers/broadcast-manager.vala',
     'managers/image-manager.vala',
     'managers/schedule-manager.vala',
     'managers/timetable-manager.vala',
     
-    'models/day-schedule.vala',
-    'models/lesson.vala',
-    'models/teacher-schedule.vala',
-    'models/teacher-timetable.vala',
-    'models/timetable.vala',
     'models/timetable-image.vala',
     
     'timetable-module.vala'
