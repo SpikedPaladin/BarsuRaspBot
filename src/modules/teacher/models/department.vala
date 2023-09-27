@@ -1,4 +1,4 @@
-namespace BarsuTimetable {
+namespace Teacher {
     
     public class Department {
         public string name;

@@ -5,9 +5,73 @@ namespace DataStore {
     
     public class DataManager {
         private DataLoader loader = new DataLoader();
+        private Student.FacultyLoader faculty_loader = new Student.FacultyLoader();
+        private Teacher.DepartmentLoader department_loader = new Teacher.DepartmentLoader();
         
         public async void load() {
+            yield faculty_loader.load_faculties();
+            yield department_loader.load_departments();
             yield loader.load_configs();
+        }
+        
+        public ArrayList<Teacher.Department> get_departments() {
+            return department_loader.departments;
+        }
+        
+        public ArrayList<Student.Faculty> get_faculties() {
+            return faculty_loader.faculties;
+        }
+        
+        public async void sync() {
+            yield faculty_loader.load_faculties(true);
+            yield department_loader.load_departments(true);
+        }
+        
+        public string? parse_group(string query) {
+            foreach (var faculty in faculty_loader.faculties)
+                foreach (var speciality in faculty.specialties)
+                    foreach (var group in speciality.groups)
+                        if (group.down() == query.down().replace(" ", "").replace("-", ""))
+                            return group;
+            
+            return null;
+        }
+        
+        public Teacher.Department? parse_department(string query) {
+            return department_loader.departments.first_match((department) => {
+                return department.name == query;
+            });
+        }
+        
+        public string? parse_name(string query) {
+            foreach (var department in department_loader.departments)
+                foreach (var name in department.teachers)
+                    if (name.down() == query.down())
+                        return name;
+            
+            return null;
+        }
+        
+        public Student.Faculty? parse_faculty(string query) {
+            return faculty_loader.faculties.first_match((faculty) => {
+                return faculty.name == query;
+            });
+        }
+        
+        public Student.Speciality? parse_speciality(string query) {
+            foreach (var faculty in faculty_loader.faculties)
+                foreach (var speciality in faculty.specialties)
+                    if (speciality.name == query)
+                        return speciality;
+            
+            return null;
+        }
+        
+        public string get_random_group() {
+            var faculty = faculty_loader.faculties.get(Random.int_range(0, faculty_loader.faculties.size));
+            var speciality = faculty.specialties[Random.int_range(0, faculty.specialties.length)];
+            
+            return speciality.groups[Random.int_range(0, speciality.groups.length)];
         }
         
         public ArrayList<Config> get_users() {

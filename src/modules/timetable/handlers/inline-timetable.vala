@@ -45,7 +45,7 @@ namespace BarsuTimetable {
         }
         
         public async void send_group_timetable(InlineQuery query) {
-            var group = group_manager.parse_group(query.query);
+            var group = data.parse_group(query.query);
             
             if (group == null) {
                 yield send_group_incorrect(query);

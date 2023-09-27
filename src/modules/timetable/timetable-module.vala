@@ -5,7 +5,6 @@ namespace BarsuTimetable {
     public TimetableManager timetable_manager;
     public BroadcastManager broadcast_manager;
     public ScheduleManager schedule_manager;
-    public GroupManager group_manager;
     public ImageManager image_manager;
     
     public class TimetableModule {
@@ -14,10 +13,8 @@ namespace BarsuTimetable {
             timetable_manager = new TimetableManager();
             broadcast_manager = new BroadcastManager();
             schedule_manager = new ScheduleManager();
-            group_manager = new GroupManager();
             image_manager = new ImageManager();
             
-            yield group_manager.load();
             yield image_manager.load();
             
             add_handlers();
@@ -98,7 +95,7 @@ namespace BarsuTimetable {
         var keyboard = new InlineKeyboardMarkup();
         bool found = false;
         
-        foreach (var faculty in group_manager.get_faculties())
+        foreach (var faculty in data.get_faculties())
             foreach (var speciality in faculty.specialties)
                 foreach (var group in speciality.groups)
                     if (group.down().has_prefix(query.down())) {
@@ -108,7 +105,7 @@ namespace BarsuTimetable {
                         keyboard.add_button(new InlineKeyboardButton() { text = group, callback_data = @"search:group:$group" });
                     }
         
-        foreach (var department in group_manager.get_departments())
+        foreach (var department in data.get_departments())
             foreach (var teacher in department.teachers)
                 if (teacher.down().has_prefix(query.down())) {
                     found = true;

@@ -84,22 +84,19 @@ namespace Admin {
         }
         
         public async void sync(Message msg) {
-            var last_fetch = group_manager.get_last_fetch();
             var response = yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 parse_mode = ParseMode.MARKDOWN,
-                text = "*Группы синхронизируются...*\n\n" +
-                       @"Последнее обновление: $last_fetch"
+                text = "*Группы синхронизируются...*"
             });
             var message_id = new Message(response.result.get_object()).message_id;
             
-            yield group_manager.sync();
+            yield data.sync();
             yield bot.send(new EditMessageText() {
                 chat_id = msg.chat.id,
                 message_id = message_id,
                 parse_mode = ParseMode.MARKDOWN,
-                text = "*Группы обновлены!*\n\n" +
-                      @"Последнее обновление: $last_fetch"
+                text = "*Группы обновлены!*"
             });
         }
         

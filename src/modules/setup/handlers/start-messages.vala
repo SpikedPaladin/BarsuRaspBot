@@ -27,7 +27,7 @@ namespace Setup {
         }
         
         public async void department(Message msg) {
-            var department = group_manager.parse_department(msg.text);
+            var department = data.parse_department(msg.text);
             
             if (department == null) {
                 yield bot.send(new SendMessage() {
@@ -47,7 +47,7 @@ namespace Setup {
         }
         
         public async void name(Message msg) {
-            var name = group_manager.parse_name(msg.text);
+            var name = data.parse_name(msg.text);
             
             if (name == null) {
                 yield bot.send(new SendMessage() {
@@ -95,7 +95,7 @@ namespace Setup {
         }
         
         public async void faculty(Message msg) {
-            var faculty = group_manager.parse_faculty(msg.text);
+            var faculty = data.parse_faculty(msg.text);
             
             if (faculty == null) {
                 yield bot.send(new SendMessage() {
@@ -115,7 +115,7 @@ namespace Setup {
         }
         
         public async void speciality(Message msg) {
-            var speciality = group_manager.parse_speciality(msg.text);
+            var speciality = data.parse_speciality(msg.text);
             
             if (speciality == null) {
                 yield bot.send(new SendMessage() {
@@ -135,7 +135,7 @@ namespace Setup {
         }
         
         public async void group(Message msg) {
-            var group = group_manager.parse_group(msg.text);
+            var group = data.parse_group(msg.text);
             
             if (group == null) {
                 yield bot.send(new SendMessage() {
@@ -185,14 +185,14 @@ namespace Setup {
         public ReplyKeyboardMarkup department_keyboard() {
             var keyboard = new ReplyKeyboardMarkup() { is_persistent = true, resize_keyboard = true };
             
-            foreach (var department in group_manager.get_departments()) {
+            foreach (var department in data.get_departments()) {
                 keyboard.add_button(new KeyboardButton() { text = department.name }).new_row();
             }
             
             return keyboard;
         }
         
-        public ReplyKeyboardMarkup name_keyboard(Department department) {
+        public ReplyKeyboardMarkup name_keyboard(Teacher.Department department) {
             var keyboard = new ReplyKeyboardMarkup() { is_persistent = true, resize_keyboard = true };
             
             foreach (var teacher in department.teachers) {
@@ -205,14 +205,14 @@ namespace Setup {
         public ReplyKeyboardMarkup faculty_keyboard() {
             var keyboard = new ReplyKeyboardMarkup() { is_persistent = true, resize_keyboard = true };
             
-            foreach (var faculty in group_manager.get_faculties()) {
+            foreach (var faculty in data.get_faculties()) {
                 keyboard.add_button(new KeyboardButton() { text = faculty.name }).new_row();
             }
             
             return keyboard;
         }
         
-        public ReplyKeyboardMarkup speciality_keyboard(Faculty faculty) {
+        public ReplyKeyboardMarkup speciality_keyboard(Student.Faculty faculty) {
             var keyboard = new ReplyKeyboardMarkup() { is_persistent = true, resize_keyboard = true };
             
             foreach (var speciality in faculty.specialties) {
@@ -222,7 +222,7 @@ namespace Setup {
             return keyboard;
         }
         
-        public ReplyKeyboardMarkup group_keyboard(Speciality speciality) {
+        public ReplyKeyboardMarkup group_keyboard(Student.Speciality speciality) {
             var keyboard = new ReplyKeyboardMarkup() { is_persistent = true, resize_keyboard = true };
             
             foreach (var group in speciality.groups) {

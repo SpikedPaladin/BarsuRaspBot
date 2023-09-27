@@ -18,7 +18,7 @@ namespace BarsuTimetable {
                 group = data.get_group(msg.from.id);
             
             if (args != null)
-                group = group_manager.parse_group(args);
+                group = data.parse_group(args);
             
             if (group != null) {
                 var timetable = yield timetable_manager.get_timetable(group, get_current_week().format("%F"));
@@ -69,7 +69,7 @@ namespace BarsuTimetable {
                 group = data.get_group(msg.from.id);
             
             if (args != null)
-                group = group_manager.parse_group(args);
+                group = data.parse_group(args);
             
             var str_date = date.format("%F");
             
@@ -94,7 +94,7 @@ namespace BarsuTimetable {
                 group = data.get_group(msg.from.id);
             
             if (args != null)
-                group = group_manager.parse_group(args);
+                group = data.parse_group(args);
             
             if (group != null)
                 yield send_next_lesson(group, msg.chat.id);
@@ -183,7 +183,7 @@ namespace BarsuTimetable {
                 "Владелец чата не выбрал группу, попроси его сделать это.\n" +
                 "Либо выберери группу для себя написав мне в личные сообщения @BarsuRaspBot\n" +
                 "Или можешь указать группу для команды, например:\n" +
-                @"`/$command $(group_manager.get_random_group())`"
+                @"`/$command $(data.get_random_group())`"
             });
         }
         
