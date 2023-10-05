@@ -25,7 +25,7 @@ namespace Admin {
             if (chat != null)
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
-                    text = @"Попался гадёныш!\n@$(chat.username ?? "[Пиздюк](tg://user?id=$(chat.id))")"
+                    text = @"Попался гадёныш!\n$(yield mention(id))"
                 });
             else
                 yield bot.send(new SendMessage() {
@@ -60,7 +60,8 @@ namespace Admin {
                     if (config.group != group)
                         continue;
                     
-                    text += @"[Пиздюк](tg://user?id=$(config.id)) `$(config.id)`\n";
+                    text += yield mention(config.id);
+                    text += "\n";
                     count++;
                 }
                 
@@ -82,7 +83,9 @@ namespace Admin {
                     if (config.post != UserPost.TEACHER)
                         continue;
                     
-                    text += @"[$(config.name)](tg://user?id=$(config.id)) `$(config.id)`\n";
+                    text += @"$(config.name) ";
+                    text += yield mention(config.id);
+                    text += "\n";
                 }
                 
                 yield bot.send(new SendMessage() {
@@ -225,6 +228,20 @@ namespace Admin {
                 commands = { day, tomorrow, rasp, raspnext, next, bells, bus, settings, help },
                 scope = new BotCommandScopeAllChatAdministrators()
             });
+        }
+        
+        private async string mention(int64 user_id) {
+            var chat = yield bot.get_chat(new ChatId(user_id));
+            string mention = null;
+            
+            if (chat.username != null)
+                mention = @"@$(chat.username)";
+            else if (chat != null)
+                mention = @"[$(chat.first_name)](tg://user?id=$(chat.id)) `$(chat.id)`";
+            else
+                mention = @"Чмоня забанил ($user_id)";
+            
+            return mention;
         }
     }
 }
