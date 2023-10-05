@@ -25,6 +25,7 @@ namespace Admin {
             if (chat != null)
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
+                    parse_mode = ParseMode.HTML,
                     text = @"Попался гадёныш!\n$(yield mention(id))"
                 });
             else
@@ -67,6 +68,7 @@ namespace Admin {
                 
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
+                    parse_mode = ParseMode.HTML,
                     text = text + @"Всего пиздюков: $count"
                 });
             } else
@@ -90,7 +92,7 @@ namespace Admin {
                 
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
-                    parse_mode = ParseMode.MARKDOWN,
+                    parse_mode = ParseMode.HTML,
                     text = text
                 });
                 
@@ -164,7 +166,6 @@ namespace Admin {
         public async void sync(Message msg) {
             var response = yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
-                parse_mode = ParseMode.MARKDOWN,
                 text = "*Группы синхронизируются...*"
             });
             var message_id = new Message(response.result.get_object()).message_id;
@@ -173,7 +174,6 @@ namespace Admin {
             yield bot.send(new EditMessageText() {
                 chat_id = msg.chat.id,
                 message_id = message_id,
-                parse_mode = ParseMode.MARKDOWN,
                 text = "*Группы обновлены!*"
             });
         }
@@ -237,7 +237,7 @@ namespace Admin {
             if (chat.username != null)
                 mention = @"@$(chat.username)";
             else if (chat != null)
-                mention = @"[$(chat.first_name)](tg://user?id=$(chat.id)) `$(chat.id)`";
+                mention = @"<a href=\"tg://user?id=$(chat.id)\">$(chat.first_name)</a> <code>$(chat.id)</code>";
             else
                 mention = @"Чмоня забанил ($user_id)";
             
