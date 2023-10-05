@@ -7,6 +7,17 @@ namespace Admin {
     
     public class AdminCommands {
         
+        public async void bypass(Message msg) {
+            if (msg.get_command_arguments() != null) {
+                yield send_timetable_keyboard(msg.get_command_arguments(), get_current_week().format("%F"), msg.chat.id);
+            } else {
+                yield bot.send(new SendMessage() {
+                    chat_id = msg.chat.id,
+                    text = "Я/Мы ебланы"
+                });
+            }
+        }
+        
         public async void ping(Message msg) {
             var id = int64.parse(msg.get_command_arguments());
             var chat = yield bot.get_chat(new ChatId(id));
