@@ -4,6 +4,40 @@ namespace Bus {
     
     public class ButtonActions {
         
+        public async void from_sweethome(CallbackQuery query) {
+            var complex_msg = "";
+            
+            complex_msg += build_bus_info(14, false, 13);
+            complex_msg += "\n";
+            complex_msg += build_bus_info(29, true, 12);
+            complex_msg += "\n";
+            complex_msg += build_bus_info(31, false, 0);
+            
+            
+            yield bot.send(new EditMessageText() {
+                chat_id = query.message.chat.id,
+                message_id = query.message.message_id,
+                text = complex_msg
+            });
+        }
+        
+        public async void to_sweethome(CallbackQuery query) {
+            var complex_msg = "";
+            
+            complex_msg += build_bus_info(14, true, 0);
+            complex_msg += "\n";
+            complex_msg += build_bus_info(29, false, 0);
+            complex_msg += "\n";
+            complex_msg += build_bus_info(31, true, 0);
+            
+            
+            yield bot.send(new EditMessageText() {
+                chat_id = query.message.chat.id,
+                message_id = query.message.message_id,
+                text = complex_msg
+            });
+        }
+        
         public async void bus_selected(CallbackQuery query) {
             var num = int.parse(query.data.split(":")[1]);
             var bus = bus_manager.get_bus_info(num);
@@ -33,6 +67,16 @@ namespace Bus {
             var num = int.parse(query.data.split(":")[1]);
             var forward = query.data.split(":")[2] == "forward";
             var index = int.parse(query.data.split(":")[3]);
+            
+            yield bot.send(new EditMessageText() {
+                chat_id = query.message.chat.id,
+                message_id = query.message.message_id,
+                parse_mode = ParseMode.MARKDOWN,
+                text = build_bus_info(num, forward, index)
+            });
+        }
+        
+        public string build_bus_info(int num, bool forward, int index) {
             var bus = bus_manager.get_bus_info(num);
             BusStop stop;
             
@@ -41,7 +85,7 @@ namespace Bus {
             else
                 stop = bus.backward_stops[index];
             
-            var times = stop.get_nearest_time(3);
+            var times = stop.get_nearest_time(5);
             var msg = @"🚍️ $(bus.number) $(bus.get_name(forward))\n" +
                       @"🪧️ $(stop.name)\n";
             
@@ -54,12 +98,7 @@ namespace Bus {
             if (times != null && times.length == 0)
                 msg += @"Сегодня автобус больше не ездит.";
             
-            yield bot.send(new EditMessageText() {
-                chat_id = query.message.chat.id,
-                message_id = query.message.message_id,
-                parse_mode = ParseMode.MARKDOWN,
-                text = msg
-            });
+            return msg;
         }
         
         public InlineKeyboardMarkup create_bus_stops_keyboard(BusInfo bus, bool forward = true) {

@@ -20,6 +20,15 @@ namespace Bus {
             
             var button_actions = new ButtonActions();
             bot.add_handler(new CallbackQueryHandler(null,
+                query => button_actions.from_sweethome.begin(query),
+                query => query.data.has_prefix("busfasttest") && query.data.split(":")[1] == "from_sweethome"));
+            bot.add_handler(new CallbackQueryHandler(null,
+                query => button_actions.to_sweethome.begin(query),
+                query => query.data.has_prefix("busfasttest") && query.data.split(":")[1] == "to_sweethome"));
+            bot.add_handler(new CallbackQueryHandler(null,
+                query => send_bus_number_keyboard.begin(query.message.chat.id, query.message.message_id),
+                query => query.data.has_prefix("busfasttest") && query.data.split(":")[1] == "choose"));
+            bot.add_handler(new CallbackQueryHandler(null,
                 query => button_actions.bus_selected.begin(query),
                 query => query.data.has_prefix("bustest") && query.data.split(":").length == 2));
             bot.add_handler(new CallbackQueryHandler(null,
@@ -31,9 +40,18 @@ namespace Bus {
         }
     }
     
-    public async void send_bus_number_keyboard(ChatId chat_id) {
+    public async void send_fast_keyboard(ChatId chat_id) {
         yield bot.send(new SendMessage() {
             chat_id = chat_id,
+            text = "🚍️ Выбери маршрут или номер:",
+            reply_markup = Keyboards.fast_bus_keyboard
+        });
+    }
+    
+    public async void send_bus_number_keyboard(ChatId chat_id, int message_id) {
+        yield bot.send(new EditMessageText() {
+            chat_id = chat_id,
+            message_id = message_id,
             text = "🚍️ Выбери номер автобуса:",
             reply_markup = create_bus_number_keyboard()
         });

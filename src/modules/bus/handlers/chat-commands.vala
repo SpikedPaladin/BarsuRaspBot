@@ -6,7 +6,7 @@ namespace Bus {
         
         public async void send_bus(Message msg) {
             if (bus_manager.loaded) {
-                yield send_bus_number_keyboard(msg.chat.id);
+                yield send_fast_keyboard(msg.chat.id);
             } else {
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,

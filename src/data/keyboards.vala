@@ -4,6 +4,7 @@ namespace Keyboards {
     public static InlineKeyboardMarkup start_keyboard;
     public static InlineKeyboardMarkup owner_keyboard;
     public static InlineKeyboardMarkup cancel_keyboard;
+    public static InlineKeyboardMarkup fast_bus_keyboard;
     public static InlineKeyboardMarkup open_bot_keyboard;
     public static InlineKeyboardMarkup enable_sub_keyboard;
     public static InlineKeyboardMarkup disable_sub_keyboard;
@@ -26,6 +27,12 @@ namespace Keyboards {
             .add_button(new InlineKeyboardButton() { text = "Отмена", callback_data = "cancel" })
             .new_row()
             .add_button(new InlineKeyboardButton() { text = "Выбрать группу", url = "t.me/BarsuRaspBot" });
+        fast_bus_keyboard = new InlineKeyboardMarkup()
+            .add_button(new InlineKeyboardButton() { text = "Уборевича ➡️ Университет", callback_data = "busfasttest:from_sweethome" })
+            .new_row()
+            .add_button(new InlineKeyboardButton() { text = "Университет ➡️ Уборевича", callback_data = "busfasttest:to_sweethome" })
+            .new_row()
+            .add_button(new InlineKeyboardButton() { text = "Выбрать номер", callback_data = "busfasttest:choose" });
         enable_sub_keyboard = new InlineKeyboardMarkup()
             .add_button(new InlineKeyboardButton() { text = "Вкл. уведомления", callback_data = "enable_sub" }).new_row()
             .add_button(new InlineKeyboardButton() { text = "Изменить группу", callback_data = "change_group" });
