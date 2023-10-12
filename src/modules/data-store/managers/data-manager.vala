@@ -14,6 +14,15 @@ namespace DataStore {
             yield loader.load_configs();
         }
         
+        public string? get_apk_file_id() {
+            return loader.apk_file_id;
+        }
+        
+        public void set_apk_file_id(string file_id) {
+            loader.apk_file_id = file_id;
+            loader.save_configs.begin();
+        }
+        
         public ArrayList<Teacher.Department> get_departments() {
             return department_loader.departments;
         }

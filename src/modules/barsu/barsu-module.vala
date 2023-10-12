@@ -27,6 +27,7 @@ namespace Barsu {
             bot.add_handler(new InlineQueryHandler(null, query => inline_timetable.send_group_timetable.begin(query)));
             
             var chat_commands = new ChatCommands();
+            bot.add_handler(new CommandHandler("apk", msg => chat_commands.apk.begin(msg)));
             bot.add_handler(new CommandHandler("day", msg => chat_commands.day_command.begin(msg)));
             bot.add_handler(new MessageHandler("▶️ Сегодня", msg => chat_commands.day_command.begin(msg)));
             bot.add_handler(new CommandHandler("tomorrow", msg => chat_commands.day_command.begin(msg)));

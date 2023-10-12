@@ -6,6 +6,13 @@ namespace Barsu {
     
     public class ChatCommands {
         
+        public async void apk(Message msg) {
+            yield bot.send(new SendDocument() {
+                chat_id = msg.chat.id,
+                document = data.get_apk_file_id()
+            });
+        }
+        
         public async void day_command(Message msg) {
             var args = msg.get_command_arguments();
             

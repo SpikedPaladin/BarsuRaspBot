@@ -5,6 +5,7 @@ namespace DataStore {
     public class DataLoader {
         public ArrayList<Config> users = new ArrayList<Config>();
         public ArrayList<Config> chats = new ArrayList<Config>();
+        public string apk_file_id = null;
         
         public async void load_configs() {
             var file = File.new_for_path(".cache/TelegramBots/BarsuRaspBot/configs.json");
@@ -17,6 +18,9 @@ namespace DataStore {
                     yield parser.load_from_stream_async(stream.input_stream);
                     
                     var obj = parser.get_root().get_object();
+                    
+                    if (obj.has_member("apk"))
+                        apk_file_id = obj.get_string_member("apk");
                     
                     foreach (var element in obj.get_array_member("users")?.get_elements()) {
                         var user = element.get_object();
@@ -59,6 +63,11 @@ namespace DataStore {
             try {
                 var builder = new Json.Builder();
                 builder.begin_object();
+                
+                if (apk_file_id != null) {
+                    builder.set_member_name("apk");
+                    builder.add_string_value(apk_file_id);
+                }
                 
                 builder.set_member_name("users");
                 builder.begin_array();

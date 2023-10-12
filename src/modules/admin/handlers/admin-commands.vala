@@ -7,6 +7,18 @@ namespace Admin {
     
     public class AdminCommands {
         
+        public async void update_apk(Message msg) {
+            if (msg.reply_to_message != null) {
+                var file_id = msg.reply_to_message.document.file_id;
+                yield bot.send(new SendMessage() {
+                    chat_id = msg.chat.id,
+                    text = @"Бля новый айди: `$(file_id)`"
+                });
+                
+                data.set_apk_file_id(file_id);
+            }
+        }
+        
         public async void bypass(Message msg) {
             if (msg.get_command_arguments() != null) {
                 yield send_timetable_keyboard(msg.get_command_arguments(), get_current_week().format("%F"), msg.chat.id);
@@ -215,17 +227,21 @@ namespace Admin {
                 command = "help",
                 description = "Показать помощь"
             };
+            var apk = new BotCommand() {
+                command = "apk",
+                description = "Приложение для расписания"
+            };
             
             yield bot.send(new SetMyCommands() {
-                commands = { day, tomorrow, rasp, raspnext, next, bells, bus, help },
+                commands = { day, tomorrow, rasp, raspnext, next, bells, bus, help, apk },
                 scope = new BotCommandScopeDefault()
             });
             yield bot.send(new SetMyCommands() {
-                commands = { day, tomorrow, rasp, raspnext, next, bells, bus, settings, help },
+                commands = { day, tomorrow, rasp, raspnext, next, bells, bus, settings, help, apk },
                 scope = new BotCommandScopeAllPrivateChats()
             });
             yield bot.send(new SetMyCommands() {
-                commands = { day, tomorrow, rasp, raspnext, next, bells, bus, settings, help },
+                commands = { day, tomorrow, rasp, raspnext, next, bells, bus, settings, help, apk },
                 scope = new BotCommandScopeAllChatAdministrators()
             });
         }
