@@ -45,8 +45,9 @@ namespace Bus {
             }
         }
         
-        public async void load_buses() {
+        public async void load_buses(BusSyncCallback? callback = null) {
             try {
+                var new_buses = new ArrayList<BusInfo>();
                 var msg = new Soup.Message("GET", @"https://barautopark.by/services/freight/5/");
                 var main_page = yield session.send_and_read_async(msg, Soup.MessagePriority.NORMAL, null);
                 var doc = new GXml.XHtmlDocument.from_string((string) main_page.get_data());
@@ -87,9 +88,13 @@ namespace Bus {
                 foreach (var bus_direction in bus_directions) {
                     var bus = yield load_bus_info(bus_direction);
                     
-                    buses.add(bus);
+                    if (callback != null)
+                        callback(bus.number);
+                    
+                    new_buses.add(bus);
                 }
                 
+                buses = new_buses;
                 yield save_config();
             } catch (Error error) {
                 warning("Error while loading buses: %s\n", error.message);
@@ -150,5 +155,7 @@ namespace Bus {
             number = int.parse(link.text_content.split(" ")[0].replace("№", ""));
             id = int.parse(link.get_attribute("href").split("/")[3]);
         }
+        
+        public delegate void BusSyncCallback(int number);
     }
 }

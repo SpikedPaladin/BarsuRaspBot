@@ -15,5 +15,9 @@ namespace Bus {
         public BusInfo get_bus_info(int bus_number) {
             return loader.buses.get(bus_number - 1);
         }
+        
+        public async void sync(BusLoader.BusSyncCallback callback) {
+            yield loader.load_buses(callback);
+        }
     }
 }
