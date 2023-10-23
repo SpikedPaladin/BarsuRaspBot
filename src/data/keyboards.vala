@@ -1,6 +1,7 @@
 using Telegram;
 
 namespace Keyboards {
+    public static InlineKeyboardMarkup apk_keyboard;
     public static InlineKeyboardMarkup start_keyboard;
     public static InlineKeyboardMarkup owner_keyboard;
     public static InlineKeyboardMarkup cancel_keyboard;
@@ -13,6 +14,10 @@ namespace Keyboards {
     public static ReplyKeyboardMarkup post_keyboard;
     
     public static void load() {
+        apk_keyboard = new InlineKeyboardMarkup()
+            .add_button(new InlineKeyboardButton() { text = "Скачать", url = "https://play.google.com/store/apps/details?id=me.paladin.barsurasp" })
+            .new_row()
+            .add_button(new InlineKeyboardButton() { text = "У меня нет Google Play!", callback_data = "get_apk" });
         start_keyboard = new InlineKeyboardMarkup()
             .add_button(new InlineKeyboardButton() { text = "Выбрать группу/преподавателя", callback_data = "change_group" });
         cancel_keyboard = new InlineKeyboardMarkup()

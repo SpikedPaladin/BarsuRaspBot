@@ -166,13 +166,17 @@ namespace Admin {
             if (msg.reply_to_message == null) {
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
-                    text = "⚠️ Нужно отправлять ответом на сообщение"
+                    text = "⚠️ Додик ебаный... Нужно отправлять ответом на сообщение"
                 });
                 
                 return;
             }
             
-            yield broadcast_manager.send_broadcast(msg.chat.id, msg.reply_to_message.message_id, false);
+            ReplyMarkup? reply_markup = null;
+            if (msg.get_command_arguments() == "apk")
+                reply_markup = Keyboards.apk_keyboard;
+            
+            yield broadcast_manager.send_broadcast(msg.chat.id, msg.reply_to_message.message_id, reply_markup);
         }
         
         public async void sync(Message msg) {

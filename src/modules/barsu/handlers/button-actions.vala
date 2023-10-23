@@ -11,6 +11,14 @@ namespace Barsu {
             });
         }
         
+        public async void get_apk(CallbackQuery query) {
+            yield bot.send(new SendDocument() {
+                chat_id = query.message.chat.id,
+                document = data.get_apk_file_id(),
+                caption = "⚠️ Не забывай переодически проверять обновления!"
+            });
+        }
+        
         public async void cancel(CallbackQuery query) {
             if (query.message.chat.type == Chat.Type.PRIVATE) {
                 yield bot.send(new DeleteMessage() {

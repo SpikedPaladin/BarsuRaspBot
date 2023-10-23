@@ -7,9 +7,10 @@ namespace Barsu {
     public class ChatCommands {
         
         public async void apk(Message msg) {
-            yield bot.send(new SendDocument() {
+            yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
-                document = data.get_apk_file_id()
+                text = "Приложение *Расписание БарГУ*\nТекущая версия: v1.0.3",
+                reply_markup = Keyboards.apk_keyboard
             });
         }
         

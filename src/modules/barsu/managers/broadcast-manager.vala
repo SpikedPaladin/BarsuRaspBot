@@ -23,7 +23,7 @@ namespace Barsu {
             }
         }
         
-        public async void send_broadcast(ChatId chat_id, int message_id, bool only_subscribed = false) {
+        public async void send_broadcast(ChatId chat_id, int message_id, ReplyMarkup? reply_markup = null, bool only_subscribed = false) {
             foreach (var config in data.get_users()) {
                 if (!config.subscribed && only_subscribed)
                     continue;
@@ -31,7 +31,8 @@ namespace Barsu {
                 yield bot.send(new CopyMessage() {
                     chat_id = new ChatId(config.id),
                     from_chat_id = chat_id,
-                    message_id = message_id
+                    message_id = message_id,
+                    reply_markup = reply_markup
                 });
             }
             foreach (var config in data.get_chats()) {
@@ -41,7 +42,8 @@ namespace Barsu {
                 yield bot.send(new CopyMessage() {
                     chat_id = new ChatId(config.id),
                     from_chat_id = chat_id,
-                    message_id = message_id
+                    message_id = message_id,
+                    reply_markup = reply_markup
                 });
             }
         }
