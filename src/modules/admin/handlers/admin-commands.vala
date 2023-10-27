@@ -30,17 +30,23 @@ namespace Admin {
             }
         }
         
-        public async void ping(Message msg) {
+        public async void find(Message msg) {
             var id = int64.parse(msg.get_command_arguments());
             var chat = yield bot.get_chat(new ChatId(id));
             
-            if (chat != null)
+            if (chat != null) {
+                string user_group = "Во еблан, без группы";
+                foreach (var config in data.get_users()) {
+                    if (config.id == id)
+                        user_group = config.group ?? config.name;
+                }
+                
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
                     parse_mode = ParseMode.HTML,
-                    text = @"Попался гадёныш!\n$(yield mention(id))"
+                    text = @"Попался гадёныш!\n$(yield mention(id))\nГруппа/Препод: $user_group"
                 });
-            else
+            } else
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
                     text = @"Пидор забанил!"

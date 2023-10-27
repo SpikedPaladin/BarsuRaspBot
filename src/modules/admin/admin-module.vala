@@ -12,7 +12,7 @@ namespace Admin {
             var admin_commands = new AdminCommands();
             bot.add_handler(new CommandHandler("updateapk", msg => admin_commands.update_apk.begin(msg), msg => msg.from.id == BOSS_ID));
             bot.add_handler(new CommandHandler("bypass", msg => admin_commands.bypass.begin(msg), msg => msg.from.id == BOSS_ID && msg.text != null));
-            bot.add_handler(new CommandHandler("ping", msg => admin_commands.ping.begin(msg), msg => msg.from.id == BOSS_ID && msg.text != null));
+            bot.add_handler(new CommandHandler("find", msg => admin_commands.find.begin(msg), msg => msg.from.id == BOSS_ID && msg.text != null));
             bot.add_handler(new CommandHandler("remove", msg => admin_commands.remove.begin(msg), msg => msg.from.id == BOSS_ID && msg.text != null));
             bot.add_handler(new CommandHandler("group", msg => admin_commands.group.begin(msg), msg => msg.from.id == BOSS_ID));
             bot.add_handler(new CommandHandler("stat", msg => admin_commands.stat.begin(msg), msg => msg.from.id == BOSS_ID));
