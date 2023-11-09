@@ -92,10 +92,9 @@ namespace Student {
                     date = week
                 };
             } catch (Error error) {
-                warning("Error while loading timetable: %s\n", error.message);
+                Telegram.Util.log(@"Error while loading timetable: $(error.message)\n", Telegram.Util.LogLevel.WARNING);
+                return null;
             }
-            
-            return null;
         }
         
         private Soup.Multipart create_payload(string group, string week) {
