@@ -10,14 +10,21 @@ namespace Student {
                 
                 var doc = new GXml.XHtmlDocument.from_string((string) rasp_page.get_data());
                 
-                var test = doc.get_elements_by_class_name("min-p").get_element(0);
-                var table_array = test.get_elements_by_tag_name("td").to_array();
+                var table_array = doc
+                    .get_elements_by_class_name("min-p")
+                    .get_element(0)
+                    .get_elements_by_tag_name("td")
+                    .to_array();
                 
                 if (table_array.length == 0)
                     return null;
                 
-                var last_update_container = doc.get_elements_by_class_name("container").get_element(2);
-                var last_update = last_update_container.get_elements_by_tag_name("p").to_array()[0].text_content;
+                var last_update = parse_last_update(
+                    doc.get_elements_by_class_name("container")
+                        .get_element(2)
+                        .get_elements_by_tag_name("p")
+                        .to_array()[0].text_content
+                );
                 
                 DaySchedule[] days = {};
                 Lesson[] lessons = {};
@@ -85,7 +92,7 @@ namespace Student {
                 }
                 
                 return new Timetable() {
-                    last_update = parse_last_update(last_update),
+                    last_update = last_update,
                     last_fetch = new DateTime.now(),
                     days = days,
                     group = group,
