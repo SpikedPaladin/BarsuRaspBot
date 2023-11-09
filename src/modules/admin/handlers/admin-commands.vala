@@ -25,20 +25,33 @@ namespace Admin {
             } else {
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
-                    text = "Я/Мы ебланы"
+                    text = "Мы ебланы"
                 });
             }
         }
         
         public async void find(Message msg) {
-            var id = int64.parse(msg.get_command_arguments());
+            int64 id;
+            
+            if (msg.reply_to_message != null && msg.reply_to_message.forward_from != null) {
+                id = msg.reply_to_message.forward_from.id;
+            } else if (msg.get_command_arguments() != null) {
+                id = int64.parse(msg.get_command_arguments());
+            } else {
+                yield bot.send(new SendMessage() {
+                    chat_id = msg.chat.id,
+                    text = "Бля буду, ты вообще ебобо. Нужен айди в аргумент или реплай на сообщения додика для взлома его жопы."
+                });
+                return;
+            }
             var chat = yield bot.get_chat(new ChatId(id));
             
             if (chat != null) {
                 string user_group = "Во еблан, без группы";
                 foreach (var config in data.get_users()) {
                     if (config.id == id)
-                        user_group = config.group ?? config.name;
+                        if (config.group != null || config.name != null)
+                            user_group = config.group ?? config.name;
                 }
                 
                 yield bot.send(new SendMessage() {
@@ -74,7 +87,7 @@ namespace Admin {
             var group = data.parse_group(msg.get_command_arguments());
             int count = 0;
             if (group != null) {
-                var text = "Попались ебланчики:\n";
+                var text = @"Попались ебланчики из $(group):\n";
                 foreach (var config in data.get_users()) {
                     if (config.group != group)
                         continue;
@@ -92,7 +105,7 @@ namespace Admin {
             } else
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
-                    text = "Блять ну ты/я еблан пиздец"
+                    text = "Блять ну ты еблан пиздец"
                 });
         }
         
@@ -260,7 +273,11 @@ namespace Admin {
             var chat = yield bot.get_chat(new ChatId(user_id));
             string mention = null;
             
-            if (chat.username != null)
+            if (user_id == BOSS_ID)
+                mention = @"<a href=\"tg://user?id=$BOSS_ID\">Я тебя ❤️</a>";
+            else if (user_id == SENSE_OF_LIFE)
+                mention = @"<a href=\"tg://user?id=$SENSE_OF_LIFE\">❤️❤️❤️❤️❤️</a>";
+            else if (chat.username != null)
                 mention = @"@$(chat.username)";
             else if (chat != null)
                 mention = @"<a href=\"tg://user?id=$(chat.id)\">$(chat.first_name)</a> <code>$(chat.id)</code>";
