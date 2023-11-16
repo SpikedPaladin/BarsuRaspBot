@@ -47,6 +47,7 @@ namespace Barsu {
             
             var button_action = new ButtonActions();
             bot.add_handler(new CallbackQueryHandler("empty", query => button_action.empty.begin(query)));
+            bot.add_handler(new CallbackQueryHandler("get_app", query => button_action.get_app.begin(query)));
             bot.add_handler(new CallbackQueryHandler("get_apk", query => button_action.get_apk.begin(query)));
             bot.add_handler(new CallbackQueryHandler("cancel", query => button_action.cancel.begin(query)));
             bot.add_handler(new CallbackQueryHandler("install", query => button_action.install.begin(query)));
