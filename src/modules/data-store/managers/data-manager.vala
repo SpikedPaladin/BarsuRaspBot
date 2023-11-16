@@ -36,7 +36,10 @@ namespace DataStore {
             yield department_loader.load_departments(true);
         }
         
-        public string? parse_group(string query) {
+        public string? parse_group(string? query) {
+            if (query == null)
+                return null;
+            
             foreach (var faculty in faculty_loader.faculties)
                 foreach (var speciality in faculty.specialties)
                     foreach (var group in speciality.groups)
