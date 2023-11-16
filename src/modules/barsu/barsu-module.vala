@@ -150,7 +150,7 @@ namespace Barsu {
     
     public async void send_teacher_keyboard(string name, string date, ChatId chat_id, int? message_id = null) {
         var timetable = yield timetable_manager.get_teacher(name, date);
-        var keyboard = create_teacher_keyboard(timetable, name, date);
+        var keyboard = create_teacher_keyboard(timetable, name, date, null, true);
         
         if (message_id != null)
             yield bot.send(new EditMessageMedia() {
@@ -314,7 +314,7 @@ namespace Barsu {
         }
     }
     
-    public InlineKeyboardMarkup? create_teacher_keyboard(Teacher.Timetable? timetable, string group, string date, string? skip_button = null) {
+    public InlineKeyboardMarkup? create_teacher_keyboard(Teacher.Timetable? timetable, string group, string date, string? skip_button = null, bool week = false) {
         if (timetable == null)
             return null;
         
@@ -326,6 +326,9 @@ namespace Barsu {
                 callback_data = skip_button == day.day ? "empty" : @"teacher:$(day.day):$group:$date"
             });
         }
+        
+        if (week)
+            keyboard.new_row().add_button(new InlineKeyboardButton() { text = "🖼️ Вся неделя", callback_data = @"teacher:$group:$date" });
         
         return keyboard;
     }

@@ -176,6 +176,41 @@ namespace Barsu {
         public async void send_teacher(CallbackQuery query) {
             var data = query.data.split(":");
             
+            if (data.length == 3) {
+                var image = yield image_manager.get_image(data[2], null, data[1]);
+                
+                if (image.file_id != null) {
+                    yield bot.send(new EditMessageMedia() {
+                        chat_id = query.message.chat.id,
+                        message_id = query.message.message_id,
+                        media = new InputMediaPhoto() {
+                            media = image.file_id
+                        }
+                    });
+                } else {
+                    var response = yield bot.send(new EditMessageMedia() {
+                        chat_id = query.message.chat.id,
+                        message_id = query.message.message_id,
+                        media = new InputMediaPhoto() {
+                            media = "week-image.png",
+                            bytes = image.bytes
+                        }
+                    });
+                    
+                    if (!response.ok)
+                        return;
+                    
+                    var message = new Message(response.result.get_object());
+                    image.bytes = null;
+                    image.file_id = message.photo[0].file_id;
+                    
+                    // Manual put is required
+                    image_manager.update_cache(image);
+                }
+                
+                return;
+            }
+            
             yield send_teacher_date(data[1], data[2], data[3], query);
         }
         
@@ -183,7 +218,7 @@ namespace Barsu {
             var data = query.data.split(":");
             
             if (data.length == 3) {
-                var image = yield image_manager.get_image(data[1], data[2]);
+                var image = yield image_manager.get_image(data[2], data[1]);
                 
                 if (image.file_id != null) {
                     yield bot.send(new EditMessageMedia() {

@@ -7,6 +7,11 @@ namespace Teacher {
         public string? groups;
         public string? place;
         public bool replaced;
+        public bool empty {
+            get {
+                return name == null;
+            }
+        }
         
         public int get_end_hour() {
             return int.parse(time.split("-")[0].split(".")[0]);
