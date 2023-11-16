@@ -22,6 +22,7 @@ namespace Admin {
             bot.add_handler(new CommandHandler("stat", msg => admin_commands.stat.begin(msg),
                 msg => msg.from.id == BOSS_ID || msg.from.id == SENSE_OF_LIFE
             ));
+            bot.add_handler(new CommandHandler("msg", msg => admin_commands.message_command.begin(msg), msg => msg.from.id == BOSS_ID));
             bot.add_handler(new CommandHandler("sync", msg => admin_commands.sync.begin(msg), msg => msg.from.id == BOSS_ID));
             bot.add_handler(new CommandHandler("backup", msg => admin_commands.backup.begin(msg), msg => msg.from.id == BOSS_ID));
             bot.add_handler(new CommandHandler("broadcast", msg => admin_commands.broadcast.begin(msg), msg => msg.from.id == BOSS_ID));

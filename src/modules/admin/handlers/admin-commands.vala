@@ -7,6 +7,16 @@ namespace Admin {
     
     public class AdminCommands {
         
+        public async void message_command(Message msg) {
+            if (msg.get_command_arguments() != null) {
+                var raw = msg.get_command_arguments().split(" ", 2);
+                yield bot.send(new SendMessage() {
+                    chat_id = new ChatId(int.parse(raw[0])),
+                    text = raw[1]
+                });
+            }
+        }
+        
         public async void update_apk(Message msg) {
             if (msg.reply_to_message != null) {
                 var file_id = msg.reply_to_message.document.file_id;
