@@ -14,7 +14,7 @@ namespace Barsu {
             });
             
             if (timetable != null) {
-                if (timetable.last_fetch.add_minutes(20).compare(new DateTime.now()) < 1) {
+                if (timetable.last_fetch.add_minutes(30).compare(new DateTime.now()) < 1) {
                     var new_timetable = yield teacher.load(name, date);
                     
                     teacher_cache.remove(timetable);
@@ -40,7 +40,7 @@ namespace Barsu {
             });
             
             if (timetable != null) {
-                if (timetable.last_fetch.add_minutes(20).compare(new DateTime.now()) < 1) {
+                if (timetable.last_fetch.add_minutes(30).compare(new DateTime.now()) < 1) {
                     var new_timetable = yield student.load(group, date);
                     
                     if (new_timetable.last_update.to_string() != timetable.last_update.to_string()) {
