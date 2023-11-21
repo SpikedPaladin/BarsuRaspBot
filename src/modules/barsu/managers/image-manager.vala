@@ -25,9 +25,39 @@ namespace Barsu {
                     return image.name == name && image.date == date;
             });
             
-            // TODO add last update check
-            if (image != null)
+            if (image != null) {
+                if (image.last_fetch.add_minutes(30).compare(new DateTime.now()) < 1) {
+                    if (group != null) {
+                        var timetable = yield timetable_manager.get_timetable(group, date);
+                        
+                        if (timetable != null) {
+                            loader.images.remove(image);
+                            
+                            return new TimetableImage() {
+                                bytes = loader.create_image(timetable),
+                                last_fetch = new DateTime.now(),
+                                group = group,
+                                date = date
+                            };
+                        }
+                    } else {
+                        var timetable = yield timetable_manager.get_teacher(name, date);
+                        
+                        if (timetable != null) {
+                            loader.images.remove(image);
+                            
+                            return new TimetableImage() {
+                                bytes = loader.create_teacher_image(timetable),
+                                last_fetch = new DateTime.now(),
+                                name = name,
+                                date = date
+                            };
+                        }
+                    }
+                    return image;
+                }
                 return image;
+            }
             
             if (group != null) {
                 var timetable = yield timetable_manager.get_timetable(group, date);
@@ -37,6 +67,7 @@ namespace Barsu {
                 
                 return new TimetableImage() {
                     bytes = loader.create_image(timetable),
+                    last_fetch = new DateTime.now(),
                     group = group,
                     date = date
                 };
@@ -48,13 +79,12 @@ namespace Barsu {
                 
                 return new TimetableImage() {
                     bytes = loader.create_teacher_image(timetable),
+                    last_fetch = new DateTime.now(),
                     name = name,
                     date = date
                 };
             }
         }
-        
-        
     }
 }
 
