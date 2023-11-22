@@ -3,22 +3,15 @@ using Gee;
 namespace Barsu {
     
     public class ImageManager {
+        private ConcurrentList<TimetableImage> cache = new ConcurrentList<TimetableImage>();
         private ImageLoader loader = new ImageLoader();
         
-        public ImageManager() {
-            loader.load_cache.begin();
-        }
-        
-        public async void load() {
-            yield loader.load_cache();
-        }
-        
         public void update_cache(TimetableImage image) {
-            loader.images.add(image);
+            cache.add(image);
         }
         
         public async TimetableImage? get_image(string date, string? group = null, string? name = null) {
-            var image = loader.images.first_match((image) => {
+            var image = cache.first_match((image) => {
                 if (group != null)
                     return image.group == group && image.date == date;
                 else
@@ -31,7 +24,7 @@ namespace Barsu {
                         var timetable = yield timetable_manager.get_timetable(group, date);
                         
                         if (timetable != null) {
-                            loader.images.remove(image);
+                            cache.remove(image);
                             
                             return new TimetableImage() {
                                 bytes = loader.create_image(timetable),
@@ -44,7 +37,7 @@ namespace Barsu {
                         var timetable = yield timetable_manager.get_teacher(name, date);
                         
                         if (timetable != null) {
-                            loader.images.remove(image);
+                            cache.remove(image);
                             
                             return new TimetableImage() {
                                 bytes = loader.create_teacher_image(timetable),

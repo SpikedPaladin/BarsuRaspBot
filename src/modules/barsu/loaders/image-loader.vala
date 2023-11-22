@@ -3,66 +3,7 @@ using Gee;
 namespace Barsu {
     
     public class ImageLoader {
-        public ArrayList<TimetableImage> images = new ArrayList<TimetableImage>();
         private const int FONT_SIZE = 22;
-        
-        public async void save_cache() {
-            try {
-                var builder = new Json.Builder();
-                builder.begin_object();
-                
-                builder.set_member_name("images");
-                builder.begin_array();
-                foreach (var image in images) {
-                    builder.begin_object();
-                    
-                    builder.set_member_name("group");
-                    builder.add_string_value(image.group);
-                    
-                    builder.set_member_name("date");
-                    builder.add_string_value(image.date);
-                    
-                    builder.set_member_name("file_id");
-                    builder.add_string_value(image.file_id);
-                    
-                    builder.end_object();
-                }
-                builder.end_array();
-                
-                builder.end_object();
-                
-                FileUtil.save_json(builder.get_root(), ".cache/TelegramBots/BarsuRaspBot/images.json");
-            } catch (Error error) {
-                warning("Error while saving image cache: %s\n", error.message);
-            }
-        }
-        
-        public async void load_cache() {
-            var file = File.new_for_path(".cache/TelegramBots/BarsuRaspBot/images.json");
-            
-            if (file.query_exists()) {
-                try {
-                    var stream = yield file.open_readwrite_async();
-                    var parser = new Json.Parser();
-                    
-                    yield parser.load_from_stream_async(stream.input_stream);
-                    
-                    var obj = parser.get_root().get_object();
-                    
-                    foreach (var element in obj.get_array_member("images")?.get_elements()) {
-                        var image = element.get_object();
-                        
-                        images.add(new TimetableImage() {
-                            group = image.get_string_member("group"),
-                            date = image.get_string_member("date"),
-                            file_id = image.get_string_member("file_id")
-                        });
-                    }
-                } catch (Error error) {
-                    warning("Error while reading configs: %s\n", error.message);
-                }
-            }
-        }
         
         public Bytes create_teacher_image(Teacher.Timetable timetable) {
             var surface = new Cairo.ImageSurface(Cairo.Format.RGB24, 1000, get_teacher_height(timetable));

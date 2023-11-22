@@ -15,8 +15,6 @@ namespace Barsu {
             schedule_manager = new ScheduleManager();
             image_manager = new ImageManager();
             
-            yield image_manager.load();
-            
             add_handlers();
         }
         
