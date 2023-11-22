@@ -1,6 +1,5 @@
 using DataStore;
 using Telegram;
-using Gee;
 
 namespace Barsu {
     

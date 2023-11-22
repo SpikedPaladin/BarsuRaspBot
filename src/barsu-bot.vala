@@ -1,7 +1,6 @@
-using Barsu;
 using DataStore;
 using Telegram;
-using Gee;
+using Barsu;
 
 public class BarsuRaspBot : Bot {
     

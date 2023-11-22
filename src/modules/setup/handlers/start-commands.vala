@@ -1,6 +1,6 @@
-using Barsu;
 using DataStore;
 using Telegram;
+using Barsu;
 
 namespace Setup {
     
