@@ -86,11 +86,11 @@ namespace DataStore {
             return speciality.groups[Random.int_range(0, speciality.groups.length)];
         }
         
-        public ArrayList<Config> get_users() {
+        public ConcurrentList<Config> get_users() {
             return loader.users;
         }
         
-        public ArrayList<Config> get_chats() {
+        public ConcurrentList<Config> get_chats() {
             return loader.chats;
         }
         

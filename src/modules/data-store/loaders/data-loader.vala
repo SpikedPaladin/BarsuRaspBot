@@ -3,8 +3,8 @@ using Gee;
 namespace DataStore {
     
     public class DataLoader {
-        public ArrayList<Config> users = new ArrayList<Config>();
-        public ArrayList<Config> chats = new ArrayList<Config>();
+        public ConcurrentList<Config> users = new ConcurrentList<Config>();
+        public ConcurrentList<Config> chats = new ConcurrentList<Config>();
         public string apk_file_id = null;
         
         public async void load_configs() {
