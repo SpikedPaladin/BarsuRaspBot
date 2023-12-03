@@ -10,6 +10,11 @@ namespace Student {
                 
                 var doc = new GXml.XHtmlDocument.from_string((string) rasp_page.get_data());
                 
+                if (doc.get_elements_by_class_name("min-p").length < 1) {
+                    warning(@"Unknown error happend! $group, $week");
+                    return null;
+                }
+                
                 var table_array = doc
                     .get_elements_by_class_name("min-p")
                     .get_element(0)
@@ -19,12 +24,7 @@ namespace Student {
                 if (table_array.length == 0)
                     return null;
                 
-                var last_update = parse_last_update(
-                    doc.get_elements_by_class_name("container")
-                        .get_element(2)
-                        .get_elements_by_tag_name("p")
-                        .to_array()[0].text_content
-                );
+                var last_update = find_last_update(doc.get_elements_by_class_name("container"));
                 
                 DaySchedule[] days = {};
                 Lesson[] lessons = {};
@@ -127,6 +127,28 @@ namespace Student {
             }
             
             return s.substring(0, s.length - 2);
+        }
+        
+        private DateTime find_last_update(GXml.DomHTMLCollection elements) {
+            if (elements.size >= 3) {
+                if (elements.get_element(2).get_elements_by_tag_name("p").length > 0) {
+                    return parse_last_update(
+                        elements.get_element(2)
+                            .get_elements_by_tag_name("p")
+                            .to_array()[0].text_content
+                    );
+                } else {
+                    warning("Unexpected case!");
+                    return parse_last_update(
+                        elements.get_element(3)
+                            .get_elements_by_tag_name("p")
+                            .to_array()[0].text_content
+                    );
+                }
+            }
+            
+            warning("No last update!");
+            return new DateTime.now();
         }
         
         /**

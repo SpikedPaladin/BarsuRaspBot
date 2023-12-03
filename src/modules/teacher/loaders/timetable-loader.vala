@@ -10,6 +10,11 @@ namespace Teacher {
                 
                 var doc = new GXml.XHtmlDocument.from_string((string) rasp_page.get_data());
                 
+                if (doc.get_elements_by_class_name("table-bordered").length < 1) {
+                    warning(@"Unknown error happend! $name, $week");
+                    return null;
+                }
+                
                 var table = doc.get_elements_by_class_name("table-bordered").get_element(0).get_elements_by_tag_name("tbody").get_element(0);
                 var table_rows = table.get_elements_by_tag_name("tr").to_array();
                 
