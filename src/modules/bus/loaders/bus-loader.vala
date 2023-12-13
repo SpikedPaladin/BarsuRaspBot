@@ -124,7 +124,7 @@ namespace Bus {
             var bus_dir_page = yield session.send_and_read_async(msg, Soup.MessagePriority.NORMAL, null);
             var doc = new GXml.XHtmlDocument.from_string((string) bus_dir_page.get_data());
             
-            BusStop[] stops = {};
+            BusStop[] stops = {}; // 3 dead
             var stops_elements = doc.get_elements_by_class_name("tabs-category")
                                     .get_element(0)
                                     .get_elements_by_tag_name("div")
