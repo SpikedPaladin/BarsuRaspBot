@@ -57,7 +57,7 @@ namespace Admin {
             
             if (chat != null) {
                 string user_group = "Во еблан, без группы";
-                foreach (var config in data.get_users()) {
+                foreach (var config in data.get_users().to_array()) {
                     if (config.id == id)
                         if (config.group != null || config.name != null)
                             user_group = config.group ?? config.name;
@@ -97,7 +97,7 @@ namespace Admin {
             int count = 0;
             if (group != null) {
                 var text = @"Попались ебланчики из $(group):\n";
-                foreach (var config in data.get_users()) {
+                foreach (var config in data.get_users().to_array()) {
                     if (config.group != group)
                         continue;
                     
@@ -121,7 +121,7 @@ namespace Admin {
         public async void stat(Message msg) {
             if (msg.get_command_arguments() == "teacher") {
                 string text = "Преподы:\n";
-                foreach (var config in data.get_users()) {
+                foreach (var config in data.get_users().to_array()) {
                     if (config.post != UserPost.TEACHER)
                         continue;
                     
@@ -141,7 +141,7 @@ namespace Admin {
             
             int sub_count = 0, registered = 0, changing = 0, start_selecting = 0, teachers = 0;
             
-            foreach (var config in data.get_users()) {
+            foreach (var config in data.get_users().to_array()) {
                 if (config.subscribed)
                     sub_count++;
                 

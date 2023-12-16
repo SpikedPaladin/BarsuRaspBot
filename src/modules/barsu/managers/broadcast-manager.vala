@@ -6,7 +6,7 @@ namespace Barsu {
     public class BroadcastManager {
         
         public async void broadcast_next_lesson() {
-            foreach (var config in data.get_users()) {
+            foreach (var config in data.get_users().to_array()) {
                 if (!config.subscribed)
                     continue;
                 
@@ -15,7 +15,7 @@ namespace Barsu {
                 else
                     yield send_next_lesson(config.group, new ChatId(config.id), false);
             }
-            foreach (var config in data.get_chats()) {
+            foreach (var config in data.get_chats().to_array()) {
                 if (!config.subscribed)
                     continue;
                 
@@ -24,7 +24,7 @@ namespace Barsu {
         }
         
         public async void send_broadcast(ChatId chat_id, int message_id, ReplyMarkup? reply_markup = null, bool only_subscribed = false) {
-            foreach (var config in data.get_users()) {
+            foreach (var config in data.get_users().to_array()) {
                 if (!config.subscribed && only_subscribed)
                     continue;
                 
@@ -35,7 +35,7 @@ namespace Barsu {
                     reply_markup = reply_markup
                 });
             }
-            foreach (var config in data.get_chats()) {
+            foreach (var config in data.get_chats().to_array()) {
                 if (!config.subscribed && only_subscribed)
                     continue;
                 

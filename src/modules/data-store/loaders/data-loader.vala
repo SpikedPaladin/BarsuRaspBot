@@ -71,7 +71,7 @@ namespace DataStore {
                 
                 builder.set_member_name("users");
                 builder.begin_array();
-                foreach (var user in users) {
+                foreach (var user in users.to_array()) {
                     builder.begin_object();
                     
                     builder.set_member_name("id");
