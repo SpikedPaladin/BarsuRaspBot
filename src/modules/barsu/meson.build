@@ -1,4 +1,11 @@
 bot_sources += files(
+    'handlers/commands/apk-command.vala',
+    'handlers/commands/bells-command.vala',
+    'handlers/commands/day-command.vala',
+    'handlers/commands/help-command.vala',
+    'handlers/commands/next-command.vala',
+    'handlers/commands/rasp-command.vala',
+    'handlers/commands/settings-command.vala',
     'handlers/button-actions.vala',
     'handlers/chat-commands.vala',
     'handlers/inline-timetable.vala',
