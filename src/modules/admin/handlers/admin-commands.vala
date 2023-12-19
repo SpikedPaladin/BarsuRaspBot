@@ -9,9 +9,29 @@ namespace Admin {
         public async void message_command(Message msg) {
             if (msg.get_command_arguments() != null) {
                 var raw = msg.get_command_arguments().split(" ", 2);
-                yield bot.send(new SendMessage() {
+                var response = yield bot.send(new SendMessage() {
                     chat_id = new ChatId(int.parse(raw[0])),
                     text = raw[1]
+                });
+                
+                if (!response.ok) {
+                    yield bot.send(new SendMessage() {
+                        chat_id = new ChatId(BOSS_ID),
+                        text =
+                            @"Пытался высрать пиздюку: `$(raw[0])`\n" +
+                            @"Эту поеботу: $(raw[1])\n" +
+                            "Нихуя не высралось, видимо еблан..."
+                    });
+                    return;
+                }
+                var message = new Message(response.result.get_object());
+                
+                yield bot.send(new SendMessage() {
+                    chat_id = new ChatId(BOSS_ID),
+                    text =
+                        @"Высрал пиздюку: `$(raw[0])`\n" +
+                        @"Айди хуйни: `$(message.message_id)`\n" +
+                        @"Хуйня: $(raw[1])"
                 });
             }
         }
@@ -139,11 +159,14 @@ namespace Admin {
                 return;
             }
             
-            int sub_count = 0, registered = 0, changing = 0, start_selecting = 0, teachers = 0;
+            int sub_count = 0, registered = 0, changing = 0, start_selecting = 0, teachers = 0, retarded = 0;
             
             foreach (var config in data.get_users().to_array()) {
                 if (config.subscribed)
                     sub_count++;
+                
+                if (config.post == null && config.state == null)
+                    retarded++;
                 
                 if (config.post != null && config.state != null)
                     changing++;
@@ -151,7 +174,7 @@ namespace Admin {
                 if (config.post == null && config.state != null)
                     start_selecting++;
                 
-                if (config.post != null)
+                if (config.post != null && config.state == null)
                     registered++;
                 
                 if (config.post == UserPost.TEACHER)
@@ -162,6 +185,7 @@ namespace Admin {
             
             text += "\n👤️ Юзеры:\n";
             text += @"Всего: $(data.get_users().size) (*$registered*/$changing/$start_selecting)\n";
+            text += @"Додики: $retarded\n";
             text += @"Преподов: *$teachers*\n";
             text += @"Подсосы: $sub_count";
             
