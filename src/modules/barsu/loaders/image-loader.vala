@@ -342,7 +342,7 @@ namespace Barsu {
         
         private void draw_type(Cairo.Context cr, string type, double x, double y) {
             double r, g, b;
-            switch (type) {
+            switch (type.up()) {
                 case "ЛК":
                     r = 0.22; g = 0.56; b = 0.24;
                     break;
@@ -366,8 +366,8 @@ namespace Barsu {
                     break;
             }
             
-            var zach_rect = type == "ЗАЧ" ? 13 : 0;
-            var zach_x = type == "ЗАЧ" ? 8 : 0;
+            var zach_rect = type.up() == "ЗАЧ" ? 13 : 0;
+            var zach_x = type.up() == "ЗАЧ" ? 8 : 0;
             cr.set_source_rgba(r, g, b, 0.2);
             round_rect(cr, (int) x - 8 - zach_x, (int) y - 18, 40 + zach_rect, 22, 11);
             cr.fill();
