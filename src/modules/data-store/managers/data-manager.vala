@@ -18,8 +18,13 @@ namespace DataStore {
             return loader.apk_file_id;
         }
         
-        public void set_apk_file_id(string file_id) {
+        public string? get_apk_version() {
+            return loader.apk_version;
+        }
+        
+        public void set_apk(string file_id, string version) {
             loader.apk_file_id = file_id;
+            loader.apk_version = version;
             loader.save_configs.begin();
         }
         

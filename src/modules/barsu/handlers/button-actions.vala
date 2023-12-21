@@ -14,7 +14,7 @@ namespace Barsu {
         public async void get_app(CallbackQuery query) {
             yield bot.send(new SendMessage() {
                 chat_id = query.message.chat.id,
-                text = "Приложение *Расписание БарГУ*\nТекущая версия: v1.0.9",
+                text = @"Приложение *Расписание БарГУ*\nТекущая версия: v$(data.get_apk_version())",
                 reply_markup = Keyboards.apk_keyboard
             });
         }

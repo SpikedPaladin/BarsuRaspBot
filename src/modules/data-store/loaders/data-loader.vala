@@ -6,6 +6,7 @@ namespace DataStore {
         public ConcurrentList<Config> users = new ConcurrentList<Config>();
         public ConcurrentList<Config> chats = new ConcurrentList<Config>();
         public string apk_file_id = null;
+        public string apk_version = null;
         
         public async void load_configs() {
             var file = File.new_for_path(".cache/TelegramBots/BarsuRaspBot/configs.json");
@@ -21,6 +22,9 @@ namespace DataStore {
                     
                     if (obj.has_member("apk"))
                         apk_file_id = obj.get_string_member("apk");
+                    
+                    if (obj.has_member("apk_version"))
+                        apk_version = obj.get_string_member("apk_version");
                     
                     foreach (var element in obj.get_array_member("users")?.get_elements()) {
                         var user = element.get_object();
@@ -67,6 +71,11 @@ namespace DataStore {
                 if (apk_file_id != null) {
                     builder.set_member_name("apk");
                     builder.add_string_value(apk_file_id);
+                }
+                
+                if (apk_version != null) {
+                    builder.set_member_name("apk_version");
+                    builder.add_string_value(apk_version);
                 }
                 
                 builder.set_member_name("users");
