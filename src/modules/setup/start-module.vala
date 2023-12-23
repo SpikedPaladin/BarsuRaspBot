@@ -11,13 +11,16 @@ namespace Setup {
         }
         
         public void add_handlers() {
-            var setup_commands = new SetupCommands();
             bot.add_handler(new CommandHandler("start",
-                msg => setup_commands.start.begin(msg),
+                msg => start_command.begin(msg),
                 msg => msg.chat.type == Chat.Type.PRIVATE && data.get_config(msg.from.id) == null
             ));
             bot.add_handler(new CommandHandler("restart",
-                msg => setup_commands.restart.begin(msg),
+                msg => restart_command.begin(msg),
+                msg => msg.chat.type == Chat.Type.PRIVATE
+            ));
+            bot.add_handler(new CommandHandler("stop",
+                msg => stop_command.begin(msg),
                 msg => msg.chat.type == Chat.Type.PRIVATE
             ));
             
