@@ -8,7 +8,7 @@ namespace Setup {
         
         public async void post(Message msg) {
             if (msg.text.down().contains("преподаватель")) {
-                data.set_state(msg.from.id, UserState.DEPARTMENT);
+                get_config(msg.from.id).state = UserState.DEPARTMENT;
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
                     reply_markup = department_keyboard(),
@@ -18,7 +18,7 @@ namespace Setup {
                 return;
             }
             
-            data.set_state(msg.from.id, UserState.FACULTY);
+            get_config(msg.from.id).state = UserState.FACULTY;
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 reply_markup = faculty_keyboard(),
@@ -38,7 +38,7 @@ namespace Setup {
                 return;
             }
             
-            data.set_state(msg.from.id, UserState.NAME);
+            get_config(msg.from.id).state = UserState.NAME;
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 reply_markup = name_keyboard(department),
@@ -57,13 +57,13 @@ namespace Setup {
                 
                 return;
             }
-            var config = data.get_config(msg.from.id);
+            var config = get_config(msg.from.id);
             config.name = name;
             
             if (config.post != null) {
                 config.group = null;
                 config.post = UserPost.TEACHER;
-                data.set_state(msg.from.id, null);
+                get_config(msg.from.id).state = null;
                 
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
@@ -76,7 +76,7 @@ namespace Setup {
             }
             
             config.post = UserPost.TEACHER;
-            data.set_state(msg.from.id, null);
+            get_config(msg.from.id).state = null;
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 parse_mode = ParseMode.MARKDOWN,
@@ -106,7 +106,7 @@ namespace Setup {
                 return;
             }
             
-            data.set_state(msg.from.id, UserState.SPECIALITY);
+            get_config(msg.from.id).state = UserState.SPECIALITY;
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 reply_markup = speciality_keyboard(faculty),
@@ -126,7 +126,7 @@ namespace Setup {
                 return;
             }
             
-            data.set_state(msg.from.id, UserState.GROUP);
+            get_config(msg.from.id).state = UserState.GROUP;
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 reply_markup = group_keyboard(speciality),
@@ -146,13 +146,13 @@ namespace Setup {
                 return;
             }
             
-            var config = data.get_config(msg.from.id);
+            var config = get_config(msg.from.id);
             config.group = group;
             
             if (config.post != null) {
                 config.name = null;
                 config.post = UserPost.STUDENT;
-                data.set_state(msg.from.id, null);
+                get_config(msg.from.id).state = null;
                 
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
@@ -165,7 +165,7 @@ namespace Setup {
             }
             
             config.post = UserPost.STUDENT;
-            data.set_state(msg.from.id, null);
+            get_config(msg.from.id).state = null;
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 parse_mode = ParseMode.MARKDOWN,

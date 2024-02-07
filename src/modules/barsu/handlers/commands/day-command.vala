@@ -10,9 +10,9 @@ namespace Barsu {
             string? group = null;
             
             if (msg.chat.type != Chat.Type.PRIVATE)
-                group = data.get_chat_group(msg.chat.id) ?? data.get_group(msg.from.id);
+                group = get_chat_config(msg.chat.id).group ?? get_config(msg.from.id).group;
             else
-                group = data.get_group(msg.from.id);
+                group = get_config(msg.from.id).group;
             
             if (args != null)
                 group = data.parse_group(args);
@@ -37,10 +37,10 @@ namespace Barsu {
                         text = @"🎉️ $day_name пар нет!"
                     });
                 }
-            } else if (data.get_post(msg.from.id) == UserPost.TEACHER) {
-                var timetable = yield timetable_manager.get_teacher(data.get_config(msg.from.id).name, get_current_week().format("%F"));
+            } else if (get_config(msg.from.id).post == UserPost.TEACHER) {
+                var name = get_config(msg.from.id).name;
+                var timetable = yield timetable_manager.get_teacher(name, get_current_week().format("%F"));
                 var day = timetable?.get_day_schedule(date);
-                var name = data.get_config(msg.from.id).name;
                 
                 if (day != null)
                     yield bot.send(new SendMessage() {

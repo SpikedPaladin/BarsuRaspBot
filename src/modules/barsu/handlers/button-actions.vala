@@ -34,7 +34,7 @@ namespace Barsu {
                     message_id = query.message.message_id
                 });
                 
-                if (data.get_post(query.from.id) == null)
+                if (get_config(query.from.id).post == null)
                     yield bot.send(new SendMessage() {
                         chat_id = query.message.chat.id,
                         reply_markup = new ReplyKeyboardRemove(),
@@ -47,7 +47,7 @@ namespace Barsu {
                         text = "⚙️ Смена группы отменена"
                     });
                 
-                data.set_state(query.from.id, null);
+                get_config(query.from.id).state = null;
                 yield send_settings(query.message.chat.id, query.from.id);
                 
                 return;
@@ -55,7 +55,7 @@ namespace Barsu {
             
             var chat_member = yield bot.get_chat_member(query.message.chat.id, query.from.id);
             if (chat_member is ChatMemberOwner)
-                if (data.get_chat_config(query.message.chat.id) == null)
+                if (get_chat_config(query.message.chat.id) == null)
                     yield bot.send(new DeleteMessage() {
                         chat_id = query.message.chat.id,
                         message_id = query.message.message_id
@@ -70,10 +70,10 @@ namespace Barsu {
             var chat_member = yield bot.get_chat_member(query.message.chat.id, query.from.id);
             
             if (chat_member is ChatMemberOwner) {
-                var group = data.get_group(query.from.id);
+                var group = get_config(query.from.id).group;
                 
                 if (group != null) {
-                    data.set_chat_group(query.message.chat.id, group);
+                    get_chat_config(query.message.chat.id).group = group;
                     yield send_settings(query.message.chat.id, null, query.message.message_id);
                 } else
                     yield send_alert(query.id, "Выбери сначала группу для себя");
@@ -117,7 +117,7 @@ namespace Barsu {
         // TODO check for msg time
         public async void change_group(CallbackQuery query) {
             if (query.message.chat.type == Chat.Type.PRIVATE) {
-                data.set_state(query.from.id, UserState.POST);
+                get_config(query.from.id).state = UserState.POST;
                 
                 if (query.message is Message && ((Message) query.message).text.has_prefix("👋️ Привет"))
                     yield bot.send(new SendMessage() {
@@ -147,8 +147,8 @@ namespace Barsu {
             var chat_member = yield bot.get_chat_member(query.message.chat.id, query.from.id);
             
             if (chat_member is ChatMemberOwner) {
-                var chat_group = data.get_chat_group(query.message.chat.id);
-                var group = data.get_group(query.from.id);
+                var chat_group = get_chat_config(query.message.chat.id).group;
+                var group = get_config(query.from.id).group;
                 
                 if (chat_group == group) {
                     yield bot.send(new EditMessageText() {
@@ -278,14 +278,13 @@ namespace Barsu {
             ChatId chat_id,
             int message_id
         ) {
+            if (for_chat) get_chat_config(chat_id).subscribed = enabled;
+            else          get_config(id).subscribed = enabled;
+            
             yield bot.send(new EditMessageText() {
                 chat_id = chat_id,
                 message_id = message_id,
-                text = settings_text(
-                    for_chat ?
-                        data.set_chat_subscription(chat_id, enabled) :
-                        data.set_subscription(id, enabled)
-                ),
+                text = settings_text(for_chat ? get_chat_config(chat_id) : get_config(id)),
                 parse_mode = ParseMode.MARKDOWN,
                 reply_markup = enabled ? Keyboards.disable_sub_keyboard : Keyboards.enable_sub_keyboard
             });

@@ -4,7 +4,7 @@ using Telegram;
 namespace Setup {
     
     public async void start_command(Message msg) {
-        data.create_config(msg.from.id);
+        get_config(msg.from.id);
         
         yield bot.send(new SendMessage() {
             chat_id = msg.chat.id,

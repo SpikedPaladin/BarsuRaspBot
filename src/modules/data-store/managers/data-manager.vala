@@ -8,6 +8,10 @@ namespace DataStore {
         private Student.FacultyLoader faculty_loader = new Student.FacultyLoader();
         private Teacher.DepartmentLoader department_loader = new Teacher.DepartmentLoader();
         
+        public void save() {
+            loader.save_configs.begin();
+        }
+        
         public async void load() {
             yield faculty_loader.load_faculties();
             yield department_loader.load_departments();
@@ -99,11 +103,6 @@ namespace DataStore {
             return loader.chats;
         }
         
-        public void create_config(int64 user_id) {
-            loader.users.add(new Config() { id = user_id });
-            loader.save_configs.begin();
-        }
-        
         public void remove_config(int64 id, bool is_chat = false) {
             var array = is_chat ? loader.chats : loader.users;
             
@@ -115,57 +114,7 @@ namespace DataStore {
             loader.save_configs.begin();
         }
         
-        public UserState? get_state(int64 user_id) {
-            var found_config = loader.users.first_match((config) => {
-                return config.id == user_id;
-            });
-            
-            if (found_config != null) {
-                return found_config.state;
-            }
-            
-            return null;
-        }
-        
-        public void set_state(int64 user_id, UserState? state) {
-            var found_config = loader.users.first_match((config) => {
-                return config.id == user_id;
-            });
-            
-            if (found_config != null)
-                found_config.state = state;
-            else
-                Util.log(@"(set_state) Not found user config ($user_id)", Util.LogLevel.WARNING);
-            
-            loader.save_configs.begin();
-        }
-        
-        public UserPost? get_post(int64 user_id) {
-            var found_config = loader.users.first_match((config) => {
-                return config.id == user_id;
-            });
-            
-            if (found_config != null) {
-                return found_config.post;
-            }
-            
-            return null;
-        }
-        
-        public void set_post(int64 user_id, UserPost post) {
-            var found_config = loader.users.first_match((config) => {
-                return config.id == user_id;
-            });
-            
-            if (found_config != null)
-                found_config.post = post;
-            else
-                Util.log(@"(set_post) Not found user config ($user_id)", Util.LogLevel.WARNING);
-            
-            loader.save_configs.begin();
-        }
-        
-        public Config? get_config(int64 user_id) {
+        public Config get_config(int64 user_id) {
             var found_config = loader.users.first_match((config) => {
                 return config.id == user_id;
             });
@@ -174,44 +123,11 @@ namespace DataStore {
                 return found_config;
             }
             
-            return null;
-        }
-        
-        public string? get_group(int64 user_id) {
-            var found_config = loader.users.first_match((config) => {
-                return config.id == user_id;
-            });
+            var config = new Config.empty(user_id);
+            loader.users.add(config);
+            save();
             
-            if (found_config != null) {
-                return found_config.group;
-            }
-            
-            return null;
-        }
-        
-        public void set_group(int64 user_id, string group) {
-            var found_config = loader.users.first_match((config) => {
-                return config.id == user_id;
-            });
-            
-            if (found_config != null)
-                found_config.group = group;
-            else
-                Util.log(@"(set_group) Not found user config ($user_id)", Util.LogLevel.WARNING);
-            
-            loader.save_configs.begin();
-        }
-        
-        public Config set_subscription(int64 user_id, bool enabled) {
-            var found_config = loader.users.first_match((config) => {
-                return config.id == user_id;
-            });
-            
-            found_config.subscribed = enabled;
-            
-            loader.save_configs.begin();
-            
-            return found_config;
+            return config;
         }
         
         public Config? get_chat_config(ChatId chat_id) {
@@ -224,49 +140,6 @@ namespace DataStore {
             }
             
             return null;
-        }
-        
-        public string? get_chat_group(ChatId chat_id) {
-            var found_config = loader.chats.first_match((config) => {
-                return config.id == chat_id.id;
-            });
-            
-            if (found_config != null) {
-                return found_config.group;
-            }
-            
-            return null;
-        }
-        
-        public void set_chat_group(ChatId chat_id, string group) {
-            var found_config = loader.chats.first_match((config) => {
-                return config.id == chat_id.id;
-            });
-            
-            if (found_config != null) {
-                found_config.group = group;
-            } else {
-                var config = new Config() {
-                    id = chat_id.id,
-                    group = group
-                };
-                
-                loader.chats.add(config);
-            }
-            
-            loader.save_configs.begin();
-        }
-        
-        public Config set_chat_subscription(ChatId chat_id, bool enabled) {
-            var found_config = loader.chats.first_match((config) => {
-                return config.id == chat_id.id;
-            });
-            
-            found_config.subscribed = enabled;
-            
-            loader.save_configs.begin();
-            
-            return found_config;
         }
     }
 }

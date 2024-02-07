@@ -17,7 +17,7 @@ namespace Barsu {
     }
     
     private async void send_group_warning(ChatId chat_id, int64 user_id) {
-        if (data.get_group(user_id) != null) {
+        if (get_config(user_id).post != null) {
             yield bot.send(new SendMessage() {
                 chat_id = chat_id,
                 parse_mode = ParseMode.MARKDOWN,
@@ -27,10 +27,7 @@ namespace Barsu {
             return;
         }
         
-        if (data.get_config(user_id) == null)
-            data.create_config(user_id);
-        
-        if (data.get_post(user_id) == null) {
+        if (get_config(user_id).post == null) {
             yield bot.send(new SendMessage() {
                 chat_id = chat_id,
                 parse_mode = ParseMode.MARKDOWN,
@@ -41,7 +38,7 @@ namespace Barsu {
             return;
         }
         
-        if (data.get_post(user_id) == UserPost.TEACHER) {
+        if (get_config(user_id).post == UserPost.TEACHER) {
             yield bot.send(new SendMessage() {
                 chat_id = chat_id,
                 parse_mode = ParseMode.MARKDOWN,
@@ -51,7 +48,7 @@ namespace Barsu {
     }
     
     private async void request_group(int64 user_id, ChatId chat_id) {
-        var group = data.get_group(user_id);
+        var group = get_config(user_id).group;
         
         if (group == null)
             yield bot.send(new SendMessage() {

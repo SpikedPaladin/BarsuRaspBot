@@ -13,7 +13,7 @@ namespace Setup {
         public void add_handlers() {
             bot.add_handler(new CommandHandler("start",
                 msg => start_command.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && data.get_config(msg.from.id) == null
+                msg => msg.chat.type == Chat.Type.PRIVATE && get_config(msg.from.id) == null
             ));
             bot.add_handler(new CommandHandler("restart",
                 msg => restart_command.begin(msg),
@@ -27,27 +27,27 @@ namespace Setup {
             var setup_messages = new SetupMessages();
             bot.add_handler(new MessageHandler(null,
                 msg => setup_messages.post.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && data.get_state(msg.from.id) == UserState.POST
+                msg => msg.chat.type == Chat.Type.PRIVATE && get_config(msg.from.id).state == UserState.POST
             ));
             bot.add_handler(new MessageHandler(null,
                 msg => setup_messages.department.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && data.get_state(msg.from.id) == UserState.DEPARTMENT
+                msg => msg.chat.type == Chat.Type.PRIVATE && get_config(msg.from.id).state == UserState.DEPARTMENT
             ));
             bot.add_handler(new MessageHandler(null,
                 msg => setup_messages.name.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && data.get_state(msg.from.id) == UserState.NAME
+                msg => msg.chat.type == Chat.Type.PRIVATE && get_config(msg.from.id).state == UserState.NAME
             ));
             bot.add_handler(new MessageHandler(null,
                 msg => setup_messages.faculty.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && data.get_state(msg.from.id) == UserState.FACULTY
+                msg => msg.chat.type == Chat.Type.PRIVATE && get_config(msg.from.id).state == UserState.FACULTY
             ));
             bot.add_handler(new MessageHandler(null,
                 msg => setup_messages.speciality.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && data.get_state(msg.from.id) == UserState.SPECIALITY
+                msg => msg.chat.type == Chat.Type.PRIVATE && get_config(msg.from.id).state == UserState.SPECIALITY
             ));
             bot.add_handler(new MessageHandler(null,
                 msg => setup_messages.group.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && data.get_state(msg.from.id) == UserState.GROUP
+                msg => msg.chat.type == Chat.Type.PRIVATE && get_config(msg.from.id).state == UserState.GROUP
             ));
         }
     }

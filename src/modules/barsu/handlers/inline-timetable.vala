@@ -39,9 +39,7 @@ namespace Barsu {
         }
         
         public async void send_timetable(InlineQuery query) {
-            var config = data.get_config(query.from.id);
-            
-            yield send_inline_timetable(query.id, config.group);
+            yield send_inline_timetable(query.id, get_config(query.from.id).group);
         }
         
         public async void send_group_timetable(InlineQuery query) {

@@ -8,7 +8,7 @@ namespace Barsu {
             var chat_member = yield bot.get_chat_member(msg.chat.id, msg.from.id);
             
             if (chat_member is ChatMemberOwner) {
-                var group = data.get_chat_group(msg.chat.id);
+                var group = get_chat_config(msg.chat.id).group;
                 
                 if (group != null)
                     yield send_settings(msg.chat.id);
@@ -23,7 +23,7 @@ namespace Barsu {
             return;
         }
         
-        if (data.get_post(msg.from.id) != null)
+        if (get_config(msg.from.id).post != null)
             yield send_settings(msg.chat.id, msg.from.id);
         else
             yield send_group_warning(msg.chat.id, msg.from.id);

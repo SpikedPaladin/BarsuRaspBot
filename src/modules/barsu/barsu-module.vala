@@ -20,7 +20,7 @@ namespace Barsu {
         
         public void add_handlers() {
             var inline_timetable = new InlineTimetable();
-            bot.add_handler(new InlineQueryHandler("", query => inline_timetable.send_no_group.begin(query), query => data.get_group(query.from.id) == null));
+            bot.add_handler(new InlineQueryHandler("", query => inline_timetable.send_no_group.begin(query), query => get_config(query.from.id).group == null));
             bot.add_handler(new InlineQueryHandler("", query => inline_timetable.send_timetable.begin(query)));
             bot.add_handler(new InlineQueryHandler(null, query => inline_timetable.send_group_timetable.begin(query)));
             
@@ -88,7 +88,7 @@ namespace Barsu {
                         caption = text
                     });
                 },
-                msg => data.get_state(msg.from.id) == null
+                msg => get_config(msg.from.id).state == null
             ));
         }
     }
@@ -124,7 +124,7 @@ namespace Barsu {
     }
     
     public async void send_settings(ChatId chat_id, int64? user_id = null, int? message_id = null) {
-        var config = user_id != null ? data.get_config(user_id) : data.get_chat_config(chat_id);
+        var config = user_id != null ? get_config(user_id) : get_chat_config(chat_id);
         
         if (config.post == null)
             return;

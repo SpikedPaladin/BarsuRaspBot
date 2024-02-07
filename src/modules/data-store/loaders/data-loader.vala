@@ -28,34 +28,46 @@ namespace DataStore {
                     
                     foreach (var element in obj.get_array_member("users")?.get_elements()) {
                         var user = element.get_object();
-                        var config = new Config() {
-                            id = user.get_int_member("id"),
-                            subscribed = user.get_boolean_member("subscribed")
-                        };
+                        UserState? state = null;
+                        UserPost? post = null;
+                        string? group = null;
+                        string? name = null;
                         
                         if (user.has_member("state"))
-                            config.state = UserState.parse(user.get_string_member("state"));
+                            state = UserState.parse(user.get_string_member("state"));
                         
                         if (user.has_member("post"))
-                            config.post = UserPost.parse(user.get_string_member("post"));
+                            post = UserPost.parse(user.get_string_member("post"));
                         
                         if (user.has_member("group"))
-                            config.group = user.get_string_member("group");
+                            group = user.get_string_member("group");
                         
                         if (user.has_member("name"))
-                            config.name = user.get_string_member("name");
+                            name = user.get_string_member("name");
                         
-                        users.add(config);
+                        users.add(
+                            new Config.load(
+                                user.get_int_member("id"),
+                                state,
+                                post,
+                                name,
+                                group,
+                                user.get_boolean_member("subscribed")
+                            )
+                        );
                     }
                     
                     foreach (var element in obj.get_array_member("chats")?.get_elements()) {
                         var chat = element.get_object();
                         
-                        chats.add(new Config() {
-                            id = chat.get_int_member("id"),
-                            group = chat.get_string_member("group"),
-                            subscribed = chat.get_boolean_member("subscribed")
-                        });
+                        chats.add(
+                            new Config.load(
+                                chat.get_int_member("id"),
+                                null, null, null,
+                                chat.get_string_member("group"),
+                                chat.get_boolean_member("subscribed")
+                            )
+                        );
                     }
                 } catch (Error error) {
                     warning("Error while reading configs: %s\n", error.message);

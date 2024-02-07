@@ -35,6 +35,14 @@ void main() {
     new MainLoop().run();
 }
 
+public DataStore.Config get_config(int64 id) {
+    return DataStore.data.get_config(id);
+}
+
+public DataStore.Config? get_chat_config(Telegram.ChatId id) {
+    return DataStore.data.get_chat_config(id);
+}
+
 public DateTime get_current_week() {
     var time = new DateTime.now();
     var current_week = time.add_days(-time.get_day_of_week() + 1);
