@@ -11,6 +11,8 @@ namespace Barsu {
         }
         
         public async TimetableImage? get_image(string date, string? group = null, string? name = null) {
+            var theme = new DarkTheme();
+            
             var image = cache.first_match((image) => {
                 if (group != null)
                     return image.group == group && image.date == date;
@@ -27,7 +29,7 @@ namespace Barsu {
                             cache.remove(image);
                             
                             return new TimetableImage() {
-                                bytes = loader.create_image(timetable),
+                                bytes = loader.create_image(timetable, theme),
                                 last_fetch = new DateTime.now(),
                                 group = group,
                                 date = date
@@ -40,7 +42,7 @@ namespace Barsu {
                             cache.remove(image);
                             
                             return new TimetableImage() {
-                                bytes = loader.create_teacher_image(timetable),
+                                bytes = loader.create_teacher_image(timetable, theme),
                                 last_fetch = new DateTime.now(),
                                 name = name,
                                 date = date
@@ -59,7 +61,7 @@ namespace Barsu {
                     return null;
                 
                 return new TimetableImage() {
-                    bytes = loader.create_image(timetable),
+                    bytes = loader.create_image(timetable, theme),
                     last_fetch = new DateTime.now(),
                     group = group,
                     date = date
@@ -71,7 +73,7 @@ namespace Barsu {
                     return null;
                 
                 return new TimetableImage() {
-                    bytes = loader.create_teacher_image(timetable),
+                    bytes = loader.create_teacher_image(timetable, theme),
                     last_fetch = new DateTime.now(),
                     name = name,
                     date = date

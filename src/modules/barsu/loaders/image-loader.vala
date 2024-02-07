@@ -5,12 +5,12 @@ namespace Barsu {
     public class ImageLoader {
         private const int FONT_SIZE = 22;
         
-        public Bytes create_teacher_image(Teacher.Timetable timetable) {
+        public Bytes create_teacher_image(Teacher.Timetable timetable, ImageTheme theme) {
             var surface = new Cairo.ImageSurface(Cairo.Format.RGB24, 1000, get_teacher_height(timetable));
             var cr = new Cairo.Context(surface);
             
             cr.select_font_face("Nimbus Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.BOLD);
-            cr.set_source_rgb(0.91, 0.91, 0.92);
+            theme.background(cr);
             cr.paint();
             
             var time_x = 100;
@@ -19,11 +19,11 @@ namespace Barsu {
             var teacher_x = 620;
             var place_x = 850;
             
-            cr.set_source_rgb(0.33, 0.41, 0.47);
+            theme.title_background(cr);
             round_rect(cr, 10, 10, 980, 50, 15);
             cr.fill();
             
-            cr.set_source_rgb(0.92, 0.94, 0.95);
+            theme.title_text(cr);
             cr.set_font_size(20);
             
             cr.move_to(20, 40);
@@ -47,7 +47,7 @@ namespace Barsu {
                 
                 var card_offset = get_teacher_card_offset(day);
                 
-                cr.set_source_rgb(0.33, 0.50, 0.72);
+                theme.card_background(cr);
                 round_rect(cr, 10, offset, 982, card_offset - 3, 15);
                 cr.fill();
                 
@@ -62,14 +62,14 @@ namespace Barsu {
                     var row_height = FONT_SIZE * 1;
                     
                     if (lesson.replaced)
-                        cr.set_source_rgb(0.84, 0.89, 0.95);
+                        theme.lesson_replaced(cr);
                     else
-                        cr.set_source_rgb(1, 1, 1);
+                        theme.lesson(cr);
                     
                     cr.rectangle(80, offset + lesson_offset, 910, row_height + 10 + (6 * 1));
                     cr.fill();
                     
-                    cr.set_source_rgb(0.2, 0.2, 0.2);
+                    theme.lesson_text(cr);
                     cr.set_font_size(FONT_SIZE);
                     
                     if (1 > 1)
@@ -86,11 +86,11 @@ namespace Barsu {
                         if (type.contains(" "))
                             type = type.split(" ")[0];
                         
-                        draw_type(cr, type, type_x, sublesson_y);
+                        draw_type(theme, cr, type, type_x, sublesson_y);
                         cr.set_font_size(20);
                         
                         var name = lesson.name;
-                        cr.set_source_rgb(0.2, 0.2, 0.2);
+                        theme.lesson_text(cr);
                         cr.move_to(name_x, sublesson_y);
                         cr.show_text(name);
                         
@@ -107,7 +107,7 @@ namespace Barsu {
                     lesson_offset += row_height + 10 + (6 * 1) + 4;
                 }
                 
-                cr.set_source_rgb(1, 1, 1);
+                theme.card_text(cr);
                 cr.set_font_size(20);
                 cr.move_to(30, offset + (card_offset / 2) - 11);
                 cr.show_text(day.day);
@@ -141,12 +141,12 @@ namespace Barsu {
             return new Bytes.take(data);
         }
         
-        public Bytes create_image(Student.Timetable timetable) {
+        public Bytes create_image(Student.Timetable timetable, ImageTheme theme) {
             var surface = new Cairo.ImageSurface(Cairo.Format.RGB24, 1000, calculate_surface_height(timetable));
             var cr = new Cairo.Context(surface);
             
             cr.select_font_face("Nimbus Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.BOLD);
-            cr.set_source_rgb(0.91, 0.91, 0.92);
+            theme.background(cr);
             cr.paint();
             
             var time_x = 100;
@@ -155,11 +155,11 @@ namespace Barsu {
             var teacher_x = 620;
             var place_x = 850;
             
-            cr.set_source_rgb(0.33, 0.41, 0.47);
+            theme.title_background(cr);
             round_rect(cr, 10, 10, 980, 50, 15);
             cr.fill();
             
-            cr.set_source_rgb(0.92, 0.94, 0.95);
+            theme.title_text(cr);
             cr.set_font_size(20);
             
             cr.move_to(20, 40);
@@ -183,7 +183,7 @@ namespace Barsu {
                 
                 var card_offset = calculate_card_offset(day);
                 
-                cr.set_source_rgb(0.33, 0.50, 0.72);
+                theme.card_background(cr);
                 round_rect(cr, 10, offset, 982, card_offset - 3, 15);
                 cr.fill();
                 
@@ -198,14 +198,14 @@ namespace Barsu {
                     var row_height = FONT_SIZE * lesson.sublessons.length;
                     
                     if (lesson.replaced)
-                        cr.set_source_rgb(0.84, 0.89, 0.95);
+                        theme.lesson_replaced(cr);
                     else
-                        cr.set_source_rgb(1, 1, 1);
+                        theme.lesson(cr);
                     
                     cr.rectangle(80, offset + lesson_offset, 910, row_height + 10 + (6 * lesson.sublessons.length));
                     cr.fill();
                     
-                    cr.set_source_rgb(0.2, 0.2, 0.2);
+                    theme.lesson_text(cr);
                     cr.set_font_size(FONT_SIZE);
                     
                     if (lesson.sublessons.length > 1)
@@ -222,13 +222,13 @@ namespace Barsu {
                         if (type.contains(" "))
                             type = type.split(" ")[0];
                         
-                        draw_type(cr, type, type_x, sublesson_y);
+                        draw_type(theme, cr, type, type_x, sublesson_y);
                         cr.set_font_size(20);
                         
                         var name = sublesson.name;
                         if (sublesson.subgroup != null)
                             name += @" $(sublesson.subgroup)";
-                        cr.set_source_rgb(0.2, 0.2, 0.2);
+                        theme.lesson_text(cr);
                         cr.move_to(name_x, sublesson_y);
                         cr.show_text(name);
                         
@@ -245,7 +245,7 @@ namespace Barsu {
                     lesson_offset += row_height + 10 + (6 * lesson.sublessons.length) + 4;
                 }
                 
-                cr.set_source_rgb(1, 1, 1);
+                theme.card_text(cr);
                 cr.set_font_size(20);
                 cr.move_to(30, offset + (card_offset / 2) - 11);
                 cr.show_text(day.day_of_week);
@@ -340,42 +340,43 @@ namespace Barsu {
             return card_offset;
         }
         
-        private void draw_type(Cairo.Context cr, string type, double x, double y) {
-            double r, g, b;
-            switch (type.up()) {
-                case "ЛК":
-                    r = 0.22; g = 0.56; b = 0.24;
-                    break;
-                case "ПЗ":
-                    r = 0.83; g = 0.18; b = 0.18;
-                    break;
-                case "ЛЗ":
-                    r = 0.96; g = 0.49; b = 0;
-                    break;
-                case "КП":
-                    r = 0.19; g = 0.25; b = 0.62;
-                    break;
-                case "ЗАЧ":
-                    r = 0.48; g = 0.12; b = 0.64;
-                    break;
-                case "СЗ":
-                    r = 0.01; g = 0.61; b = 0.90;
-                    break;
-                default:
-                    r = 1; g = 0; b = 0;
-                    break;
-            }
-            
+        private void draw_type(ImageTheme theme, Cairo.Context cr, string type, double x, double y) {
             var zach_rect = type.up() == "ЗАЧ" ? 13 : 0;
             var zach_x = type.up() == "ЗАЧ" ? 8 : 0;
-            cr.set_source_rgba(r, g, b, 0.2);
+            paint_type_color(theme, cr, type, false);
             round_rect(cr, (int) x - 8 - zach_x, (int) y - 18, 40 + zach_rect, 22, 11);
             cr.fill();
             
             cr.set_font_size(18);
-            cr.set_source_rgb(r, g, b);
+            paint_type_color(theme, cr, type);
             cr.move_to(x - zach_x, y - 1);
             cr.show_text(type);
+        }
+        
+        private void paint_type_color(ImageTheme theme, Cairo.Context cr, string type, bool is_text = true) {
+            switch (type.up()) {
+                case "ЛК":
+                    theme.chip_1(cr, is_text);
+                    break;
+                case "ПЗ":
+                    theme.chip_2(cr, is_text);
+                    break;
+                case "ЛЗ":
+                    theme.chip_3(cr, is_text);
+                    break;
+                case "КП":
+                    theme.chip_4(cr, is_text);
+                    break;
+                case "ЗАЧ":
+                    theme.chip_5(cr, is_text);
+                    break;
+                case "СЗ":
+                    theme.chip_6(cr, is_text);
+                    break;
+                default:
+                    theme.chip_7(cr, is_text);
+                    break;
+            }
         }
         
         private void round_rect(Cairo.Context cr, int x, int y, int width, int height, int radius) {
