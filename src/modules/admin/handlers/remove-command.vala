@@ -4,7 +4,7 @@ using Telegram;
 namespace Admin {
     
     public async void remove(Message msg) {
-        var id = int64.parse(msg.text);
+        var id = int64.parse(msg.get_command_arguments());
         
         if (data.get_config(id) != null) {
             data.remove_config(id, false);
