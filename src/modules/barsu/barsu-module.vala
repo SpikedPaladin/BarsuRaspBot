@@ -204,7 +204,7 @@ namespace Barsu {
         var timetable = yield timetable_manager.get_teacher(name, date);
         var keyboard = create_teacher_keyboard(timetable, name, date, day);
         
-        if (query.message.photo != null) {
+        if (query.message is Message && ((Message) query.message).photo != null) {
             yield bot.send(new DeleteMessage() {
                 chat_id = query.message.chat.id,
                 message_id = query.message.message_id,
@@ -232,7 +232,7 @@ namespace Barsu {
         var timetable = yield timetable_manager.get_timetable(group, date);
         var keyboard = create_timetable_keyboard(timetable, group, date, day);
         
-        if (query.message.photo != null) {
+        if (query.message is Message && ((Message) query.message).photo != null) {
             yield bot.send(new DeleteMessage() {
                 chat_id = query.message.chat.id,
                 message_id = query.message.message_id,

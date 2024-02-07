@@ -6,8 +6,8 @@ namespace Admin {
     public async void find(Message msg) {
         int64 id;
         
-        if (msg.reply_to_message != null && msg.reply_to_message.forward_from != null) {
-            id = msg.reply_to_message.forward_from.id;
+        if (msg.reply_to_message?.forward_origin is MessageOriginUser) {
+            id = ((MessageOriginUser) msg.reply_to_message.forward_origin).sender_user.id;
         } else if (msg.get_command_arguments() != null) {
             id = int64.parse(msg.get_command_arguments());
         } else {

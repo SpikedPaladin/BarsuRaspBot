@@ -119,7 +119,7 @@ namespace Barsu {
             if (query.message.chat.type == Chat.Type.PRIVATE) {
                 data.set_state(query.from.id, UserState.POST);
                 
-                if (query.message.text.has_prefix("👋️ Привет"))
+                if (query.message is Message && ((Message) query.message).text.has_prefix("👋️ Привет"))
                     yield bot.send(new SendMessage() {
                         chat_id = query.message.chat.id,
                         text = "ℹ️ Если твоей группы нет - нажми _Отменить_",
