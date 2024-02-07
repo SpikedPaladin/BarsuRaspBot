@@ -7,7 +7,7 @@ namespace Admin {
         if (msg.reply_to_message == null) {
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
-                text = "⚠️ Додик ебаный... Нужно отправлять ответом на сообщение"
+                text = Strings.broadcast_no_reply()
             });
             
             return;

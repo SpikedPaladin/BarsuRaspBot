@@ -4,20 +4,20 @@ namespace Admin {
     
     public async void cmds_command(Message msg) {
         var day = new BotCommand() {
-            command = "day",
-            description = "На сегодня"
+            command = Commands.day(),
+            description = Strings.day_desc()
         };
         var tomorrow = new BotCommand() {
-            command = "tomorrow",
-            description = "На завтра"
+            command = Commands.tomorrow(),
+            description = Strings.tomorrow_desc()
         };
         var rasp = new BotCommand() {
             command = "rasp",
-            description = "На эту неделю"
+            description = Strings.rasp_desc()
         };
         var raspnext = new BotCommand() {
             command = "raspnext",
-            description = "На след. неделю"
+            description = Strings.raspnext_desc()
         };
         var next = new BotCommand() {
             command = "next",

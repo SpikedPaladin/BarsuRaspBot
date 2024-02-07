@@ -5,7 +5,9 @@ bot_deps = [
 ]
 
 bot_sources = files(
+    'data/commands.vala',
     'data/keyboards.vala',
+    'data/strings.vala',
     
     'utils/file-util.vala',
     
