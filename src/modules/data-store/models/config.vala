@@ -70,5 +70,17 @@ namespace DataStore {
             _group = group;
             _subscribed = subscribed;
         }
+        
+        public string to_string() {
+            var str = "Настройки бота:\n\n";
+            str += @"🔔️ Уведомления: *$(subscribed ? "ВКЛ" : "ОТКЛ")*\n";
+            
+            if (post == UserPost.TEACHER)
+                str += @"🧑‍🏫️ Преподаватель: *$(name)*";
+            else
+                str += @"👥️ Группа: *$(group)*";
+            
+            return str;
+        }
     }
 }

@@ -46,9 +46,6 @@ namespace Barsu {
             bot.add_handler(new CallbackQueryHandler("get_apk", query => button_action.get_apk.begin(query)));
             bot.add_handler(new CallbackQueryHandler("cancel", query => button_action.cancel.begin(query)));
             bot.add_handler(new CallbackQueryHandler("install", query => button_action.install.begin(query)));
-            bot.add_handler(new CallbackQueryHandler("enable_sub", query => button_action.enable_subscription.begin(query)));
-            bot.add_handler(new CallbackQueryHandler("disable_sub", query => button_action.disable_subscription.begin(query)));
-            bot.add_handler(new CallbackQueryHandler("change_group", query => button_action.change_group.begin(query)));
             bot.add_handler(new CallbackQueryHandler(null, query => button_action.send_timetable.begin(query), query => query.data.has_prefix("timetable")));
             bot.add_handler(new CallbackQueryHandler(null, query => button_action.send_teacher.begin(query), query => query.data.has_prefix("teacher")));
             

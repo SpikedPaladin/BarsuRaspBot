@@ -43,6 +43,14 @@ public DataStore.Config? get_chat_config(Telegram.ChatId id) {
     return DataStore.data.get_chat_config(id);
 }
 
+private void send_alert(string id, string text) {
+    bot.send.begin(new Telegram.AnswerCallbackQuery() {
+        callback_query_id = id,
+        show_alert = true,
+        text = text
+    });
+}
+
 public DateTime get_current_week() {
     var time = new DateTime.now();
     var current_week = time.add_days(-time.get_day_of_week() + 1);

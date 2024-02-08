@@ -45,14 +45,14 @@ namespace DataStore {
                 chat_id = chat_id,
                 message_id = message_id,
                 parse_mode = ParseMode.MARKDOWN,
-                text = settings_text(config),
+                text = config.to_string(),
                 reply_markup = config.subscribed ? Keyboards.disable_sub_keyboard : Keyboards.enable_sub_keyboard
             });
         else
             yield bot.send(new SendMessage() {
                 chat_id = chat_id,
                 parse_mode = ParseMode.MARKDOWN,
-                text = settings_text(config),
+                text = config.to_string(),
                 reply_markup = config.subscribed ? Keyboards.disable_sub_keyboard : Keyboards.enable_sub_keyboard
             });
     }
@@ -74,17 +74,5 @@ namespace DataStore {
                 @"✍️ Твоя группа *$group*\nНажми чтобы установить ее для группы",
                 reply_markup = Keyboards.owner_keyboard
             });
-    }
-    
-    public string settings_text(Config config) {
-        var str = "Настройки бота:\n\n";
-        str += @"🔔️ Уведомления: *$(config.subscribed ? "ВКЛ" : "ОТКЛ")*\n";
-        
-        if (config.post == UserPost.TEACHER) {
-            str += @"🧑‍🏫️ Преподаватель: *$(config.name)*";
-        } else
-            str += @"👥️ Группа: *$(config.group)*";
-        
-        return str;
     }
 }

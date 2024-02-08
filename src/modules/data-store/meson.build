@@ -1,5 +1,7 @@
 bot_sources += files(
-    'handlers/settings-command.vala',
+    'handlers/commands/settings-command.vala',
+    'handlers/actions/edit-subscription.vala',
+    'handlers/actions/change-group.vala',
     
     'loaders/data-loader.vala',
     
