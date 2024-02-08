@@ -52,7 +52,7 @@ namespace DataStore {
                                 post,
                                 name,
                                 group,
-                                user.get_boolean_member("subscribed")
+                                user.get_boolean_member_with_default("subscribed", false)
                             )
                         );
                     }
@@ -118,8 +118,10 @@ namespace DataStore {
                         builder.add_string_value(user.name);
                     }
                     
-                    builder.set_member_name("subscribed");
-                    builder.add_boolean_value(user.subscribed);
+                    if (user.subscribed) {
+                        builder.set_member_name("subscribed");
+                        builder.add_boolean_value(user.subscribed);
+                    }
                     
                     builder.end_object();
                 }
