@@ -6,6 +6,7 @@ bot_sources += files(
     'handlers/group-command.vala',
     'handlers/msg-command.vala',
     'handlers/remove-command.vala',
+    'handlers/save-command.vala',
     'handlers/stat-command.vala',
     'handlers/sync-command.vala',
     'handlers/update-apk-command.vala',
