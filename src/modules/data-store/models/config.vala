@@ -2,7 +2,6 @@ namespace DataStore {
     
     public class Config {
         private UserState? _state;
-        private UserPost? _post;
         private int64 _id;
         private string? _name;
         private string? _group;
@@ -16,10 +15,12 @@ namespace DataStore {
             }
         }
         public UserPost? post {
-            get { return _post; }
-            set {
-                _post = value;
-                data.schedule_save();
+            get {
+                if (name != null)
+                    return UserPost.TEACHER;
+                if (group != null)
+                    return UserPost.STUDENT;
+                return null;
             }
         }
         public int64 id {
@@ -58,14 +59,12 @@ namespace DataStore {
         public Config.load(
             int64 id,
             UserState? state,
-            UserPost? post,
             string? name,
             string? group,
             bool subscribed
         ) {
             _id = id;
             _state = state;
-            _post = post;
             _name = name;
             _group = group;
             _subscribed = subscribed;

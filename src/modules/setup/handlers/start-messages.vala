@@ -58,12 +58,11 @@ namespace Setup {
                 return;
             }
             var config = get_config(msg.from.id);
+            config.state = null;
             config.name = name;
             
             if (config.post != null) {
                 config.group = null;
-                config.post = UserPost.TEACHER;
-                get_config(msg.from.id).state = null;
                 
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
@@ -75,8 +74,6 @@ namespace Setup {
                 return;
             }
             
-            config.post = UserPost.TEACHER;
-            get_config(msg.from.id).state = null;
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 parse_mode = ParseMode.MARKDOWN,
@@ -147,12 +144,11 @@ namespace Setup {
             }
             
             var config = get_config(msg.from.id);
+            config.state = null;
             config.group = group;
             
             if (config.post != null) {
                 config.name = null;
-                config.post = UserPost.STUDENT;
-                get_config(msg.from.id).state = null;
                 
                 yield bot.send(new SendMessage() {
                     chat_id = msg.chat.id,
@@ -164,8 +160,6 @@ namespace Setup {
                 return;
             }
             
-            config.post = UserPost.STUDENT;
-            get_config(msg.from.id).state = null;
             yield bot.send(new SendMessage() {
                 chat_id = msg.chat.id,
                 parse_mode = ParseMode.MARKDOWN,

@@ -29,15 +29,11 @@ namespace DataStore {
                     foreach (var element in obj.get_array_member("users")?.get_elements()) {
                         var user = element.get_object();
                         UserState? state = null;
-                        UserPost? post = null;
                         string? group = null;
                         string? name = null;
                         
                         if (user.has_member("state"))
                             state = UserState.parse(user.get_string_member("state"));
-                        
-                        if (user.has_member("post"))
-                            post = UserPost.parse(user.get_string_member("post"));
                         
                         if (user.has_member("group"))
                             group = user.get_string_member("group");
@@ -49,7 +45,6 @@ namespace DataStore {
                             new Config.load(
                                 user.get_int_member("id"),
                                 state,
-                                post,
                                 name,
                                 group,
                                 user.get_boolean_member_with_default("subscribed", false)
@@ -63,7 +58,7 @@ namespace DataStore {
                         chats.add(
                             new Config.load(
                                 chat.get_int_member("id"),
-                                null, null, null,
+                                null, null,
                                 chat.get_string_member("group"),
                                 chat.get_boolean_member("subscribed")
                             )
@@ -101,11 +96,6 @@ namespace DataStore {
                     if (user.state != null) {
                         builder.set_member_name("state");
                         builder.add_string_value(user.state.to_string());
-                    }
-                    
-                    if (user.post != null) {
-                        builder.set_member_name("post");
-                        builder.add_string_value(user.post.to_string());
                     }
                     
                     if (user.group != null) {
