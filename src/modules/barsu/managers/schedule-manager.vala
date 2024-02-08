@@ -18,12 +18,7 @@ namespace Barsu {
         }
         
         public void schedule_next() {
-            var timeout = calculate_timeout();
-            var broadcast_time = new DateTime.now().add_seconds(timeout);
-            
-            Util.log(@"Scheduled next broadcast to $(broadcast_time.format("%H:%M %d.%m"))");
-            
-            GLib.Timeout.add_seconds((uint) timeout, () => {
+            GLib.Timeout.add_seconds((uint) calculate_timeout(), () => {
                 broadcast_manager.broadcast_next_lesson.begin();
                 
                 schedule_next();
