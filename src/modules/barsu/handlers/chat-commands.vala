@@ -17,7 +17,7 @@ namespace Barsu {
     }
     
     private async void send_group_warning(ChatId chat_id, int64 user_id) {
-        if (get_config(user_id).post != null) {
+        if (get_config(user_id).group != null) {
             yield bot.send(new SendMessage() {
                 chat_id = chat_id,
                 parse_mode = ParseMode.MARKDOWN,
