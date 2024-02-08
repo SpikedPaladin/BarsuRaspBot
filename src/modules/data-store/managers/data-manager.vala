@@ -4,12 +4,27 @@ using Gee;
 namespace DataStore {
     
     public class DataManager {
+        private bool save_scheduled;
+        
         private DataLoader loader = new DataLoader();
         private Student.FacultyLoader faculty_loader = new Student.FacultyLoader();
         private Teacher.DepartmentLoader department_loader = new Teacher.DepartmentLoader();
         
+        public void schedule_save() {
+            if (save_scheduled)
+                return;
+            
+            save_scheduled = true;
+            
+            GLib.Timeout.add_seconds(60, () => {
+                save();
+                return false;
+            });
+        }
+        
         public void save() {
             loader.save_configs.begin();
+            save_scheduled = false;
         }
         
         public async void load() {

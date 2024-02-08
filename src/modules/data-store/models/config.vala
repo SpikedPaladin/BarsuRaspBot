@@ -12,42 +12,42 @@ namespace DataStore {
             get { return _state; }
             set {
                 _state = value;
-                data.save();
+                data.schedule_save();
             }
         }
         public UserPost? post {
             get { return _post; }
             set {
                 _post = value;
-                data.save();
+                data.schedule_save();
             }
         }
         public int64 id {
             get { return _id; }
             set {
                 _id = value;
-                data.save();
+                data.schedule_save();
             }
         }
         public string? name {
             get { return _name; }
             set {
                 _name = value;
-                data.save();
+                data.schedule_save();
             }
         }
         public string? group {
             get { return _group; }
             set {
                 _group = value;
-                data.save();
+                data.schedule_save();
             }
         }
         public bool subscribed {
             get { return _subscribed; }
             set {
                 _subscribed = value;
-                data.save();
+                data.schedule_save();
             }
         }
         
