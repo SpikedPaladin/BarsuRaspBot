@@ -11,7 +11,7 @@ namespace Barsu {
         }
         
         public async TimetableImage? get_image(string date, string? group = null, string? name = null) {
-            var theme = new DarkTheme();
+            var theme = new ClassicTheme();
             
             var image = cache.first_match((image) => {
                 if (group != null)
