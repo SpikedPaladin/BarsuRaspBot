@@ -13,7 +13,7 @@ namespace Setup {
         public void add_handlers() {
             bot.add_handler(new CommandHandler("start",
                 msg => start_command.begin(msg),
-                msg => msg.chat.type == Chat.Type.PRIVATE && get_config(msg.from.id) == null
+                msg => msg.chat.type == Chat.Type.PRIVATE && data.get_config(msg.from.id, false) == null
             ));
             bot.add_handler(new CommandHandler("restart",
                 msg => restart_command.begin(msg),

@@ -129,7 +129,7 @@ namespace DataStore {
             loader.save_configs.begin();
         }
         
-        public Config get_config(int64 user_id) {
+        public Config? get_config(int64 user_id, bool create_config = true) {
             var found_config = loader.users.first_match((config) => {
                 return config.id == user_id;
             });
@@ -137,6 +137,9 @@ namespace DataStore {
             if (found_config != null) {
                 return found_config;
             }
+            
+            if (!create_config)
+                return null;
             
             var config = new Config.empty(user_id);
             loader.users.add(config);
