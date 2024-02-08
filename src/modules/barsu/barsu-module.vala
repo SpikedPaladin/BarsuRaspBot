@@ -38,8 +38,6 @@ namespace Barsu {
             bot.add_handler(new MessageHandler("⏩️ След. пара", msg => next_command.begin(msg)));
             bot.add_handler(new CommandHandler("bells", msg => bells_command.begin(msg)));
             bot.add_handler(new MessageHandler("🔔️ Звонки", msg => bells_command.begin(msg)));
-            bot.add_handler(new CommandHandler("settings", msg => settings_command.begin(msg)));
-            bot.add_handler(new MessageHandler("⚙️ Настройки", msg => settings_command.begin(msg)));
             bot.add_handler(new CommandHandler("help", msg => help_command.begin(msg)));
             
             var button_action = new ButtonActions();
@@ -121,29 +119,6 @@ namespace Barsu {
             return keyboard;
         
         return null;
-    }
-    
-    public async void send_settings(ChatId chat_id, int64? user_id = null, int? message_id = null) {
-        var config = user_id != null ? get_config(user_id) : get_chat_config(chat_id);
-        
-        if (config.post == null)
-            return;
-        
-        if (message_id != null)
-            yield bot.send(new EditMessageText() {
-                chat_id = chat_id,
-                message_id = message_id,
-                parse_mode = ParseMode.MARKDOWN,
-                text = settings_text(config),
-                reply_markup = config.subscribed ? Keyboards.disable_sub_keyboard : Keyboards.enable_sub_keyboard
-            });
-        else
-            yield bot.send(new SendMessage() {
-                chat_id = chat_id,
-                parse_mode = ParseMode.MARKDOWN,
-                text = settings_text(config),
-                reply_markup = config.subscribed ? Keyboards.disable_sub_keyboard : Keyboards.enable_sub_keyboard
-            });
     }
     
     public async void send_teacher_keyboard(string name, string date, ChatId chat_id, int? message_id = null) {
@@ -348,17 +323,5 @@ namespace Barsu {
             keyboard.new_row().add_button(new InlineKeyboardButton() { text = "🖼️ Вся неделя", callback_data = @"timetable:$group:$date" });
         
         return keyboard;
-    }
-    
-    public string settings_text(Config config) {
-        var str = "Настройки бота:\n\n";
-        str += @"🔔️ Уведомления: *$(config.subscribed ? "ВКЛ" : "ОТКЛ")*\n";
-        
-        if (config.post == UserPost.TEACHER) {
-            str += @"🧑‍🏫️ Преподаватель: *$(config.name)*";
-        } else
-            str += @"👥️ Группа: *$(config.group)*";
-        
-        return str;
     }
 }
