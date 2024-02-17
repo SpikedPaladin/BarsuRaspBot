@@ -28,6 +28,7 @@ namespace DataStore {
                     
                     foreach (var element in obj.get_array_member("users")?.get_elements()) {
                         var user = element.get_object();
+                        SelectedTheme? theme = null;
                         UserState? state = null;
                         string? group = null;
                         string? name = null;
@@ -41,10 +42,14 @@ namespace DataStore {
                         if (user.has_member("name"))
                             name = user.get_string_member("name");
                         
+                        if (user.has_member("theme"))
+                            theme = SelectedTheme.parse(user.get_string_member("theme"));
+                        
                         users.add(
                             new Config.load(
                                 user.get_int_member("id"),
                                 state,
+                                theme,
                                 name,
                                 group,
                                 user.get_boolean_member_with_default("subscribed", false)
@@ -58,7 +63,7 @@ namespace DataStore {
                         chats.add(
                             new Config.load(
                                 chat.get_int_member("id"),
-                                null, null,
+                                null, null, null,
                                 chat.get_string_member("group"),
                                 chat.get_boolean_member("subscribed")
                             )
@@ -106,6 +111,11 @@ namespace DataStore {
                     if (user.name != null) {
                         builder.set_member_name("name");
                         builder.add_string_value(user.name);
+                    }
+                    
+                    if (user.selectedTheme != SelectedTheme.CLASSIC) {
+                        builder.set_member_name("theme");
+                        builder.add_string_value(user.selectedTheme.to_string());
                     }
                     
                     if (user.subscribed) {

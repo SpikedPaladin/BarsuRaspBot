@@ -10,9 +10,7 @@ namespace Barsu {
             cache.add(image);
         }
         
-        public async TimetableImage? get_image(string date, string? group = null, string? name = null) {
-            var theme = new ClassicTheme();
-            
+        public async TimetableImage? get_image(ImageTheme theme, string date, string? group = null, string? name = null) {
             var image = cache.first_match((image) => {
                 if (group != null)
                     return image.group == group && image.date == date;

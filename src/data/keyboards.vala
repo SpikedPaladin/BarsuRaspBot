@@ -41,10 +41,12 @@ namespace Keyboards {
         enable_sub_keyboard = new InlineKeyboardMarkup()
             .add_button(new InlineKeyboardButton() { text = "Вкл. уведомления", callback_data = "enable_sub" }).new_row()
             .add_button(new InlineKeyboardButton() { text = "Изменить группу", callback_data = "change_group" }).new_row()
+            .add_button(new InlineKeyboardButton() { text = "Изменить тему", callback_data = "change_theme" }).new_row()
             .add_button(new InlineKeyboardButton() { text = "🔥️ Приложение для Android", callback_data = "get_app" });
         disable_sub_keyboard = new InlineKeyboardMarkup()
             .add_button(new InlineKeyboardButton() { text = "Выкл. уведомления", callback_data = "disable_sub" }).new_row()
             .add_button(new InlineKeyboardButton() { text = "Изменить группу", callback_data = "change_group" }).new_row()
+            .add_button(new InlineKeyboardButton() { text = "Изменить тему", callback_data = "change_theme" }).new_row()
             .add_button(new InlineKeyboardButton() { text = "🔥️ Приложение для Android", callback_data = "get_app" });
         
         post_keyboard = new ReplyKeyboardMarkup() { is_persistent = true, resize_keyboard = true }

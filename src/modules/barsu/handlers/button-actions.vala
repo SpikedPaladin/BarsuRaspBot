@@ -85,7 +85,7 @@ namespace Barsu {
             var data = query.data.split(":");
             
             if (data.length == 3) {
-                var image = yield image_manager.get_image(data[2], null, data[1]);
+                var image = yield image_manager.get_image(get_config(query.from.id).theme, data[2], null, data[1]);
                 
                 if (image.file_id != null) {
                     yield bot.send(new EditMessageMedia() {
@@ -126,7 +126,7 @@ namespace Barsu {
             var data = query.data.split(":");
             
             if (data.length == 3) {
-                var image = yield image_manager.get_image(data[2], data[1]);
+                var image = yield image_manager.get_image(get_config(query.from.id).theme, data[2], data[1]);
                 
                 if (image.file_id != null) {
                     yield bot.send(new EditMessageMedia() {
