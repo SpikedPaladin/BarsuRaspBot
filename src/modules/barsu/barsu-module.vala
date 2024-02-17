@@ -24,7 +24,7 @@ namespace Barsu {
             bot.add_handler(new InlineQueryHandler("", query => inline_timetable.send_timetable.begin(query)));
             bot.add_handler(new InlineQueryHandler(null, query => inline_timetable.send_group_timetable.begin(query)));
             
-            bot.add_handler(new CommandHandler("apk", msg => apk_command.begin(msg)));
+            bot.add_handler(new CommandHandler("apk", msg => send_app.begin(msg.chat.id)));
             bot.add_handler(new CommandHandler("day", msg => day_command.begin(msg)));
             bot.add_handler(new MessageHandler("▶️ Сегодня", msg => day_command.begin(msg)));
             bot.add_handler(new CommandHandler("tomorrow", msg => day_command.begin(msg)));
@@ -42,14 +42,14 @@ namespace Barsu {
             
             var button_action = new ButtonActions();
             bot.add_handler(new CallbackQueryHandler("empty", query => button_action.empty.begin(query)));
-            bot.add_handler(new CallbackQueryHandler("get_app", query => button_action.get_app.begin(query)));
-            bot.add_handler(new CallbackQueryHandler("get_apk", query => button_action.get_apk.begin(query)));
+            bot.add_handler(new CallbackQueryHandler("get_app", query => send_app.begin(query.message.chat.id)));
+            bot.add_handler(new CallbackQueryHandler("get_apk", query => send_apk.begin(query.message.chat.id)));
             bot.add_handler(new CallbackQueryHandler("cancel", query => button_action.cancel.begin(query)));
             bot.add_handler(new CallbackQueryHandler("install", query => button_action.install.begin(query)));
             bot.add_handler(new CallbackQueryHandler(null, query => button_action.send_timetable.begin(query), query => query.data.has_prefix("timetable")));
             bot.add_handler(new CallbackQueryHandler(null, query => button_action.send_teacher.begin(query), query => query.data.has_prefix("teacher")));
             
-            bot.add_handler(new CallbackQueryHandler(null, 
+            bot.add_handler(new CallbackQueryHandler(null,
                 query => {
                     var parts = query.data.split(":");
                     
@@ -320,5 +320,21 @@ namespace Barsu {
             keyboard.new_row().add_button(new InlineKeyboardButton() { text = "🖼️ Вся неделя", callback_data = @"timetable:$group:$date" });
         
         return keyboard;
+    }
+    
+    public async void send_app(ChatId chat_id) {
+        yield bot.send(new SendMessage() {
+            chat_id = chat_id,
+            text = @"Приложение *Расписание БарГУ*\nТекущая версия: v$(data.apk_version)",
+            reply_markup = Keyboards.apk_keyboard
+        });
+    }
+    
+    public async void send_apk(ChatId chat_id) {
+        yield bot.send(new SendMessage() {
+            chat_id = chat_id,
+            text = @"Приложение *Расписание БарГУ*\nТекущая версия: v$(data.apk_version)",
+            reply_markup = Keyboards.apk_keyboard
+        });
     }
 }

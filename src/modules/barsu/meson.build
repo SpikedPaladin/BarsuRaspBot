@@ -1,5 +1,4 @@
 bot_sources += files(
-    'handlers/commands/apk-command.vala',
     'handlers/commands/bells-command.vala',
     'handlers/commands/day-command.vala',
     'handlers/commands/help-command.vala',
