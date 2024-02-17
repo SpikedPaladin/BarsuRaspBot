@@ -14,7 +14,7 @@ namespace Barsu {
         public async void get_app(CallbackQuery query) {
             yield bot.send(new SendMessage() {
                 chat_id = query.message.chat.id,
-                text = @"Приложение *Расписание БарГУ*\nТекущая версия: v$(data.get_apk_version())",
+                text = @"Приложение *Расписание БарГУ*\nТекущая версия: v$(data.apk_version)",
                 reply_markup = Keyboards.apk_keyboard
             });
         }
@@ -22,7 +22,7 @@ namespace Barsu {
         public async void get_apk(CallbackQuery query) {
             yield bot.send(new SendDocument() {
                 chat_id = query.message.chat.id,
-                document = data.get_apk_file_id(),
+                document = data.apk_file_id,
                 caption = "⚠️ Не забывай переодически проверять обновления!"
             });
         }

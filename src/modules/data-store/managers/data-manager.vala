@@ -10,6 +10,9 @@ namespace DataStore {
         private Student.FacultyLoader faculty_loader = new Student.FacultyLoader();
         private Teacher.DepartmentLoader department_loader = new Teacher.DepartmentLoader();
         
+        public string? apk_version { get { return loader.apk_version; } }
+        public string? apk_file_id { get { return loader.apk_file_id; } }
+        
         public void schedule_save() {
             if (save_scheduled)
                 return;
@@ -31,14 +34,6 @@ namespace DataStore {
             yield faculty_loader.load_faculties();
             yield department_loader.load_departments();
             yield loader.load_configs();
-        }
-        
-        public string? get_apk_file_id() {
-            return loader.apk_file_id;
-        }
-        
-        public string? get_apk_version() {
-            return loader.apk_version;
         }
         
         public void set_apk(string file_id, string version) {
