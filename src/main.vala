@@ -4,7 +4,7 @@ using Admin;
 using Bus;
 
 public const int64 BOSS_ID = 841497640;
-public const int64 SENSE_OF_LIFE = 6608750361;
+public const int64 SENSE_OF_LIFE = -1;
 
 public ModuleLoader module_loader;
 public Soup.Session session;
