@@ -71,34 +71,14 @@ namespace Barsu {
             if (data.length == 3) {
                 var image = yield image_manager.get_image(get_config(query.from.id).theme, data[2], null, data[1]);
                 
-                if (image.file_id != null) {
-                    yield bot.send(new EditMessageMedia() {
-                        chat_id = query.message.chat.id,
-                        message_id = query.message.message_id,
-                        media = new InputMediaPhoto() {
-                            media = image.file_id
-                        }
-                    });
-                } else {
-                    var response = yield bot.send(new EditMessageMedia() {
-                        chat_id = query.message.chat.id,
-                        message_id = query.message.message_id,
-                        media = new InputMediaPhoto() {
-                            media = "week-image.png",
-                            bytes = image.bytes
-                        }
-                    });
-                    
-                    if (!response.ok)
-                        return;
-                    
-                    var message = new Message(response.result.get_object());
-                    image.bytes = null;
-                    image.file_id = message.photo[0].file_id;
-                    
-                    // Manual put is required
-                    image_manager.update_cache(image);
-                }
+                yield bot.send(new EditMessageMedia() {
+                    chat_id = query.message.chat.id,
+                    message_id = query.message.message_id,
+                    media = new InputMediaPhoto() {
+                        media = "week-image.png",
+                        bytes = image.bytes
+                    }
+                });
                 
                 return;
             }
@@ -112,34 +92,14 @@ namespace Barsu {
             if (data.length == 3) {
                 var image = yield image_manager.get_image(get_config(query.from.id).theme, data[2], data[1]);
                 
-                if (image.file_id != null) {
-                    yield bot.send(new EditMessageMedia() {
-                        chat_id = query.message.chat.id,
-                        message_id = query.message.message_id,
-                        media = new InputMediaPhoto() {
-                            media = image.file_id
-                        }
-                    });
-                } else {
-                    var response = yield bot.send(new EditMessageMedia() {
-                        chat_id = query.message.chat.id,
-                        message_id = query.message.message_id,
-                        media = new InputMediaPhoto() {
-                            media = "week-image.png",
-                            bytes = image.bytes
-                        }
-                    });
-                    
-                    if (!response.ok)
-                        return;
-                    
-                    var message = new Message(response.result.get_object());
-                    image.bytes = null;
-                    image.file_id = message.photo[0].file_id;
-                    
-                    // Manual put is required
-                    image_manager.update_cache(image);
-                }
+                yield bot.send(new EditMessageMedia() {
+                    chat_id = query.message.chat.id,
+                    message_id = query.message.message_id,
+                    media = new InputMediaPhoto() {
+                        media = "week-image.png",
+                        bytes = image.bytes
+                    }
+                });
                 
                 return;
             }
