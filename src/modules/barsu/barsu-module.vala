@@ -40,14 +40,13 @@ namespace Barsu {
             bot.add_handler(new MessageHandler("🔔️ Звонки", msg => bells_command.begin(msg)));
             bot.add_handler(new CommandHandler("help", msg => help_command.begin(msg)));
             
-            var button_action = new ButtonActions();
-            bot.add_handler(new CallbackQueryHandler("empty", query => button_action.empty.begin(query)));
+            bot.add_handler(new CallbackQueryHandler("empty", query => empty.begin(query)));
             bot.add_handler(new CallbackQueryHandler("get_app", query => send_app.begin(query.message.chat.id)));
             bot.add_handler(new CallbackQueryHandler("get_apk", query => send_apk.begin(query.message.chat.id)));
-            bot.add_handler(new CallbackQueryHandler("cancel", query => button_action.cancel.begin(query)));
-            bot.add_handler(new CallbackQueryHandler("install", query => button_action.install.begin(query)));
-            bot.add_handler(new CallbackQueryHandler(null, query => button_action.send_timetable.begin(query), query => query.data.has_prefix("timetable")));
-            bot.add_handler(new CallbackQueryHandler(null, query => button_action.send_teacher.begin(query), query => query.data.has_prefix("teacher")));
+            bot.add_handler(new CallbackQueryHandler("cancel", query => cancel.begin(query)));
+            bot.add_handler(new CallbackQueryHandler("install", query => install.begin(query)));
+            bot.add_handler(new CallbackQueryHandler(null, query => send_group.begin(query), query => query.data.has_prefix("timetable")));
+            bot.add_handler(new CallbackQueryHandler(null, query => send_teacher.begin(query), query => query.data.has_prefix("teacher")));
             
             bot.add_handler(new CallbackQueryHandler(null,
                 query => {
